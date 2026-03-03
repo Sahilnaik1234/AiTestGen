@@ -31,10 +31,20 @@ export class Orchestrator {
         const response = await adapter.generateTest(sourceCode, language, fileName);
 
         const testFilePath = this.getTestFilePath(filePath, extension);
-        fs.writeFileSync(testFilePath, response.testCode);
+        const testCode = response.testCode;
+        fs.writeFileSync(testFilePath, testCode);
 
         console.log(chalk.green(`\n✅ Test code successfully generated!`));
         console.log(chalk.blue(`📂 Saved to: ${testFilePath}`));
+
+        return {
+            id: path.basename(filePath, `.${extension}`).toLowerCase(),
+            name: fileName,
+            lang: language,
+            source: sourceCode,
+            test: testCode,
+            coverage: 0 // Placeholder, will be updated if we parse coverage reports
+        };
     }
 
     private getLanguageFromExtension(ext: string): string {

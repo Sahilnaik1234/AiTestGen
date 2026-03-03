@@ -2,6 +2,8 @@ import { Command } from 'commander';
 import { Orchestrator } from './core/Orchestrator';
 import * as dotenv from 'dotenv';
 import chalk from 'chalk';
+import * as fs from 'fs';
+import * as path from 'path';
 
 dotenv.config();
 
@@ -45,13 +47,26 @@ program
 
             const orchestrator = new Orchestrator(type, apiKey, options.version);
 
+            const results = [];
             for (const file of files) {
                 try {
-                    await orchestrator.run(file);
+                    const result = await orchestrator.run(file);
+                    results.push(result);
                 } catch (err: any) {
                     console.error(chalk.red(`\n❌ Error generating for ${file}: ${err.message}`));
                 }
             }
+
+            // Save results for dashboard
+            const dashboardDir = path.join(process.cwd(), 'dashboard', 'public');
+            if (!fs.existsSync(dashboardDir)) {
+                fs.mkdirSync(dashboardDir, { recursive: true });
+            }
+            fs.writeFileSync(
+                path.join(dashboardDir, 'results.json'),
+                JSON.stringify(results, null, 2)
+            );
+            console.log(chalk.green(`\n📊 Dashboard data saved to dashboard/public/results.json`));
         } catch (error: any) {
             console.error(chalk.red(`\n❌ CLI Error: ${error.message}`));
             process.exit(1);

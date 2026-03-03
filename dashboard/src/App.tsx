@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Terminal,
   ShieldCheck,
@@ -115,8 +115,21 @@ func TestDivideByZero(t *testing.T) {
 ];
 
 const App: React.FC = () => {
+  const [results, setResults] = useState(MOCK_RESULTS);
   const [selectedFile, setSelectedFile] = useState(MOCK_RESULTS[0]);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    fetch('/results.json')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setResults(data);
+          setSelectedFile(data[0]);
+        }
+      })
+      .catch(err => console.error("Error loading live results, falling back to mock:", err));
+  }, []);
 
   return (
     <div className="dashboard-container">
@@ -131,7 +144,7 @@ const App: React.FC = () => {
 
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Pipeline Artifacts</p>
-          {MOCK_RESULTS.map(file => (
+          {results.map(file => (
             <motion.div
               key={file.id}
               whileHover={{ x: 4 }}
