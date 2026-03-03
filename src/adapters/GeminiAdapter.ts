@@ -8,9 +8,15 @@ export class GeminiAdapter extends AIModelAdapter {
         const prompt = `
       You are an expert software engineer. Generate a comprehensive test suite for the following ${language} code.
       The source file is named "${fileName}".
-      Ensure you import the code correctly from this file using the appropriate language syntax (e.g., require('./${fileName}') or import from './${fileName}').
-      Follow industry best practices and ensure high code coverage (aim for 100%).
-      Return ONLY the test code inside triple backticks.
+      
+      RULES FOR IMPORTS:
+      - If the language is TypeScript or JavaScript, ensure you import/require the code WITHOUT the file extension (e.g., use './${fileName.split('.')[0]}').
+      - For other languages, use their standard import conventions.
+
+      RULES FOR TESTS:
+      - Follow industry best practices and ensure high code coverage (aim for 100%).
+      - ONLY test for errors or exceptions if the source code specifically throws them. Do not assume the code validates inputs unless you see 'throw' or 'raise' in the source.
+      - Return ONLY the test code inside triple backticks.
 
       Source Code:
       \`\`\`${language}
