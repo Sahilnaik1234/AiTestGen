@@ -74,7 +74,7 @@ export class Orchestrator {
                 testName = `${base}_test.py`;
                 break;
             case 'java':
-                testName = `${base}.test.java`; // Or Test.java based on project style
+                testName = `${base}Test.java`;
                 break;
             default:
                 testName = `${base}.test.${ext}`;
