@@ -7,3 +7,6 @@ dist
 *_test.py
 *_test.go
 *Test.java
+dashboard/node_modules
+dashboard/dist
+v
