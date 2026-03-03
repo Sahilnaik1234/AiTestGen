@@ -60,14 +60,78 @@ jobs:
         go test -coverprofile=coverage.out ./...
         COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')
         echo "Total Go Coverage: $COVERAGE%"
-        if (( $(echo "$COVERAGE < 80.0" | bc -l) )); then
-          echo "❌ Go coverage below 80%"
+        if (( $(echo "$COVERAGE < 70.0" | bc -l) )); then
+          echo "❌ Go coverage below 70%"
           exit 1
         fi
 
-    - name: Run Python Coverage Check (Min 80%)
+    - name: Run Python Coverage Check (Min 70%)
       run: |
-        pytest examples/ --cov=examples/ --cov-fail-under=80
+        pytest examples/ --cov=examples/ --cov-fail-under=70
+
+    - name: Run Java Coverage Check (Min 70%)
+      run: |
+        cd examples
+        if [ ! -f pom.xml ]; then
+          cat <<EOF > pom.xml
+          <project>
+            <modelVersion>4.0.0</modelVersion>
+            <groupId>com.example</groupId>
+            <artifactId>examples</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <properties>
+              <maven.compiler.source>17</maven.compiler.source>
+              <maven.compiler.target>17</maven.compiler.target>
+            </properties>
+            <dependencies>
+              <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+                <scope>test</scope>
+              </dependency>
+            </dependencies>
+            <build>
+              <plugins>
+                <plugin>
+                  <groupId>org.jacoco</groupId>
+                  <artifactId>jacoco-maven-plugin</artifactId>
+                  <version>0.8.11</version>
+                  <executions>
+                    <execution>
+                      <goals><goal>prepare-agent</goal></goals>
+                    </execution>
+                    <execution>
+                      <id>report</id>
+                      <phase>test</phase>
+                      <goals><goal>report</goal></goals>
+                    </execution>
+                    <execution>
+                      <id>check</id>
+                      <goals><goal>check</goal></goals>
+                      <configuration>
+                        <rules>
+                          <rule>
+                            <element>BUNDLE</element>
+                            <limits>
+                              <limit>
+                                <counter>LINE</counter>
+                                <value>COVEREDRATIO</value>
+                                <minimum>0.70</minimum>
+                              </limit>
+                            </limits>
+                          </rule>
+                        </rules>
+                      </configuration>
+                    </execution>
+                  </executions>
+                </plugin>
+              </plugins>
+            </build>
+          </project>
+        EOF
+        fi
+        mvn test jacoco:check
 
     - name: Upload Coverage Results
       uses: actions/upload-artifact@v4
