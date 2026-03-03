@@ -27,7 +27,8 @@ export class Orchestrator {
         console.log(chalk.cyan(`🚀 Generating test cases using ${this.adapterType} (${this.modelName})...`));
 
         const adapter = ModelFactory.createAdapter(this.adapterType, this.apiKey, this.modelName);
-        const response = await adapter.generateTest(sourceCode, language);
+        const fileName = path.basename(filePath);
+        const response = await adapter.generateTest(sourceCode, language, fileName);
 
         const testFilePath = this.getTestFilePath(filePath, extension);
         fs.writeFileSync(testFilePath, response.testCode);

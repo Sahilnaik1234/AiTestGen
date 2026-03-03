@@ -4,10 +4,12 @@ import { AIModelAdapter, AIModelResponse } from './BaseAdapter';
 export class GeminiAdapter extends AIModelAdapter {
     private apiUrl: string = 'https://generativelanguage.googleapis.com/v1beta/models';
 
-    async generateTest(sourceCode: string, language: string): Promise<AIModelResponse> {
+    async generateTest(sourceCode: string, language: string, fileName: string): Promise<AIModelResponse> {
         const prompt = `
       You are an expert software engineer. Generate a comprehensive test suite for the following ${language} code.
-      Follow industry best practices and ensure high code coverage.
+      The source file is named "${fileName}".
+      Ensure you import the code correctly from this file using the appropriate language syntax (e.g., require('./${fileName}') or import from './${fileName}').
+      Follow industry best practices and ensure high code coverage (aim for 100%).
       Return ONLY the test code inside triple backticks.
 
       Source Code:
