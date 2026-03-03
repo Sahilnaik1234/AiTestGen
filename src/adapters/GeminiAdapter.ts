@@ -11,6 +11,7 @@ export class GeminiAdapter extends AIModelAdapter {
       
       RULES FOR IMPORTS:
       - If the language is TypeScript or JavaScript, ensure you import/require the code WITHOUT the file extension (e.g., use './${fileName.split('.')[0]}').
+      - For Java, always use JUnit Jupiter (JUnit 5).
       - For other languages, use their standard import conventions.
 
       RULES FOR TEST ACCURACY:

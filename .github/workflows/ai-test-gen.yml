@@ -85,9 +85,9 @@ jobs:
           </properties>
           <dependencies>
             <dependency>
-              <groupId>junit</groupId>
-              <artifactId>junit</artifactId>
-              <version>4.13.2</version>
+              <groupId>org.junit.jupiter</groupId>
+              <artifactId>junit-jupiter</artifactId>
+              <version>5.10.1</version>
               <scope>test</scope>
             </dependency>
           </dependencies>
@@ -99,11 +99,6 @@ jobs:
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
-                <configuration>
-                  <includes>
-                    <include>**/*Test.java</include>
-                  </includes>
-                </configuration>
               </plugin>
               <plugin>
                 <groupId>org.jacoco</groupId>
