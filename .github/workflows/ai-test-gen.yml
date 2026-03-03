@@ -1,0 +1,75 @@
+name: AI Test Generation CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  generate-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Install dependencies
+      run: |
+        npm install
+        pip install pytest pytest-cov
+
+    - name: Generate AI Tests
+      env:
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        npm start -- generate "examples/**/*.*" --model groq
+
+    - name: Run TypeScript/JS Coverage Check (Min 80%)
+      run: npm test
+
+    - name: Run Go Coverage Check (Min 80%)
+      run: |
+        cd examples
+        go test -coverprofile=coverage.out ./...
+        COVERAGE=$(go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+')
+        echo "Total Go Coverage: $COVERAGE%"
+        if (( $(echo "$COVERAGE < 80.0" | bc -l) )); then
+          echo "❌ Go coverage below 80%"
+          exit 1
+        fi
+
+    - name: Run Python Coverage Check (Min 80%)
+      run: |
+        pytest examples/ --cov=examples/ --cov-fail-under=80
+
+    - name: Upload Coverage Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-reports
+        path: |
+          coverage/
+          examples/coverage.out
