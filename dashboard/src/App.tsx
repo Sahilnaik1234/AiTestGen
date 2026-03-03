@@ -6,8 +6,9 @@ import {
   Cpu,
   BarChart3,
   Activity,
-  ChevronRight,
   CheckCircle2,
+  Copy,
+  Check
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -118,6 +119,13 @@ const App: React.FC = () => {
   const [results, setResults] = useState(MOCK_RESULTS);
   const [selectedFile, setSelectedFile] = useState(MOCK_RESULTS[0]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     fetch('/results.json')
@@ -150,10 +158,24 @@ const App: React.FC = () => {
               whileHover={{ x: 4 }}
               className={`nav-item ${selectedFile.id === file.id ? 'active' : ''}`}
               onClick={() => setSelectedFile(file)}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', padding: '0.75rem' }}
             >
-              <FileCode size={18} />
-              <span style={{ flex: 1 }}>{file.name}</span>
-              {selectedFile.id === file.id && <ChevronRight size={14} />}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%' }}>
+                <FileCode size={18} color={selectedFile.id === file.id ? 'var(--accent-cyan)' : 'inherit'} />
+                <span style={{ flex: 1, fontSize: '0.9rem', fontWeight: selectedFile.id === file.id ? '600' : '400' }}>{file.name}</span>
+                <span style={{ fontSize: '0.7rem', opacity: 0.6 }}>{file.coverage}%</span>
+              </div>
+              <div style={{ width: '100%', height: '3px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${file.coverage}%` }}
+                  style={{
+                    height: '100%',
+                    background: file.coverage >= 70 ? 'var(--accent-green)' : 'var(--accent-magenta)',
+                    boxShadow: `0 0 10px ${file.coverage >= 70 ? 'var(--accent-green)' : 'var(--accent-magenta)'}33`
+                  }}
+                />
+              </div>
             </motion.div>
           ))}
         </nav>
@@ -210,7 +232,7 @@ const App: React.FC = () => {
               <BarChart3 size={18} color="var(--accent-cyan)" />
             </div>
             <h3 style={{ fontSize: '2rem', margin: '0.5rem 0' }}>{selectedFile.coverage}%</h3>
-            <div className="badge badge-cyan" style={{ width: 'fit-content' }}>Target: 80%</div>
+            <div className="badge badge-cyan" style={{ width: 'fit-content' }}>Target: 70%</div>
           </div>
 
           <div className="stat-card" style={{ '--stat-color': 'var(--accent-green)' } as any}>
@@ -247,9 +269,15 @@ const App: React.FC = () => {
           <div className="code-panel">
             <div className="code-header">
               <span>Generated Test Case</span>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 <span className="badge badge-green">AI Artifact</span>
-                <span className="badge badge-cyan">Groq-Llama3</span>
+                <span className="badge badge-cyan">{(selectedFile as any).model || 'Groq-Llama3'}</span>
+                <button
+                  onClick={() => handleCopy(selectedFile.test)}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', marginLeft: '0.5rem' }}
+                >
+                  {copied ? <Check size={14} color="var(--accent-green)" /> : <Copy size={14} />}
+                </button>
               </div>
             </div>
             <pre><code style={{ color: 'var(--accent-cyan)' }}>{selectedFile.test}</code></pre>

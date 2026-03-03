@@ -43,6 +43,7 @@ export class Orchestrator {
             lang: language,
             source: sourceCode,
             test: testCode,
+            model: this.modelName,
             coverage: 0 // Placeholder, will be updated if we parse coverage reports
         };
     }
