@@ -15,8 +15,9 @@ export class OpenAIAdapter extends AIModelAdapter {
 
       RULES FOR TEST ACCURACY:
       - Follow industry best practices and ensure high code coverage (aim for 100%).
-      - MENTAL EXECUTION: Before writing an assertion for an edge case (like null, undefined, or specific dates), mentally trace the code logic to ensure the expected value is 100% correct.
-      - FORMATTING: Do not assume the code returns more data than what appears in the logic (e.g., if the code formats 'YYYY-MM-DD', do not assert 'YYYY-MM-DD-HH-MM').
+      - MENTAL EXECUTION: Trace the logic with specific values before writing any assertion.
+      - JS DATE QUIRK: Note that in JavaScript, 'new Date(null)' evaluates to '1970-01-01', while 'new Date(undefined)' is 'Invalid Date'.
+      - NO GUESSING: If the source code does not explicitly handle 'null' or 'undefined' with a guard, do not guess what it returns for those inputs. Stick to valid inputs that cover all lines and branches.
       - ONLY test for errors if the source code specifically 'throws' or 'raises' them.
       - Return ONLY the test code inside triple backticks.
 
