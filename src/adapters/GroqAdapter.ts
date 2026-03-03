@@ -13,9 +13,11 @@ export class GroqAdapter extends AIModelAdapter {
       - If the language is TypeScript or JavaScript, ensure you import/require the code WITHOUT the file extension (e.g., use './${fileName.split('.')[0]}').
       - For other languages, use their standard import conventions.
 
-      RULES FOR TESTS:
+      RULES FOR TEST ACCURACY:
       - Follow industry best practices and ensure high code coverage (aim for 100%).
-      - ONLY test for errors or exceptions if the source code specifically throws them. Do not assume the code validates inputs unless you see 'throw' or 'raise' in the source.
+      - MENTAL EXECUTION: Before writing an assertion for an edge case (like null, undefined, or specific dates), mentally trace the code logic to ensure the expected value is 100% correct.
+      - FORMATTING: Do not assume the code returns more data than what appears in the logic (e.g., if the code formats 'YYYY-MM-DD', do not assert 'YYYY-MM-DD-HH-MM').
+      - ONLY test for errors if the source code specifically 'throws' or 'raises' them.
       - Return ONLY the test code inside triple backticks.
 
       Source Code:
