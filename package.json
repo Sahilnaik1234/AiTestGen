@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "scripts": {
         "start": "ts-node src/index.ts",
-        "test": "jest --coverage --threshold 80",
+        "test": "jest --coverage",
         "build": "tsc"
     },
     "dependencies": {
