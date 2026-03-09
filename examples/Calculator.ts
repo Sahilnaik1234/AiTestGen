@@ -262,7 +262,8 @@ export class Calculator {
     bitShiftLeft(a: number, b: number): number { return a << b; }
     bitShiftRight(a: number, b: number): number { return a >> b; }
 
-/**
- * More filler methods to reach the line count
- * In a real scenario, this would be complex business logic
- */
+    /**
+     * More filler methods to reach the line count
+     * In a real scenario, this would be complex business logic
+     */
+}
