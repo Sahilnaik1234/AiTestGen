@@ -156,14 +156,10 @@ jobs:
         cd ..
 
     - name: Final Coverage Check
-      env:
-        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         echo "🎯 Final validation against 75% threshold..."
-        # This will exit 1 if still below 75%, effectively failing the CI if AI didn't fix it
-        npm start -- coverage --threshold 75 --model groq --exit
+        # This will exit 1 if still below 75%, but won't trigger AI generation again
+        npm start -- coverage --threshold 75 --exit --check-only
 
     - name: Upload Coverage Results
       uses: actions/upload-artifact@v4

@@ -32,6 +32,7 @@ program
     .option('-m, --model <model>', 'AI model to use (openai, gemini, groq)', 'gemini')
     .option('-v, --version <version>', 'Specific model version')
     .option('--exit', 'Exit with error code if below threshold', false)
+    .option('--check-only', 'Only check coverage without generating tests', false)
     .action(async (options) => {
         try {
             const threshold = parseFloat(options.threshold);
@@ -60,6 +61,13 @@ program
 
             if (underCoveredFiles.length === 0) {
                 console.log(chalk.green('🎉 All source files meet the coverage threshold!'));
+                return;
+            }
+
+            if (options.checkOnly) {
+                console.log(chalk.red(`\n❌ Validation failed: ${underCoveredFiles.length} files still below threshold.`));
+                underCoveredFiles.forEach(f => console.log(`   - ${f.filePath} (${f.coverage.toFixed(2)}%)`));
+                if (options.exit) process.exit(1);
                 return;
             }
 
