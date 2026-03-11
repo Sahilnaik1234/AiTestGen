@@ -2,12 +2,9 @@ const dateUtils = require('./dateUtils');
 
 describe('dateUtils', () => {
     describe('formatDate', () => {
-        it('should return "NaN-NaN-NaN" for null or undefined input', () => {
+        it('should return NaN-NaN-NaN for invalid date', () => {
             expect(dateUtils.formatDate(null)).toBe('NaN-NaN-NaN');
             expect(dateUtils.formatDate(undefined)).toBe('NaN-NaN-NaN');
-        });
-
-        it('should return "NaN-NaN-NaN" for invalid date input', () => {
             expect(dateUtils.formatDate('invalid date')).toBe('NaN-NaN-NaN');
         });
 
@@ -51,7 +48,7 @@ describe('dateUtils', () => {
     });
 
     describe('addDays', () => {
-        it('should add days correctly', () => {
+        it('should add days to date correctly', () => {
             const date = new Date('2022-01-01');
             const newDate = dateUtils.addDays(date, 10);
             expect(newDate.toISOString().split('T')[0]).toBe('2022-01-11');
@@ -59,7 +56,7 @@ describe('dateUtils', () => {
     });
 
     describe('diffDays', () => {
-        it('should calculate difference in days correctly', () => {
+        it('should return correct difference in days', () => {
             const date1 = new Date('2022-01-01');
             const date2 = new Date('2022-01-11');
             expect(dateUtils.diffDays(date1, date2)).toBe(10);
@@ -67,7 +64,7 @@ describe('dateUtils', () => {
     });
 
     describe('getStartOfWeek', () => {
-        it('should return start of week correctly', () => {
+        it('should return start of week for date', () => {
             const date = new Date('2022-01-05'); // Wednesday
             const startOfWeek = dateUtils.getStartOfWeek(date);
             expect(startOfWeek.toISOString().split('T')[0]).toBe('2022-01-03'); // Monday
@@ -75,7 +72,7 @@ describe('dateUtils', () => {
     });
 
     describe('getEndOfWeek', () => {
-        it('should return end of week correctly', () => {
+        it('should return end of week for date', () => {
             const date = new Date('2022-01-05'); // Wednesday
             const endOfWeek = dateUtils.getEndOfWeek(date);
             expect(endOfWeek.toISOString().split('T')[0]).toBe('2022-01-09'); // Sunday
@@ -83,10 +80,34 @@ describe('dateUtils', () => {
     });
 
     describe('formatRelativeTime', () => {
-        it('should format relative time correctly', () => {
+        it('should return correct relative time', () => {
             const date = new Date('2022-01-01');
             const now = new Date('2022-01-11');
             expect(dateUtils.formatRelativeTime(date)).toBe('10 days ago');
+        });
+
+        it('should return correct relative time for hours', () => {
+            const date = new Date('2022-01-11T00:00:00');
+            const now = new Date('2022-01-11T12:00:00');
+            expect(dateUtils.formatRelativeTime(date)).toBe('12 hours ago');
+        });
+
+        it('should return correct relative time for minutes', () => {
+            const date = new Date('2022-01-11T12:00:00');
+            const now = new Date('2022-01-11T12:30:00');
+            expect(dateUtils.formatRelativeTime(date)).toBe('30 minutes ago');
+        });
+
+        it('should return correct relative time for seconds', () => {
+            const date = new Date('2022-01-11T12:30:00');
+            const now = new Date('2022-01-11T12:30:10');
+            expect(dateUtils.formatRelativeTime(date)).toBe('10 seconds ago');
+        });
+
+        it('should return Just now for same time', () => {
+            const date = new Date('2022-01-11T12:30:10');
+            const now = new Date('2022-01-11T12:30:10');
+            expect(dateUtils.formatRelativeTime(date)).toBe('Just now');
         });
     });
 
@@ -103,11 +124,10 @@ describe('dateUtils', () => {
     });
 
     describe('convertToTimezone', () => {
-        it('should convert to timezone correctly', () => {
-            const date = new Date('2022-01-01');
-            const tz = 'America/New_York';
-            const convertedDate = dateUtils.convertToTimezone(date, tz);
-            expect(convertedDate.getTimezoneOffset()).not.toBe(date.getTimezoneOffset());
+        it('should convert date to correct timezone', () => {
+            const date = new Date('2022-01-01T00:00:00');
+            const tzDate = dateUtils.convertToTimezone(date, 'America/New_York');
+            expect(tzDate.toISOString().split('T')[0]).toBe('2021-12-31');
         });
     });
 
@@ -126,14 +146,14 @@ describe('dateUtils', () => {
 
     describe('isWeekend', () => {
         it('should return true for weekend', () => {
-            const date = new Date('2022-01-08'); // Saturday
+            const date = new Date('2022-01-01'); // Saturday
             expect(dateUtils.isWeekend(date)).toBe(true);
-            const date2 = new Date('2022-01-09'); // Sunday
+            const date2 = new Date('2022-01-02'); // Sunday
             expect(dateUtils.isWeekend(date2)).toBe(true);
         });
 
         it('should return false for weekday', () => {
-            const date = new Date('2022-01-05'); // Wednesday
+            const date = new Date('2022-01-03'); // Monday
             expect(dateUtils.isWeekend(date)).toBe(false);
         });
     });

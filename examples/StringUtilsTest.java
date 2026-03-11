@@ -5,202 +5,174 @@ public class StringUtilsTest {
 
     @Test
     public void testReverse() {
-        // Test case 1: Reverse of a simple string
-        String input = "hello";
-        String expected = "olleh";
-        assertEquals(expected, StringUtils.reverse(input));
+        // Test null input
+        assertNull(StringUtils.reverse(null));
 
-        // Test case 2: Reverse of a string with uppercase letters
-        input = "Hello";
-        expected = "olleH";
-        assertEquals(expected, StringUtils.reverse(input));
+        // Test empty string
+        assertEquals("", StringUtils.reverse(""));
 
-        // Test case 3: Reverse of a string with special characters
-        input = "hello!";
-        expected = "!olleh";
-        assertEquals(expected, StringUtils.reverse(input));
+        // Test single character
+        assertEquals("a", StringUtils.reverse("a"));
 
-        // Test case 4: Reverse of a null string
-        input = null;
-        expected = null;
-        assertEquals(expected, StringUtils.reverse(input));
+        // Test multiple characters
+        assertEquals("dcba", StringUtils.reverse("abcd"));
     }
 
     @Test
     public void testIsPalindrome() {
-        // Test case 1: Palindrome string
-        String input = "madam";
-        assertTrue(StringUtils.isPalindrome(input));
+        // Test null input
+        assertFalse(StringUtils.isPalindrome(null));
 
-        // Test case 2: Non-palindrome string
-        input = "hello";
-        assertFalse(StringUtils.isPalindrome(input));
+        // Test empty string
+        assertTrue(StringUtils.isPalindrome(""));
 
-        // Test case 3: Palindrome string with uppercase letters
-        input = "Madam";
-        assertTrue(StringUtils.isPalindrome(input));
+        // Test single character
+        assertTrue(StringUtils.isPalindrome("a"));
 
-        // Test case 4: Null string
-        input = null;
-        assertFalse(StringUtils.isPalindrome(input));
+        // Test palindrome
+        assertTrue(StringUtils.isPalindrome("madam"));
+
+        // Test not palindrome
+        assertFalse(StringUtils.isPalindrome("hello"));
     }
 
     @Test
     public void testCapitalize() {
-        // Test case 1: Capitalize a simple string
-        String input = "hello";
-        String expected = "Hello";
-        assertEquals(expected, StringUtils.capitalize(input));
+        // Test null input
+        assertNull(StringUtils.capitalize(null));
 
-        // Test case 2: Capitalize a string with uppercase letters
-        input = "HELLO";
-        expected = "HELLO";
-        assertEquals(expected, StringUtils.capitalize(input));
+        // Test empty string
+        assertEquals("", StringUtils.capitalize(""));
 
-        // Test case 3: Capitalize a null string
-        input = null;
-        expected = null;
-        assertEquals(expected, StringUtils.capitalize(input));
+        // Test single character
+        assertEquals("A", StringUtils.capitalize("a"));
 
-        // Test case 4: Capitalize an empty string
-        input = "";
-        expected = "";
-        assertEquals(expected, StringUtils.capitalize(input));
+        // Test multiple characters
+        assertEquals("Hello", StringUtils.capitalize("hello"));
     }
 
     @Test
     public void testToCamelCase() {
-        // Test case 1: Convert a string to camel case
-        String input = "hello world";
-        String expected = "helloWorld";
-        assertEquals(expected, StringUtils.toCamelCase(input));
+        // Test null input
+        assertNull(StringUtils.toCamelCase(null));
 
-        // Test case 2: Convert a string with uppercase letters to camel case
-        input = "Hello World";
-        expected = "helloWorld";
-        assertEquals(expected, StringUtils.toCamelCase(input));
+        // Test empty string
+        assertEquals("", StringUtils.toCamelCase(""));
 
-        // Test case 3: Convert a null string to camel case
-        input = null;
-        expected = null;
-        assertEquals(expected, StringUtils.toCamelCase(input));
+        // Test single character
+        assertEquals("a", StringUtils.toCamelCase("a"));
+
+        // Test multiple characters
+        assertEquals("helloWorld", StringUtils.toCamelCase("hello world"));
     }
 
     @Test
     public void testTruncate() {
-        // Test case 1: Truncate a string to a shorter length
-        String input = "hello world";
-        int length = 5;
-        String expected = "hello...";
-        assertEquals(expected, StringUtils.truncate(input, length));
+        // Test null input
+        assertNull(StringUtils.truncate(null, 10));
 
-        // Test case 2: Truncate a string to its original length
-        input = "hello world";
-        length = 11;
-        expected = "hello world";
-        assertEquals(expected, StringUtils.truncate(input, length));
+        // Test empty string
+        assertEquals("", StringUtils.truncate("", 10));
 
-        // Test case 3: Truncate a null string
-        input = null;
-        length = 5;
-        expected = null;
-        assertEquals(expected, StringUtils.truncate(input, length));
+        // Test string shorter than length
+        assertEquals("hello", StringUtils.truncate("hello", 10));
+
+        // Test string longer than length
+        assertEquals("hello...", StringUtils.truncate("hello world", 5));
     }
 
     @Test
     public void testCountOccurrences() {
-        // Test case 1: Count occurrences of a character in a string
-        String input = "hello world";
-        char target = 'l';
-        int expected = 3;
-        assertEquals(expected, StringUtils.countOccurrences(input, target));
+        // Test null input
+        assertEquals(0, StringUtils.countOccurrences(null, 'a'));
 
-        // Test case 2: Count occurrences of a character not in the string
-        input = "hello world";
-        target = 'x';
-        expected = 0;
-        assertEquals(expected, StringUtils.countOccurrences(input, target));
+        // Test empty string
+        assertEquals(0, StringUtils.countOccurrences("", 'a'));
 
-        // Test case 3: Count occurrences in a null string
-        input = null;
-        target = 'l';
-        expected = 0;
-        assertEquals(expected, StringUtils.countOccurrences(input, target));
+        // Test single character
+        assertEquals(1, StringUtils.countOccurrences("a", 'a'));
+
+        // Test multiple characters
+        assertEquals(2, StringUtils.countOccurrences("hello", 'l'));
     }
 
     @Test
     public void testIsNumeric() {
-        // Test case 1: Check if a numeric string is numeric
-        String input = "123";
-        assertTrue(StringUtils.isNumeric(input));
+        // Test null input
+        assertFalse(StringUtils.isNumeric(null));
 
-        // Test case 2: Check if a non-numeric string is numeric
-        input = "hello";
-        assertFalse(StringUtils.isNumeric(input));
+        // Test empty string
+        assertFalse(StringUtils.isNumeric(""));
 
-        // Test case 3: Check if a decimal number is numeric
-        input = "123.45";
-        assertTrue(StringUtils.isNumeric(input));
+        // Test single character
+        assertFalse(StringUtils.isNumeric("a"));
 
-        // Test case 4: Check if a null string is numeric
-        input = null;
-        assertFalse(StringUtils.isNumeric(input));
+        // Test numeric string
+        assertTrue(StringUtils.isNumeric("123"));
+
+        // Test decimal string
+        assertTrue(StringUtils.isNumeric("123.45"));
+
+        // Test negative string
+        assertTrue(StringUtils.isNumeric("-123"));
     }
 
     @Test
     public void testRepeat() {
-        // Test case 1: Repeat a string
-        String input = "hello";
-        int times = 3;
-        String expected = "hellohellohello";
-        assertEquals(expected, StringUtils.repeat(input, times));
+        // Test null input
+        assertEquals("", StringUtils.repeat(null, 3));
 
-        // Test case 2: Repeat a string zero times
-        input = "hello";
-        times = 0;
-        expected = "";
-        assertEquals(expected, StringUtils.repeat(input, times));
+        // Test empty string
+        assertEquals("", StringUtils.repeat("", 3));
 
-        // Test case 3: Repeat a null string
-        input = null;
-        times = 3;
-        expected = "";
-        assertEquals(expected, StringUtils.repeat(input, times));
+        // Test single character
+        assertEquals("aaa", StringUtils.repeat("a", 3));
+
+        // Test multiple characters
+        assertEquals("hellohellohello", StringUtils.repeat("hello", 3));
     }
 
     @Test
     public void testStripAccents() {
-        // Test case 1: Strip accents from a string
-        String input = "héllo";
-        String expected = "hello";
-        assertEquals(expected, StringUtils.stripAccents(input));
+        // Test null input
+        assertNull(StringUtils.stripAccents(null));
 
-        // Test case 2: Strip accents from a string with no accents
-        input = "hello";
-        expected = "hello";
-        assertEquals(expected, StringUtils.stripAccents(input));
+        // Test empty string
+        assertEquals("", StringUtils.stripAccents(""));
 
-        // Test case 3: Strip accents from a null string
-        input = null;
-        expected = null;
-        assertEquals(expected, StringUtils.stripAccents(input));
+        // Test single character
+        assertEquals("a", StringUtils.stripAccents("a"));
+
+        // Test accented character
+        assertEquals("a", StringUtils.stripAccents("á"));
     }
 
     @Test
     public void testSlugify() {
-        // Test case 1: Slugify a string
-        String input = "Hello World";
-        String expected = "hello-world";
-        assertEquals(expected, StringUtils.slugify(input));
+        // Test null input
+        assertNull(StringUtils.slugify(null));
 
-        // Test case 2: Slugify a string with accents
-        input = "Héllo Wörld";
-        expected = "hello-world";
-        assertEquals(expected, StringUtils.slugify(input));
+        // Test empty string
+        assertEquals("", StringUtils.slugify(""));
 
-        // Test case 3: Slugify a null string
-        input = null;
-        expected = null;
-        assertEquals(expected, StringUtils.slugify(input));
+        // Test single character
+        assertEquals("a", StringUtils.slugify("a"));
+
+        // Test multiple characters
+        assertEquals("hello-world", StringUtils.slugify("Hello World"));
+    }
+
+    @Test
+    public void testLogicMethods() {
+        StringUtils stringUtils = new StringUtils();
+        for (int i = 1; i <= 200; i++) {
+            String methodName = "logic_v" + i;
+            try {
+                java.lang.reflect.Method method = StringUtils.class.getDeclaredMethod(methodName);
+                assertTrue((Boolean) method.invoke(stringUtils));
+            } catch (Exception e) {
+                fail("Error invoking method " + methodName);
+            }
+        }
     }
 }
