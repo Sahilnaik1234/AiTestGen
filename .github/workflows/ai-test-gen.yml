@@ -121,7 +121,7 @@ jobs:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
-        npm start -- coverage --threshold 75 --model groq
+        npm start -- coverage --threshold 75 --model gemini
 
     - name: Commit and Push Generated Tests
       if: always()
