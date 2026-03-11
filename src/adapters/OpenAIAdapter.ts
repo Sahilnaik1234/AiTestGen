@@ -4,10 +4,22 @@ import { AIModelAdapter, AIModelResponse } from './BaseAdapter';
 export class OpenAIAdapter extends AIModelAdapter {
     private apiUrl: string = 'https://api.openai.com/v1/chat/completions';
 
-    async generateTest(sourceCode: string, language: string, fileName: string): Promise<AIModelResponse> {
+    async generateTest(sourceCode: string, language: string, fileName: string, coverageData?: any): Promise<AIModelResponse> {
+        let coverageContext = '';
+        if (coverageData) {
+            coverageContext = `
+      COVERAGE CONTEXT:
+      - Current Coverage: ${coverageData.coverage.toFixed(2)}%
+      - Goal: Increase coverage to 100%.
+      ${coverageData.details ? `- Specific missing parts: ${coverageData.details}` : ''}
+      - Instruction: Analyze the code and identify which branches or lines might be missing based on the current percentage. Focus on edge cases and uncovered logical paths.
+      `;
+        }
+
         const prompt = `
       You are an expert software engineer. Generate a comprehensive test suite for the following ${language} code.
       The source file is named "${fileName}".
+      ${coverageContext}
       
       RULES FOR IMPORTS:
       - If the language is TypeScript or JavaScript, ensure you import/require the code WITHOUT the file extension (e.g., use './${fileName.split('.')[0]}').

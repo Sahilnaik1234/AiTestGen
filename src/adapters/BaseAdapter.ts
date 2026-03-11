@@ -12,5 +12,5 @@ export abstract class AIModelAdapter {
         this.modelName = modelName;
     }
 
-    abstract generateTest(sourceCode: string, language: string, fileName: string): Promise<AIModelResponse>;
+    abstract generateTest(sourceCode: string, language: string, fileName: string, coverageData?: any): Promise<AIModelResponse>;
 }

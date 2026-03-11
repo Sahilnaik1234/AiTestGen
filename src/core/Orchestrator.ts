@@ -14,7 +14,7 @@ export class Orchestrator {
         this.modelName = modelName;
     }
 
-    async run(filePath: string) {
+    async run(filePath: string, coverageData?: any) {
         if (!fs.existsSync(filePath)) {
             throw new Error(`File not found: ${filePath}`);
         }
@@ -24,11 +24,14 @@ export class Orchestrator {
         const language = this.getLanguageFromExtension(extension);
 
         console.log(chalk.cyan(`\n🔍 Detecting language... Found: ${language}`));
+        if (coverageData) {
+            console.log(chalk.yellow(`📈 Current coverage: ${coverageData.coverage.toFixed(2)}%`));
+        }
         console.log(chalk.cyan(`🚀 Generating test cases using ${this.adapterType} (${this.modelName})...`));
 
         const adapter = ModelFactory.createAdapter(this.adapterType, this.apiKey, this.modelName);
         const fileName = path.basename(filePath);
-        const response = await adapter.generateTest(sourceCode, language, fileName);
+        const response = await adapter.generateTest(sourceCode, language, fileName, coverageData);
 
         const testFilePath = this.getTestFilePath(filePath, extension);
         const testCode = response.testCode;
@@ -44,7 +47,7 @@ export class Orchestrator {
             source: sourceCode,
             test: testCode,
             model: this.modelName,
-            coverage: 0 // Placeholder, will be updated if we parse coverage reports
+            coverage: coverageData ? coverageData.coverage : 0
         };
     }
 
