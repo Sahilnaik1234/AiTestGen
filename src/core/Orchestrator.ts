@@ -11,7 +11,15 @@ export class Orchestrator {
     constructor(adapterType: string, apiKey: string, modelName: string) {
         this.adapterType = adapterType;
         this.apiKey = apiKey;
-        this.modelName = modelName;
+        // Set default model names if not provided
+        if (!modelName) {
+            if (adapterType === 'gemini') this.modelName = 'gemini-1.5-flash';
+            else if (adapterType === 'openai') this.modelName = 'gpt-4o';
+            else if (adapterType === 'groq') this.modelName = 'llama-3.3-70b-versatile';
+            else this.modelName = 'unknown';
+        } else {
+            this.modelName = modelName;
+        }
     }
 
     async run(filePath: string, coverageData?: any) {
@@ -19,7 +27,16 @@ export class Orchestrator {
             throw new Error(`File not found: ${filePath}`);
         }
 
-        const sourceCode = fs.readFileSync(filePath, 'utf-8');
+        let sourceCode = fs.readFileSync(filePath, 'utf-8');
+
+        // Safety check for Large Files (approx. AI token limit)
+        const MAX_CHARS = 40000;
+        if (sourceCode.length > MAX_CHARS) {
+            console.log(chalk.yellow(`⚠️ ${path.basename(filePath)} is very large (${sourceCode.length} chars).`));
+            console.log(chalk.yellow(`   Truncating to ${MAX_CHARS} chars to avoid AI token limits.`));
+            sourceCode = sourceCode.substring(0, MAX_CHARS) + "\n\n// ... rest of file truncated for AI analysis ...";
+        }
+
         const extension = path.extname(filePath).slice(1);
         const language = this.getLanguageFromExtension(extension);
 
@@ -44,7 +61,7 @@ export class Orchestrator {
             id: path.basename(filePath, `.${extension}`).toLowerCase(),
             name: fileName,
             lang: language,
-            source: sourceCode,
+            source: fs.readFileSync(filePath, 'utf-8'), // Save original for dashboard
             test: testCode,
             model: this.modelName,
             coverage: coverageData ? coverageData.coverage : 0

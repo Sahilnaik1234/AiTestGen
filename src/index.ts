@@ -49,13 +49,17 @@ program
                 return;
             }
 
-            const underCoveredFiles = reports.filter(f => f.coverage < threshold);
+            const underCoveredFiles = reports.filter(f => {
+                const isUnderThreshold = f.coverage < threshold;
+                const isUnwanted = /node_modules|coverage|target|jacoco|dist|build/.test(f.filePath);
+                return isUnderThreshold && !isUnwanted;
+            });
 
             console.log(chalk.cyan(`✅ Found ${reports.length} files in reports.`));
-            console.log(chalk.magenta(`🚨 ${underCoveredFiles.length} files are below ${threshold}% coverage.`));
+            console.log(chalk.magenta(`🚨 ${underCoveredFiles.length} source files are below ${threshold}% coverage.`));
 
             if (underCoveredFiles.length === 0) {
-                console.log(chalk.green('🎉 All files meet the coverage threshold!'));
+                console.log(chalk.green('🎉 All source files meet the coverage threshold!'));
                 return;
             }
 
