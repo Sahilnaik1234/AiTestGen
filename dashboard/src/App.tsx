@@ -128,7 +128,7 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch('/results.json')
+    fetch(`results.json?t=${Date.now()}`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

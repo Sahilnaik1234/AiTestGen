@@ -175,8 +175,6 @@ jobs:
       run: |
         cd dashboard
         npm install
-        # Copy the latest results specifically for the build
-        cp ../dashboard/public/results.json ./public/results.json || true
         npm run build
 
     - name: Deploy to GitHub Pages
