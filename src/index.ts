@@ -235,10 +235,22 @@ function updateCoverageOnly(reports: FileCoverage[]) {
         const updated = existingResults.map((res: any) => {
             // Find the latest coverage for this file
             const report = reports.find(r => r.filePath.includes(res.name) || res.name.includes(path.basename(r.filePath)));
-            if (report) {
-                return { ...res, coverage: Math.round(report.coverage * 100) / 100 };
+
+            // Also refresh source code from disk to ensure UI is up to date
+            const resolvedPath = resolveFilePath(res.name);
+            let latestSource = res.source;
+            if (resolvedPath && fs.existsSync(resolvedPath)) {
+                latestSource = fs.readFileSync(resolvedPath, 'utf-8');
             }
-            return res;
+
+            if (report) {
+                return {
+                    ...res,
+                    source: latestSource,
+                    coverage: Math.round(report.coverage * 100) / 100
+                };
+            }
+            return { ...res, source: latestSource };
         });
 
         fs.writeFileSync(resultsPath, JSON.stringify(updated, null, 2));
