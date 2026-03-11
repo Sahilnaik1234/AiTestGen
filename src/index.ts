@@ -50,6 +50,9 @@ program
                 return;
             }
 
+            // Always sync the latest coverage scores to the dashboard results.json
+            updateCoverageOnly(reports);
+
             const underCoveredFiles = reports.filter(f => {
                 const isUnderThreshold = f.coverage < threshold;
                 const isUnwanted = /node_modules|coverage|target|jacoco|dist|build/.test(f.filePath);
@@ -57,17 +60,22 @@ program
             });
 
             console.log(chalk.cyan(`✅ Found ${reports.length} files in reports.`));
+
+            if (options.checkOnly) {
+                if (underCoveredFiles.length === 0) {
+                    console.log(chalk.green('🎉 All source files meet the coverage threshold!'));
+                } else {
+                    console.log(chalk.red(`\n❌ Validation failed: ${underCoveredFiles.length} files still below threshold.`));
+                    underCoveredFiles.forEach(f => console.log(`   - ${f.filePath} (${f.coverage.toFixed(2)}%)`));
+                    if (options.exit) process.exit(1);
+                }
+                return;
+            }
+
             console.log(chalk.magenta(`🚨 ${underCoveredFiles.length} source files are below ${threshold}% coverage.`));
 
             if (underCoveredFiles.length === 0) {
                 console.log(chalk.green('🎉 All source files meet the coverage threshold!'));
-                return;
-            }
-
-            if (options.checkOnly) {
-                console.log(chalk.red(`\n❌ Validation failed: ${underCoveredFiles.length} files still below threshold.`));
-                underCoveredFiles.forEach(f => console.log(`   - ${f.filePath} (${f.coverage.toFixed(2)}%)`));
-                if (options.exit) process.exit(1);
                 return;
             }
 
@@ -184,16 +192,60 @@ function resolveFilePath(reportPath: string): string | null {
     return null;
 }
 
-function saveResults(results: any[]) {
+function saveResults(newResults: any[]) {
     const dashboardDir = path.join(process.cwd(), 'dashboard', 'public');
+    const resultsPath = path.join(dashboardDir, 'results.json');
+
     if (!fs.existsSync(dashboardDir)) {
         fs.mkdirSync(dashboardDir, { recursive: true });
     }
-    fs.writeFileSync(
-        path.join(dashboardDir, 'results.json'),
-        JSON.stringify(results, null, 2)
-    );
-    console.log(chalk.green(`\n📊 Dashboard data saved to dashboard/public/results.json`));
+
+    let existingResults: any[] = [];
+    if (fs.existsSync(resultsPath)) {
+        try {
+            existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
+        } catch (e) {
+            existingResults = [];
+        }
+    }
+
+    // Merge: Update existing or add new
+    const merged = [...existingResults];
+    for (const res of newResults) {
+        const index = merged.findIndex(e => e.id === res.id);
+        if (index >= 0) {
+            merged[index] = { ...merged[index], ...res };
+        } else {
+            merged.push(res);
+        }
+    }
+
+    fs.writeFileSync(resultsPath, JSON.stringify(merged, null, 2));
+    console.log(chalk.green(`\n📊 Dashboard data updated in dashboard/public/results.json`));
+}
+
+function updateCoverageOnly(reports: FileCoverage[]) {
+    const dashboardDir = path.join(process.cwd(), 'dashboard', 'public');
+    const resultsPath = path.join(dashboardDir, 'results.json');
+
+    if (!fs.existsSync(resultsPath)) return;
+
+    try {
+        const existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
+        const updated = existingResults.map((res: any) => {
+            // Find the latest coverage for this file
+            const report = reports.find(r => r.filePath.includes(res.name) || res.name.includes(path.basename(r.filePath)));
+            if (report) {
+                return { ...res, coverage: Math.round(report.coverage * 100) / 100 };
+            }
+            return res;
+        });
+
+        fs.writeFileSync(resultsPath, JSON.stringify(updated, null, 2));
+        console.log(chalk.green(`\n📈 Updated final coverage scores in dashboard.`));
+    } catch (e) {
+        console.warn(chalk.yellow("⚠️ Could not update final coverage in dashboard."));
+    }
 }
 
 program.parse();
