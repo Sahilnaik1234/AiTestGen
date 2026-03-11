@@ -1,5 +1,5 @@
 TN:
-SF:examples\Calculator.ts
+SF:examples/Calculator.ts
 FN:5,(anonymous_0)
 FN:6,(anonymous_1)
 FN:7,(anonymous_2)
@@ -311,7 +311,7 @@ BRF:36
 BRH:17
 end_of_record
 TN:
-SF:examples\dateUtils.js
+SF:examples/dateUtils.js
 FN:5,formatDate
 FN:20,getDaysInMonth
 FN:24,isLeapYear

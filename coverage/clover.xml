@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1773045818003" clover="3.2.0">
-  <project timestamp="1773045818003" name="All files">
+<coverage generated="1773207580902" clover="3.2.0">
+  <project timestamp="1773207580902" name="All files">
     <metrics statements="322" coveredstatements="140" conditionals="61" coveredconditionals="34" methods="253" coveredmethods="80" elements="636" coveredelements="254" complexity="0" loc="322" ncloc="322" packages="1" files="2" classes="2"/>
-    <file name="Calculator.ts" path="C:\Users\Sahil.Naik\AiTestGen\examples\Calculator.ts">
+    <file name="Calculator.ts" path="/home/runner/work/AiTestGen/AiTestGen/examples/Calculator.ts">
       <metrics statements="115" coveredstatements="100" conditionals="36" coveredconditionals="17" methods="76" coveredmethods="67"/>
       <line num="1" count="1" type="stmt"/>
       <line num="5" count="1" type="stmt"/>
@@ -120,7 +120,7 @@
       <line num="262" count="1" type="stmt"/>
       <line num="263" count="1" type="stmt"/>
     </file>
-    <file name="dateUtils.js" path="C:\Users\Sahil.Naik\AiTestGen\examples\dateUtils.js">
+    <file name="dateUtils.js" path="/home/runner/work/AiTestGen/AiTestGen/examples/dateUtils.js">
       <metrics statements="207" coveredstatements="40" conditionals="25" coveredconditionals="17" methods="177" coveredmethods="13"/>
       <line num="6" count="4" type="cond" truecount="2" falsecount="0"/>
       <line num="7" count="2" type="stmt"/>
