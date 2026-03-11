@@ -136,6 +136,25 @@ jobs:
           echo "No new tests generated."
         fi
 
+    - name: Rerun Tests for Final Coverage
+      if: always()
+      run: |
+        echo "🔄 Rerunning tests to verify AI-generated coverage..."
+        npm test || true
+        cd examples
+        go test -coverprofile=coverage.out ./... || true
+        cd ..
+        pytest examples/ --cov=examples/ --cov-report=json:coverage.json || true
+        cd examples
+        mvn clean test || true
+        cd ..
+
+    - name: Final Coverage Check
+      run: |
+        echo "🎯 Final validation against 75% threshold..."
+        # This will exit 1 if still below 75%, effectively failing the CI if AI didn't fix it
+        npm start -- coverage --threshold 75 --model groq --exit
+
     - name: Upload Coverage Results
       uses: actions/upload-artifact@v4
       with:
@@ -146,11 +165,12 @@ jobs:
           coverage.json
           examples/target/site/jacoco/jacoco.xml
 
-
-    - name: Built Dashboard
+    - name: Build Dashboard
       run: |
         cd dashboard
         npm install
+        # Copy the latest results specifically for the build
+        cp ../dashboard/public/results.json ./public/results.json || true
         npm run build
 
     - name: Deploy to GitHub Pages

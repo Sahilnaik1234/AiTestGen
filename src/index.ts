@@ -31,6 +31,7 @@ program
     .option('-t, --threshold <threshold>', 'Coverage threshold percentage', '75')
     .option('-m, --model <model>', 'AI model to use (openai, gemini, groq)', 'gemini')
     .option('-v, --version <version>', 'Specific model version')
+    .option('--exit', 'Exit with error code if below threshold', false)
     .action(async (options) => {
         try {
             const threshold = parseFloat(options.threshold);
@@ -82,11 +83,15 @@ program
             saveResults(results);
 
             if (underCoveredFiles.length > 0) {
-                console.log(chalk.red(`\n❌ CI failed: ${underCoveredFiles.length} files are below the ${threshold}% coverage threshold.`));
+                console.log(chalk.red(`\n⚠️ Warning: ${underCoveredFiles.length} files are below the ${threshold}% coverage threshold.`));
                 if (results.length > 0) {
                     console.log(chalk.green(`✨ Successfully generated additional tests for ${results.length} files.`));
                 }
-                process.exit(1);
+
+                if (options.exit) {
+                    console.error(chalk.red(`\n❌ CI failed: Threshold not met after AI generation.`));
+                    process.exit(1);
+                }
             } else {
                 console.log(chalk.green('🎉 All files meet the coverage threshold!'));
             }
