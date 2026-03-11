@@ -1,2 +1,4 @@
 StringUtilsTest.class
+com/example/AuthManager.class
+com/example/AuthManagerTest.class
 StringUtils.class
