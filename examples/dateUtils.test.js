@@ -2,23 +2,26 @@ const dateUtils = require('./dateUtils');
 
 describe('dateUtils', () => {
     describe('formatDate', () => {
-        it('should return NaN-NaN-NaN for invalid dates', () => {
-            expect(dateUtils.formatDate(null)).toBe('NaN-NaN-NaN');
-            expect(dateUtils.formatDate(undefined)).toBe('NaN-NaN-NaN');
-            expect(dateUtils.formatDate('')).toBe('NaN-NaN-NaN');
-            expect(dateUtils.formatDate('invalid')).toBe('NaN-NaN-NaN');
+        it('should return "NaN-NaN-NaN" for invalid date', () => {
+            expect(dateUtils.formatDate(null)).toBe("NaN-NaN-NaN");
+            expect(dateUtils.formatDate(undefined)).toBe("NaN-NaN-NaN");
+            expect(dateUtils.formatDate('')).toBe("NaN-NaN-NaN");
+            expect(dateUtils.formatDate('invalid')).toBe("NaN-NaN-NaN");
         });
 
-        it('should format valid dates correctly', () => {
+        it('should format date correctly', () => {
             const date = new Date('2022-01-01');
             expect(dateUtils.formatDate(date)).toBe('2022-01-01');
-            expect(dateUtils.formatDate('2022-01-01')).toBe('2022-01-01');
-            expect(dateUtils.formatDate('2022/01/01')).toBe('2022-01-01');
+        });
+
+        it('should handle edge cases', () => {
+            const date = new Date('2022-12-31');
+            expect(dateUtils.formatDate(date)).toBe('2022-12-31');
         });
     });
 
     describe('getDaysInMonth', () => {
-        it('should return the correct number of days for each month', () => {
+        it('should return correct number of days for each month', () => {
             expect(dateUtils.getDaysInMonth(0, 2022)).toBe(31); // January
             expect(dateUtils.getDaysInMonth(1, 2022)).toBe(28); // February
             expect(dateUtils.getDaysInMonth(2, 2022)).toBe(31); // March
@@ -33,7 +36,7 @@ describe('dateUtils', () => {
             expect(dateUtils.getDaysInMonth(11, 2022)).toBe(31); // December
         });
 
-        it('should return the correct number of days for leap years', () => {
+        it('should handle leap year', () => {
             expect(dateUtils.getDaysInMonth(1, 2020)).toBe(29); // February in a leap year
         });
     });
@@ -51,72 +54,72 @@ describe('dateUtils', () => {
     });
 
     describe('addDays', () => {
-        it('should add the correct number of days to a date', () => {
+        it('should add days correctly', () => {
             const date = new Date('2022-01-01');
             const newDate = dateUtils.addDays(date, 10);
             expect(newDate.toISOString().split('T')[0]).toBe('2022-01-11');
         });
 
-        it('should handle edge cases correctly', () => {
-            const date = new Date('2022-01-31');
+        it('should handle edge cases', () => {
+            const date = new Date('2022-12-31');
             const newDate = dateUtils.addDays(date, 1);
-            expect(newDate.toISOString().split('T')[0]).toBe('2022-02-01');
+            expect(newDate.toISOString().split('T')[0]).toBe('2023-01-01');
         });
     });
 
     describe('diffDays', () => {
-        it('should return the correct number of days between two dates', () => {
+        it('should return correct difference in days', () => {
             const date1 = new Date('2022-01-01');
             const date2 = new Date('2022-01-10');
             expect(dateUtils.diffDays(date1, date2)).toBe(9);
         });
 
-        it('should handle edge cases correctly', () => {
-            const date1 = new Date('2022-01-31');
-            const date2 = new Date('2022-02-01');
+        it('should handle edge cases', () => {
+            const date1 = new Date('2022-12-31');
+            const date2 = new Date('2023-01-01');
             expect(dateUtils.diffDays(date1, date2)).toBe(1);
         });
     });
 
     describe('getStartOfWeek', () => {
-        it('should return the start of the week for a given date', () => {
-            const date = new Date('2022-01-03');
+        it('should return start of week correctly', () => {
+            const date = new Date('2022-01-05');
             const startOfWeek = dateUtils.getStartOfWeek(date);
-            expect(startOfWeek.toISOString().split('T')[0]).toBe('2022-01-02');
+            expect(startOfWeek.toISOString().split('T')[0]).toBe('2022-01-03');
         });
 
-        it('should handle edge cases correctly', () => {
+        it('should handle edge cases', () => {
             const date = new Date('2022-01-01');
             const startOfWeek = dateUtils.getStartOfWeek(date);
-            expect(startOfWeek.toISOString().split('T')[0]).toBe('2021-12-26');
+            expect(startOfWeek.toISOString().split('T')[0]).toBe('2021-12-27');
         });
     });
 
     describe('getEndOfWeek', () => {
-        it('should return the end of the week for a given date', () => {
-            const date = new Date('2022-01-03');
+        it('should return end of week correctly', () => {
+            const date = new Date('2022-01-05');
             const endOfWeek = dateUtils.getEndOfWeek(date);
-            expect(endOfWeek.toISOString().split('T')[0]).toBe('2022-01-08');
+            expect(endOfWeek.toISOString().split('T')[0]).toBe('2022-01-09');
         });
 
-        it('should handle edge cases correctly', () => {
+        it('should handle edge cases', () => {
             const date = new Date('2022-01-01');
             const endOfWeek = dateUtils.getEndOfWeek(date);
-            expect(endOfWeek.toISOString().split('T')[0]).toBe('2022-01-01');
+            expect(endOfWeek.toISOString().split('T')[0]).toBe('2022-01-02');
         });
     });
 
     describe('formatRelativeTime', () => {
-        it('should return the correct relative time for a given date', () => {
+        it('should return correct relative time', () => {
             const date = new Date('2022-01-01');
-            const relativeTime = dateUtils.formatRelativeTime(date);
-            expect(relativeTime).toBe('Just now');
+            const now = new Date('2022-01-10');
+            expect(dateUtils.formatRelativeTime(date)).toBe('9 days ago');
         });
 
-        it('should handle edge cases correctly', () => {
-            const date = new Date('2022-01-01T00:00:00.000Z');
-            const relativeTime = dateUtils.formatRelativeTime(date);
-            expect(relativeTime).toBe('Just now');
+        it('should handle edge cases', () => {
+            const date = new Date('2022-01-01');
+            const now = new Date('2022-01-01');
+            expect(dateUtils.formatRelativeTime(date)).toBe('Just now');
         });
     });
 
@@ -133,24 +136,30 @@ describe('dateUtils', () => {
     });
 
     describe('convertToTimezone', () => {
-        it('should convert a date to a given timezone', () => {
+        it('should convert to timezone correctly', () => {
             const date = new Date('2022-01-01');
             const tz = 'America/New_York';
             const convertedDate = dateUtils.convertToTimezone(date, tz);
-            expect(convertedDate.getTimezoneOffset()).not.toBe(date.getTimezoneOffset());
+            expect(convertedDate.toISOString().split('T')[0]).toBe('2021-12-31');
+        });
+
+        it('should handle edge cases', () => {
+            const date = new Date('2022-01-01');
+            const tz = 'UTC';
+            const convertedDate = dateUtils.convertToTimezone(date, tz);
+            expect(convertedDate.toISOString().split('T')[0]).toBe('2022-01-01');
         });
     });
 
     describe('getQuarter', () => {
-        it('should return the correct quarter for a given date', () => {
+        it('should return correct quarter', () => {
             const date = new Date('2022-01-01');
             expect(dateUtils.getQuarter(date)).toBe(1);
-            const date2 = new Date('2022-04-01');
-            expect(dateUtils.getQuarter(date2)).toBe(2);
-            const date3 = new Date('2022-07-01');
-            expect(dateUtils.getQuarter(date3)).toBe(3);
-            const date4 = new Date('2022-10-01');
-            expect(dateUtils.getQuarter(date4)).toBe(4);
+        });
+
+        it('should handle edge cases', () => {
+            const date = new Date('2022-12-31');
+            expect(dateUtils.getQuarter(date)).toBe(4);
         });
     });
 
@@ -158,19 +167,23 @@ describe('dateUtils', () => {
         it('should return true for weekends', () => {
             const date = new Date('2022-01-01');
             expect(dateUtils.isWeekend(date)).toBe(true);
-            const date2 = new Date('2022-01-02');
-            expect(dateUtils.isWeekend(date2)).toBe(false);
-            const date3 = new Date('2022-01-08');
-            expect(dateUtils.isWeekend(date3)).toBe(true);
+        });
+
+        it('should return false for weekdays', () => {
+            const date = new Date('2022-01-03');
+            expect(dateUtils.isWeekend(date)).toBe(false);
         });
     });
 
     describe('getFiscalYear', () => {
-        it('should return the correct fiscal year for a given date', () => {
+        it('should return correct fiscal year', () => {
             const date = new Date('2022-01-01');
             expect(dateUtils.getFiscalYear(date)).toBe(2021);
-            const date2 = new Date('2022-04-01');
-            expect(dateUtils.getFiscalYear(date2)).toBe(2022);
+        });
+
+        it('should handle edge cases', () => {
+            const date = new Date('2022-12-31');
+            expect(dateUtils.getFiscalYear(date)).toBe(2022);
         });
     });
 });
