@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="AuthManagerTest" time="0.125" tests="31" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="AuthManagerTest" time="0.128" tests="31" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -11,7 +11,7 @@
     <property name="java.vm.specification.version" value="17"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/temurin-17-jdk-amd64/lib"/>
-    <property name="sun.java.command" value="/home/runner/work/AiTestGen/AiTestGen/target/surefire/surefirebooter-20260312053142241_3.jar /home/runner/work/AiTestGen/AiTestGen/target/surefire 2026-03-12T05-31-41_886-jvmRun1 surefire-20260312053142241_1tmp surefire_0-20260312053142241_2tmp"/>
+    <property name="sun.java.command" value="/home/runner/work/AiTestGen/AiTestGen/target/surefire/surefirebooter-20260312060212259_3.jar /home/runner/work/AiTestGen/AiTestGen/target/surefire 2026-03-12T06-02-11_962-jvmRun1 surefire-20260312060212259_1tmp surefire_0-20260312060212259_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/runner/work/AiTestGen/AiTestGen/target/test-classes:/home/runner/work/AiTestGen/AiTestGen/target/classes:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/home/runner/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/home/runner/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -26,7 +26,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/runner/work/AiTestGen/AiTestGen/target/surefire/surefirebooter-20260312053142241_3.jar"/>
+    <property name="surefire.real.class.path" value="/home/runner/work/AiTestGen/AiTestGen/target/surefire/surefirebooter-20260312060212259_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.18+8"/>
     <property name="user.name" value="runner"/>
@@ -52,35 +52,35 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testLoginNullUsername" classname="AuthManagerTest" time="0.03"/>
+  <testcase name="testLoginNullUsername" classname="AuthManagerTest" time="0.029"/>
   <testcase name="testRegisterValidUser" classname="AuthManagerTest" time="0.002"/>
   <testcase name="testUpdateUsernameExistingNewUsername" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testRegisterExistingUser" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testRegisterInvalidPassword" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testUpdateUsernameValidUser" classname="AuthManagerTest" time="0.001"/>
+  <testcase name="testUpdateUsernameValidUser" classname="AuthManagerTest" time="0.002"/>
   <testcase name="testDeleteUserValidUser" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testLoginValidUser" classname="AuthManagerTest" time="0.003"/>
+  <testcase name="testLoginValidUser" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testIsLoggedInValidUser" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testRegisterNullPassword" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testResetPasswordValidUser" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testRegisterShortUsername" classname="AuthManagerTest" time="0.002"/>
+  <testcase name="testRegisterShortUsername" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testExportData" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testLoginNullPassword" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testGetStatusUnregisteredUser" classname="AuthManagerTest" time="0.004"/>
-  <testcase name="testIsLoggedInInvalidUser" classname="AuthManagerTest" time="0.0"/>
+  <testcase name="testIsLoggedInInvalidUser" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testDeleteUserInvalidPassword" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testResetPasswordInvalidNewPassword" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testLogoutValidUser" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testLogoutInvalidUser" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testIsAdminValidAdmin" classname="AuthManagerTest" time="0.0"/>
+  <testcase name="testIsAdminValidAdmin" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testGetStatusRegisteredUser" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testGenerateTokenValidUser" classname="AuthManagerTest" time="0.007"/>
+  <testcase name="testGenerateTokenValidUser" classname="AuthManagerTest" time="0.008"/>
   <testcase name="testResetPasswordInvalidOldPassword" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testGetUserCount" classname="AuthManagerTest" time="0.0"/>
-  <testcase name="testGenerateTokenInvalidUser" classname="AuthManagerTest" time="0.001"/>
+  <testcase name="testGetUserCount" classname="AuthManagerTest" time="0.001"/>
+  <testcase name="testGenerateTokenInvalidUser" classname="AuthManagerTest" time="0.002"/>
   <testcase name="testClearAll" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testIsAdminInvalidAdmin" classname="AuthManagerTest" time="0.0"/>
+  <testcase name="testIsAdminInvalidAdmin" classname="AuthManagerTest" time="0.001"/>
   <testcase name="testLoginInvalidPassword" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testRegisterNullUsername" classname="AuthManagerTest" time="0.001"/>
-  <testcase name="testGetStatusLoggedInUser" classname="AuthManagerTest" time="0.0"/>
+  <testcase name="testRegisterNullUsername" classname="AuthManagerTest" time="0.0"/>
+  <testcase name="testGetStatusLoggedInUser" classname="AuthManagerTest" time="0.001"/>
 </testsuite>
