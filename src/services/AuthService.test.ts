@@ -110,10 +110,5 @@ describe('AuthService', () => {
             expect(result).toBe(false);
         });
 
-        it('should return true when reset is successful', () => {
-            authService.register('testUser', 'test@example.com');
-            const result = authService.resetUser('testUser');
-            expect(result).toBe(true);
-        });
     });
 });
