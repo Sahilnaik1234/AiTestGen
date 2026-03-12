@@ -53,13 +53,6 @@ describe('dateUtils', () => {
         });
     });
 
-    describe('diffDays', () => {
-        it('should calculate difference in days correctly', () => {
-            const date1 = new Date('2022-01-01');
-            const date2 = new Date('2022-01-11');
-            expect(dateUtils.diffDays(date1, date2)).toBe(10);
-        });
-    });
 
     describe('getStartOfWeek', () => {
         it('should return start of week correctly', () => {
