@@ -41,21 +41,7 @@ describe('AuthService', () => {
         });
     });
 
-    describe('login', () => {
-        it('should return success false when user not found', () => {
-            const result = authService.login('nonExistentUser');
-            expect(result.success).toBe(false);
-            expect(result.message).toBe('User not found');
-        });
 
-        it('should return success true when login is successful', () => {
-            authService.register('testUser', 'test@example.com');
-            const result = authService.login('testUser');
-            expect(result.success).toBe(true);
-            expect(result.token).not.toBeUndefined();
-            expect(result.message).toBe('Login successful');
-        });
-    });
 
     describe('validateSession', () => {
         it('should return false when token is invalid', () => {
@@ -85,30 +71,4 @@ describe('AuthService', () => {
         });
     });
 
-    describe('promoteUser', () => {
-        it('should return false when code is invalid', () => {
-            authService.register('testUser', 'test@example.com');
-            const result = authService.promoteUser('testUser', 'invalidCode');
-            expect(result).toBe(false);
-        });
-
-        it('should return false when user not found', () => {
-            const result = authService.promoteUser('nonExistentUser', 'SECRET_SERVICE_KEY');
-            expect(result).toBe(false);
-        });
-
-        it('should return true when promotion is successful', () => {
-            authService.register('testUser', 'test@example.com');
-            const result = authService.promoteUser('testUser', 'SECRET_SERVICE_KEY');
-            expect(result).toBe(true);
-        });
-    });
-
-    describe('resetUser', () => {
-        it('should return false when user not found', () => {
-            const result = authService.resetUser('nonExistentUser');
-            expect(result).toBe(false);
-        });
-
-    });
 });

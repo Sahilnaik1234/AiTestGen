@@ -296,55 +296,46 @@ function updateCoverageOnly(reports: FileCoverage[], options: any) {
     const resultsPath = path.join(dashboardDir, 'results.json');
 
     let existingResults: any[] = [];
-    if (fs.existsSync(resultsPath)) {
-        try {
-            existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
-        } catch (e) {
-            existingResults = [];
-        }
+    if (!fs.existsSync(resultsPath)) {
+        // No results yet — nothing to update. Files are only added via saveResults() after AI generation.
+        return;
     }
 
-    // Update existing results or add new ones found in this run
-    const updated = [...existingResults];
+    try {
+        existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
+    } catch (e) {
+        return;
+    }
 
-    reports.forEach(report => {
-        const fileName = path.basename(report.filePath);
-        const index = updated.findIndex(res =>
-            res.name === fileName || report.filePath.includes(res.name)
+    // ONLY update coverage scores for files already tracked (AI-generated)
+    // Do NOT add new files here — that's saveResults()'s job
+    const updated = existingResults.map((res: any) => {
+        const report = reports.find(r =>
+            path.basename(r.filePath) === res.name ||
+            r.filePath.toLowerCase().includes(res.name.toLowerCase())
         );
 
-        const resolvedPath = resolveFilePath(report.filePath);
-        let latestSource = '';
+        // Refresh source code from disk
+        const resolvedPath = resolveFilePath(res.name);
+        let latestSource = res.source;
         if (resolvedPath && fs.existsSync(resolvedPath)) {
             latestSource = fs.readFileSync(resolvedPath, 'utf-8');
         }
 
-        const resObj = {
-            id: path.basename(report.filePath, path.extname(report.filePath)).toLowerCase(),
-            name: fileName,
-            lang: path.extname(report.filePath).slice(1),
-            source: latestSource || (index >= 0 ? updated[index].source : ''),
-            coverage: Math.round(report.coverage * 100) / 100,
-            status: report.coverage >= options.threshold ? 'passed' : 'warning'
-        };
-
-        if (index >= 0) {
-            updated[index] = { ...updated[index], ...resObj };
-        } else {
-            // Only add new files if they match the include pattern
-            let isIncluded = true;
-            if (options.include) {
-                const includes = options.include.split(',').map((s: string) => s.trim().toLowerCase());
-                isIncluded = includes.some((p: string) => report.filePath.toLowerCase().includes(p));
-            }
-            if (isIncluded) updated.push(resObj);
+        if (report) {
+            return {
+                ...res,
+                source: latestSource,
+                coverage: Math.round(report.coverage * 100) / 100,
+                status: report.coverage >= options.threshold ? 'passed' : 'warning'
+            };
         }
+        return { ...res, source: latestSource };
     });
 
     try {
-        if (!fs.existsSync(dashboardDir)) fs.mkdirSync(dashboardDir, { recursive: true });
         fs.writeFileSync(resultsPath, JSON.stringify(updated, null, 2));
-        console.log(chalk.green(`\n📈 Synced ${updated.length} files to dashboard results.`));
+        console.log(chalk.green(`\n📈 Refreshed coverage for ${updated.length} tracked files.`));
     } catch (e) {
         console.warn(chalk.yellow('⚠️ Could not update dashboard results.json'));
     }
