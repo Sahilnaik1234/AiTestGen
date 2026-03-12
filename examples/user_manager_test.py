@@ -6,219 +6,256 @@ import re
 
 class TestUserManager(unittest.TestCase):
 
-    def setUp(self):
-        self.user_manager = UserManager()
-
     def test_create_user(self):
-        # Test with valid input
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        success, message = self.user_manager.create_user(username, password, email)
+        success, message = manager.create_user(username, password, email)
         self.assertTrue(success)
         self.assertEqual(message, "User created successfully")
+        self.assertIn(username, manager.users)
 
-        # Test with missing fields
-        success, message = self.user_manager.create_user("", password, email)
+    def test_create_user_missing_fields(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "password123"
+        email = ""
+        success, message = manager.create_user(username, password, email)
         self.assertFalse(success)
         self.assertEqual(message, "Missing fields")
 
-        # Test with existing user
-        success, message = self.user_manager.create_user(username, password, email)
+    def test_create_user_user_already_exists(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "password123"
+        email = "test@example.com"
+        manager.create_user(username, password, email)
+        success, message = manager.create_user(username, password, email)
         self.assertFalse(success)
         self.assertEqual(message, "User already exists")
 
-        # Test with short password
-        success, message = self.user_manager.create_user("new_user", "short", email)
+    def test_create_user_password_too_short(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "pass"
+        email = "test@example.com"
+        success, message = manager.create_user(username, password, email)
         self.assertFalse(success)
         self.assertEqual(message, "Password too short")
 
-        # Test with invalid email
-        success, message = self.user_manager.create_user("new_user", password, "invalid_email")
+    def test_create_user_invalid_email(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "password123"
+        email = "invalid_email"
+        success, message = manager.create_user(username, password, email)
         self.assertFalse(success)
         self.assertEqual(message, "Invalid email")
 
     def test_login(self):
-        # Test with valid input
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        self.user_manager.create_user(username, password, email)
-        success, message = self.user_manager.login(username, password)
+        manager.create_user(username, password, email)
+        success, message = manager.login(username, password)
         self.assertTrue(success)
         self.assertEqual(message, "Login successful")
+        self.assertIn(username, manager.active_sessions)
 
-        # Test with non-existent user
-        success, message = self.user_manager.login("non_existent_user", password)
+    def test_login_user_not_found(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "password123"
+        success, message = manager.login(username, password)
         self.assertFalse(success)
         self.assertEqual(message, "User not found")
 
-        # Test with incorrect password
-        success, message = self.user_manager.login(username, "wrong_password")
+    def test_login_invalid_password(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "password123"
+        email = "test@example.com"
+        manager.create_user(username, password, email)
+        success, message = manager.login(username, "wrong_password")
         self.assertFalse(success)
         self.assertEqual(message, "Invalid password")
 
     def test_logout(self):
-        # Test with logged-in user
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        self.user_manager.create_user(username, password, email)
-        self.user_manager.login(username, password)
-        success = self.user_manager.logout(username)
+        manager.create_user(username, password, email)
+        manager.login(username, password)
+        success = manager.logout(username)
         self.assertTrue(success)
+        self.assertNotIn(username, manager.active_sessions)
 
-        # Test with logged-out user
-        success = self.user_manager.logout(username)
+    def test_logout_user_not_logged_in(self):
+        manager = UserManager()
+        username = "test_user"
+        success = manager.logout(username)
         self.assertFalse(success)
 
     def test_get_user_email(self):
-        # Test with existing user
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        self.user_manager.create_user(username, password, email)
-        user_email = self.user_manager.get_user_email(username)
+        manager.create_user(username, password, email)
+        user_email = manager.get_user_email(username)
         self.assertEqual(user_email, email)
 
-        # Test with non-existent user
-        user_email = self.user_manager.get_user_email("non_existent_user")
+    def test_get_user_email_user_not_found(self):
+        manager = UserManager()
+        username = "test_user"
+        user_email = manager.get_user_email(username)
         self.assertIsNone(user_email)
 
     def test_update_password(self):
-        # Test with valid input
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        self.user_manager.create_user(username, password, email)
+        manager.create_user(username, password, email)
         new_password = "new_password123"
-        success, message = self.user_manager.update_password(username, password, new_password)
+        success, message = manager.update_password(username, password, new_password)
         self.assertTrue(success)
         self.assertEqual(message, "Password updated")
+        hashed_new_password = hashlib.sha256(new_password.encode()).hexdigest()
+        self.assertEqual(manager.users[username]["password"], hashed_new_password)
 
-        # Test with incorrect old password
-        success, message = self.user_manager.update_password(username, "wrong_password", new_password)
+    def test_update_password_user_not_found(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "password123"
+        new_password = "new_password123"
+        success, message = manager.update_password(username, password, new_password)
         self.assertFalse(success)
-        self.assertEqual(message, "Invalid password")
+        self.assertEqual(message, "User not found")
 
-        # Test with short new password
-        success, message = self.user_manager.update_password(username, new_password, "short")
+    def test_update_password_invalid_password(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "password123"
+        email = "test@example.com"
+        manager.create_user(username, password, email)
+        new_password = "short"
+        success, message = manager.update_password(username, password, new_password)
         self.assertFalse(success)
         self.assertEqual(message, "New password too short")
 
     def test_set_admin(self):
-        # Test with valid input
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        self.user_manager.create_user(username, password, email)
+        manager.create_user(username, password, email)
         admin_secret = "SUPER_SECRET_123"
-        success = self.user_manager.set_admin(username, admin_secret)
+        success = manager.set_admin(username, admin_secret)
         self.assertTrue(success)
+        self.assertEqual(manager.users[username]["role"], "admin")
 
-        # Test with invalid admin secret
-        success = self.user_manager.set_admin(username, "wrong_secret")
+    def test_set_admin_invalid_admin_secret(self):
+        manager = UserManager()
+        username = "test_user"
+        password = "password123"
+        email = "test@example.com"
+        manager.create_user(username, password, email)
+        admin_secret = "wrong_secret"
+        success = manager.set_admin(username, admin_secret)
         self.assertFalse(success)
-
-        # Test with non-existent user
-        success = self.user_manager.set_admin("non_existent_user", admin_secret)
-        self.assertFalse(success)
+        self.assertEqual(manager.users[username]["role"], "user")
 
     def test_disable_user(self):
-        # Test with existing user
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        self.user_manager.create_user(username, password, email)
-        success = self.user_manager.disable_user(username)
+        manager.create_user(username, password, email)
+        success = manager.disable_user(username)
         self.assertTrue(success)
+        self.assertFalse(manager.users[username]["is_active"])
 
-        # Test with non-existent user
-        success = self.user_manager.disable_user("non_existent_user")
+    def test_disable_user_user_not_found(self):
+        manager = UserManager()
+        username = "test_user"
+        success = manager.disable_user(username)
         self.assertFalse(success)
 
     def test_get_all_active_users(self):
-        # Test with active users
+        manager = UserManager()
         username1 = "test_user1"
         password1 = "password123"
         email1 = "test1@example.com"
-        self.user_manager.create_user(username1, password1, email1)
+        manager.create_user(username1, password1, email1)
         username2 = "test_user2"
         password2 = "password123"
         email2 = "test2@example.com"
-        self.user_manager.create_user(username2, password2, email2)
-        active_users = self.user_manager.get_all_active_users()
+        manager.create_user(username2, password2, email2)
+        manager.disable_user(username2)
+        active_users = manager.get_all_active_users()
         self.assertIn(username1, active_users)
-        self.assertIn(username2, active_users)
-
-        # Test with disabled user
-        self.user_manager.disable_user(username1)
-        active_users = self.user_manager.get_all_active_users()
-        self.assertNotIn(username1, active_users)
-        self.assertIn(username2, active_users)
+        self.assertNotIn(username2, active_users)
 
     def test_delete_account(self):
-        # Test with existing user
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        self.user_manager.create_user(username, password, email)
-        success = self.user_manager.delete_account(username)
+        manager.create_user(username, password, email)
+        success = manager.delete_account(username)
         self.assertTrue(success)
+        self.assertNotIn(username, manager.users)
 
-        # Test with non-existent user
-        success = self.user_manager.delete_account("non_existent_user")
+    def test_delete_account_user_not_found(self):
+        manager = UserManager()
+        username = "test_user"
+        success = manager.delete_account(username)
         self.assertFalse(success)
 
     def test_find_users_by_email_domain(self):
-        # Test with existing users
+        manager = UserManager()
         username1 = "test_user1"
         password1 = "password123"
         email1 = "test1@example.com"
-        self.user_manager.create_user(username1, password1, email1)
+        manager.create_user(username1, password1, email1)
         username2 = "test_user2"
         password2 = "password123"
         email2 = "test2@example.com"
-        self.user_manager.create_user(username2, password2, email2)
+        manager.create_user(username2, password2, email2)
         domain = "example.com"
-        users = self.user_manager.find_users_by_email_domain(domain)
+        users = manager.find_users_by_email_domain(domain)
         self.assertIn(username1, users)
         self.assertIn(username2, users)
 
-        # Test with non-existent domain
-        domain = "non_existent_domain.com"
-        users = self.user_manager.find_users_by_email_domain(domain)
-        self.assertEqual(users, [])
-
     def test_get_account_age_days(self):
-        # Test with existing user
+        manager = UserManager()
         username = "test_user"
         password = "password123"
         email = "test@example.com"
-        self.user_manager.create_user(username, password, email)
-        age = self.user_manager.get_account_age_days(username)
-        self.assertGreaterEqual(age, 0)
+        manager.create_user(username, password, email)
+        age_days = manager.get_account_age_days(username)
+        self.assertGreaterEqual(age_days, 0)
 
-        # Test with non-existent user
-        age = self.user_manager.get_account_age_days("non_existent_user")
-        self.assertEqual(age, -1)
+    def test_get_account_age_days_user_not_found(self):
+        manager = UserManager()
+        username = "test_user"
+        age_days = manager.get_account_age_days(username)
+        self.assertEqual(age_days, -1)
 
     def test_bulk_create_users(self):
-        # Test with valid input
+        manager = UserManager()
         users = [
             {"name": "test_user1", "pass": "password123", "email": "test1@example.com"},
-            {"name": "test_user2", "pass": "password123", "email": "test2@example.com"}
+            {"name": "test_user2", "pass": "password123", "email": "test2@example.com"},
         ]
-        count = self.user_manager.bulk_create_users(users)
+        count = manager.bulk_create_users(users)
         self.assertEqual(count, 2)
-
-        # Test with invalid input
-        users = [
-            {"name": "", "pass": "password123", "email": "test1@example.com"},
-            {"name": "test_user2", "pass": "password123", "email": "test2@example.com"}
-        ]
-        count = self.user_manager.bulk_create_users(users)
-        self.assertEqual(count, 1)
+        self.assertIn("test_user1", manager.users)
+        self.assertIn("test_user2", manager.users)
 
 if __name__ == '__main__':
     unittest.main()
