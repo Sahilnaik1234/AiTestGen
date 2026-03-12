@@ -290,56 +290,64 @@ function saveResults(newResults: any[]) {
     console.log(chalk.green(`\n📊 Dashboard data updated in dashboard/public/results.json`));
 }
 
+
 function updateCoverageOnly(reports: FileCoverage[], options: any) {
     const dashboardDir = path.join(process.cwd(), 'dashboard', 'public');
     const resultsPath = path.join(dashboardDir, 'results.json');
 
-    if (!fs.existsSync(resultsPath)) return;
+    let existingResults: any[] = [];
+    if (fs.existsSync(resultsPath)) {
+        try {
+            existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
+        } catch (e) {
+            existingResults = [];
+        }
+    }
 
-    try {
-        const existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
+    // Update existing results or add new ones found in this run
+    const updated = [...existingResults];
 
-        // Use the same inclusion/exclusion logic as the main command
-        const updated = existingResults.filter((res: any) => {
+    reports.forEach(report => {
+        const fileName = path.basename(report.filePath);
+        const index = updated.findIndex(res =>
+            res.name === fileName || report.filePath.includes(res.name)
+        );
+
+        const resolvedPath = resolveFilePath(report.filePath);
+        let latestSource = '';
+        if (resolvedPath && fs.existsSync(resolvedPath)) {
+            latestSource = fs.readFileSync(resolvedPath, 'utf-8');
+        }
+
+        const resObj = {
+            id: path.basename(report.filePath, path.extname(report.filePath)).toLowerCase(),
+            name: fileName,
+            lang: path.extname(report.filePath).slice(1),
+            source: latestSource || (index >= 0 ? updated[index].source : ''),
+            coverage: Math.round(report.coverage * 100) / 100,
+            status: report.coverage >= options.threshold ? 'passed' : 'warning'
+        };
+
+        if (index >= 0) {
+            updated[index] = { ...updated[index], ...resObj };
+        } else {
+            // Only add new files if they match the include pattern
             let isIncluded = true;
             if (options.include) {
                 const includes = options.include.split(',').map((s: string) => s.trim().toLowerCase());
-                isIncluded = includes.some((p: string) => res.name.toLowerCase().includes(p) || res.id.toLowerCase().includes(p));
+                isIncluded = includes.some((p: string) => report.filePath.toLowerCase().includes(p));
             }
+            if (isIncluded) updated.push(resObj);
+        }
+    });
 
-            let isExcluded = false;
-            if (options.exclude) {
-                const excludes = options.exclude.split(',').map((s: string) => s.trim().toLowerCase());
-                isExcluded = excludes.some((p: string) => res.name.toLowerCase().includes(p) || res.id.toLowerCase().includes(p));
-            }
-            return isIncluded && !isExcluded;
-        }).map((res: any) => {
-            // Find the latest coverage for this file
-            const report = reports.find(r => r.filePath.includes(res.name) || res.name.includes(path.basename(r.filePath)));
-
-            // Also refresh source code from disk to ensure UI is up to date
-            const resolvedPath = resolveFilePath(res.name);
-            let latestSource = res.source;
-            if (resolvedPath && fs.existsSync(resolvedPath)) {
-                latestSource = fs.readFileSync(resolvedPath, 'utf-8');
-            }
-
-            if (report) {
-                return {
-                    ...res,
-                    source: latestSource,
-                    coverage: Math.round(report.coverage * 100) / 100
-                };
-            }
-            return { ...res, source: latestSource };
-        });
-
+    try {
+        if (!fs.existsSync(dashboardDir)) fs.mkdirSync(dashboardDir, { recursive: true });
         fs.writeFileSync(resultsPath, JSON.stringify(updated, null, 2));
-        console.log(chalk.green(`\n📈 Updated and filtered dashboard results. Displaying files matching: ${options.include || 'all'}`));
+        console.log(chalk.green(`\n📈 Synced ${updated.length} files to dashboard results.`));
     } catch (e) {
-        console.warn(chalk.yellow("⚠️ Could not update final coverage in dashboard."));
+        console.warn(chalk.yellow('⚠️ Could not update dashboard results.json'));
     }
 }
 
 program.parse();
-
