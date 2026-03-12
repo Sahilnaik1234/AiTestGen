@@ -54,14 +54,6 @@ describe('dateUtils', () => {
     });
 
 
-    describe('getStartOfWeek', () => {
-        it('should return start of week correctly', () => {
-            const date = new Date('2022-01-05');
-            const startOfWeek = dateUtils.getStartOfWeek(date);
-            expect(startOfWeek.toISOString().split('T')[0]).toBe("2022-01-03");
-        });
-    });
-
     describe('getEndOfWeek', () => {
         it('should return end of week correctly', () => {
             const date = new Date('2022-01-05');

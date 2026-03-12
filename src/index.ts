@@ -55,7 +55,7 @@ program
             }
 
             // Always sync the latest coverage scores to the dashboard results.json
-            updateCoverageOnly(reports);
+            updateCoverageOnly(reports, options);
 
             const underCoveredFiles = reports.filter(f => {
                 const isUnderThreshold = f.coverage < threshold;
@@ -282,7 +282,7 @@ function saveResults(newResults: any[]) {
     console.log(chalk.green(`\n📊 Dashboard data updated in dashboard/public/results.json`));
 }
 
-function updateCoverageOnly(reports: FileCoverage[]) {
+function updateCoverageOnly(reports: FileCoverage[], options: any) {
     const dashboardDir = path.join(process.cwd(), 'dashboard', 'public');
     const resultsPath = path.join(dashboardDir, 'results.json');
 
@@ -290,7 +290,22 @@ function updateCoverageOnly(reports: FileCoverage[]) {
 
     try {
         const existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
-        const updated = existingResults.map((res: any) => {
+
+        // Use the same inclusion/exclusion logic as the main command
+        const updated = existingResults.filter((res: any) => {
+            let isIncluded = true;
+            if (options.include) {
+                const includes = options.include.split(',').map((s: string) => s.trim().toLowerCase());
+                isIncluded = includes.some((p: string) => res.name.toLowerCase().includes(p) || res.id.toLowerCase().includes(p));
+            }
+
+            let isExcluded = false;
+            if (options.exclude) {
+                const excludes = options.exclude.split(',').map((s: string) => s.trim().toLowerCase());
+                isExcluded = excludes.some((p: string) => res.name.toLowerCase().includes(p) || res.id.toLowerCase().includes(p));
+            }
+            return isIncluded && !isExcluded;
+        }).map((res: any) => {
             // Find the latest coverage for this file
             const report = reports.find(r => r.filePath.includes(res.name) || res.name.includes(path.basename(r.filePath)));
 
@@ -312,7 +327,7 @@ function updateCoverageOnly(reports: FileCoverage[]) {
         });
 
         fs.writeFileSync(resultsPath, JSON.stringify(updated, null, 2));
-        console.log(chalk.green(`\n📈 Updated final coverage scores in dashboard.`));
+        console.log(chalk.green(`\n📈 Updated and filtered dashboard results. Displaying files matching: ${options.include || 'all'}`));
     } catch (e) {
         console.warn(chalk.yellow("⚠️ Could not update final coverage in dashboard."));
     }
