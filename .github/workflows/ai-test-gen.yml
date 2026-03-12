@@ -12,6 +12,9 @@ permissions:
 jobs:
   generate-tests:
     runs-on: ubuntu-latest
+    env:
+      INCLUDE_PATTERN: ""  # Add folder/file substring here to ONLY check those (e.g. "src")
+      EXCLUDE_PATTERN: ""  # Add folder/file substring here to IGNORE (e.g. "legacy")
 
     steps:
     - uses: actions/checkout@v4
@@ -120,7 +123,7 @@ jobs:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
-        npm start -- coverage --threshold 75 --model groq
+        npm start -- coverage --threshold 75 --model gemini --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
 
     - name: Commit and Push Generated Tests
       if: always()
@@ -154,7 +157,7 @@ jobs:
       run: |
         echo "🎯 Final validation against 75% threshold..."
         # This will exit 1 if still below 75%, but won't trigger AI generation again
-        npm start -- coverage --threshold 75 --exit --check-only
+        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
 
     - name: Upload Coverage Results
       uses: actions/upload-artifact@v4

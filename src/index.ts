@@ -35,6 +35,8 @@ program
     .option('-m, --model <model>', 'AI model to use (openai, gemini, groq)', 'gemini')
     .option('-v, --version <version>', 'Specific model version')
     .option('-s, --source-dir <dirs...>', 'Source directories to search for files', ['src', 'examples'])
+    .option('-i, --include <pattern>', 'Only process files matching this substring or regex')
+    .option('-e, --exclude <pattern>', 'Explicitly skip files matching this substring or regex')
     .option('--exit', 'Exit with error code if below threshold', false)
     .option('--check-only', 'Only check coverage without generating tests', false)
     .action(async (options) => {
@@ -58,7 +60,20 @@ program
             const underCoveredFiles = reports.filter(f => {
                 const isUnderThreshold = f.coverage < threshold;
                 const isUnwanted = /node_modules|coverage|target|jacoco|dist|build/.test(f.filePath);
-                return isUnderThreshold && !isUnwanted;
+
+                let isIncluded = true;
+                if (options.include) {
+                    const includes = options.include.split(',').map((s: string) => s.trim().toLowerCase());
+                    isIncluded = includes.some((p: string) => f.filePath.toLowerCase().includes(p));
+                }
+
+                let isExcluded = false;
+                if (options.exclude) {
+                    const excludes = options.exclude.split(',').map((s: string) => s.trim().toLowerCase());
+                    isExcluded = excludes.some((p: string) => f.filePath.toLowerCase().includes(p));
+                }
+
+                return isUnderThreshold && !isUnwanted && isIncluded && !isExcluded;
             });
 
             console.log(chalk.cyan(`✅ Found ${reports.length} files in reports.`));
