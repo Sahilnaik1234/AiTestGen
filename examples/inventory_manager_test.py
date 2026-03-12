@@ -1,45 +1,137 @@
-import pytest
-import os
+import unittest
 from inventory_manager import InventoryManager
+import json
+import os
+import datetime
 
-@pytest.fixture
-def manager(tmp_path):
-    # Use a temporary file for testing
-    data_file = tmp_path / "test_inventory.json"
-    return InventoryManager(data_file=str(data_file))
+class TestInventoryManager(unittest.TestCase):
 
-def test_add_item_success(manager):
-    success, message = manager.add_item("001", "Laptop", 10, 1500)
-    assert success is True
-    assert "001" in manager.items
-    assert manager.items["001"]["name"] == "Laptop"
+    def setUp(self):
+        self.manager = InventoryManager("test_inventory.json")
 
-def test_add_item_duplicate(manager):
-    manager.add_item("001", "Laptop", 10, 1500)
-    success, message = manager.add_item("001", "PC", 5, 1200)
-    assert success is False
-    assert message == "Item already exists"
+    def tearDown(self):
+        if os.path.exists("test_inventory.json"):
+            os.remove("test_inventory.json")
 
-def test_update_quantity_success(manager):
-    manager.add_item("001", "Laptop", 10, 1500)
-    success, message = manager.update_quantity("001", 5)
-    assert success is True
-    assert manager.items["001"]["quantity"] == 15
+    def test_init(self):
+        self.assertEqual(self.manager.data_file, "test_inventory.json")
+        self.assertEqual(self.manager.items, {})
 
-def test_update_quantity_insufficient(manager):
-    manager.add_item("001", "Laptop", 10, 1500)
-    success, message = manager.update_quantity("001", -15)
-    assert success is False
-    assert message == "Insufficient stock"
+    def test_load_data(self):
+        with open("test_inventory.json", 'w') as f:
+            json.dump({"item1": {"name": "Item 1", "quantity": 10, "price": 10.99}}, f)
+        self.manager.load_data()
+        self.assertEqual(self.manager.items, {"item1": {"name": "Item 1", "quantity": 10, "price": 10.99}})
 
-def test_get_item(manager):
-    manager.add_item("001", "Laptop", 10, 1500)
-    item = manager.get_item("001")
-    assert item["name"] == "Laptop"
-    assert manager.get_item("nonexistent") is None
+    def test_save_data(self):
+        self.manager.items = {"item1": {"name": "Item 1", "quantity": 10, "price": 10.99}}
+        self.manager.save_data()
+        with open("test_inventory.json", 'r') as f:
+            self.assertEqual(json.load(f), {"item1": {"name": "Item 1", "quantity": 10, "price": 10.99}})
 
-def test_remove_item(manager):
-    manager.add_item("001", "Laptop", 10, 1500)
-    assert manager.remove_item("001") is True
-    assert "001" not in manager.items
-    assert manager.remove_item("nonexistent") is False
+    def test_add_item(self):
+        result, message = self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.assertTrue(result)
+        self.assertEqual(message, "Item added successfully")
+        self.assertEqual(self.manager.items, {"item1": {"name": "Item 1", "quantity": 10, "price": 10.99, "last_updated": str(datetime.datetime.now())}})
+
+    def test_add_item_duplicate(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        result, message = self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.assertFalse(result)
+        self.assertEqual(message, "Item already exists")
+
+    def test_add_item_invalid_quantity(self):
+        result, message = self.manager.add_item("item1", "Item 1", -10, 10.99)
+        self.assertFalse(result)
+        self.assertEqual(message, "Quantity and price must be non-negative")
+
+    def test_update_quantity(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        result, message = self.manager.update_quantity("item1", 5)
+        self.assertTrue(result)
+        self.assertEqual(message, "Quantity updated")
+        self.assertEqual(self.manager.items["item1"]["quantity"], 15)
+
+    def test_update_quantity_insufficient_stock(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        result, message = self.manager.update_quantity("item1", -15)
+        self.assertFalse(result)
+        self.assertEqual(message, "Insufficient stock")
+
+    def test_get_item(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        item = self.manager.get_item("item1")
+        self.assertEqual(item, {"name": "Item 1", "quantity": 10, "price": 10.99, "last_updated": str(datetime.datetime.now())})
+
+    def test_remove_item(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        result = self.manager.remove_item("item1")
+        self.assertTrue(result)
+        self.assertEqual(self.manager.items, {})
+
+    def test_calculate_total_value(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.manager.add_item("item2", "Item 2", 20, 5.99)
+        total_value = self.manager.calculate_total_value()
+        self.assertAlmostEqual(total_value, 10 * 10.99 + 20 * 5.99, places=2)
+
+    def test_find_items_below_threshold(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.manager.add_item("item2", "Item 2", 5, 5.99)
+        results = self.manager.find_items_below_threshold(8)
+        self.assertEqual(results, [{"id": "item2", "name": "Item 2"}])
+
+    def test_bulk_update_prices(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.manager.add_item("item2", "Item 2", 20, 5.99)
+        self.manager.bulk_update_prices(10)
+        self.assertAlmostEqual(self.manager.items["item1"]["price"], 10.99 * 1.1, places=2)
+        self.assertAlmostEqual(self.manager.items["item2"]["price"], 5.99 * 1.1, places=2)
+
+    def test_generate_report(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.manager.add_item("item2", "Item 2", 20, 5.99)
+        report = self.manager.generate_report()
+        self.assertIn("Inventory Report", report)
+        self.assertIn("ID: item1 | Name: Item 1 | Qty: 10 | Price: $12.09", report)
+        self.assertIn("ID: item2 | Name: Item 2 | Qty: 20 | Price: $6.59", report)
+        self.assertIn("Total Value: $259.80", report)
+
+    def test_update_item_name(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        result = self.manager.update_item_name("item1", "New Item 1")
+        self.assertTrue(result)
+        self.assertEqual(self.manager.items["item1"]["name"], "New Item 1")
+
+    def test_list_all_item_ids(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.manager.add_item("item2", "Item 2", 20, 5.99)
+        item_ids = self.manager.list_all_item_ids()
+        self.assertEqual(item_ids, ["item1", "item2"])
+
+    def test_clear_inventory(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.manager.add_item("item2", "Item 2", 20, 5.99)
+        self.manager.clear_inventory()
+        self.assertEqual(self.manager.items, {})
+
+    def test_get_inventory_size(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.manager.add_item("item2", "Item 2", 20, 5.99)
+        size = self.manager.get_inventory_size()
+        self.assertEqual(size, 2)
+
+    def test_is_item_available(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.assertTrue(self.manager.is_item_available("item1", 5))
+        self.assertFalse(self.manager.is_item_available("item1", 15))
+
+    def test_search_by_name(self):
+        self.manager.add_item("item1", "Item 1", 10, 10.99)
+        self.manager.add_item("item2", "Item 2", 20, 5.99)
+        results = self.manager.search_by_name("Item")
+        self.assertEqual(results, [{"id": "item1", "name": "Item 1"}, {"id": "item2", "name": "Item 2"}])
+
+if __name__ == '__main__':
+    unittest.main()
