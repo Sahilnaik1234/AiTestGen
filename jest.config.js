@@ -10,6 +10,8 @@ module.exports = {
         '!**/*.test.{ts,js}',
         '!dashboard/**'
     ],
+    coverageReporters: ['json', 'lcov', 'text', 'clover', 'json-summary'],
+    collectCoverage: true,
     coverageThreshold: {
         global: {
             branches: 70,

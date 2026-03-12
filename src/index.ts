@@ -191,24 +191,28 @@ function findAndParseReports(): FileCoverage[] {
 
     // 1. Find Jest/Istanbul reports
     const jestReports = globSync('**/coverage-final.json', { ignore: ['node_modules/**'] });
+    console.log(chalk.gray(`   - Found ${jestReports.length} Jest reports`));
     jestReports.forEach((report: string) => {
         results.push(...CoverageParser.parseJest(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
     });
 
     // 2. Find Go reports
     const goReports = globSync('**/coverage.out', { ignore: ['node_modules/**'] });
+    console.log(chalk.gray(`   - Found ${goReports.length} Go reports`));
     goReports.forEach((report: string) => {
         results.push(...CoverageParser.parseGo(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
     });
 
     // 3. Find Python reports
     const pyReports = globSync('**/coverage.json', { ignore: ['node_modules/**'] });
+    console.log(chalk.gray(`   - Found ${pyReports.length} Python reports`));
     pyReports.forEach((report: string) => {
         results.push(...CoverageParser.parsePython(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
     });
 
     // 4. Find Java/JaCoCo reports
     const javaReports = globSync('**/jacoco.xml', { ignore: ['node_modules/**'] });
+    console.log(chalk.gray(`   - Found ${javaReports.length} Java reports`));
     javaReports.forEach((report: string) => {
         results.push(...CoverageParser.parseJacoco(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
     });
