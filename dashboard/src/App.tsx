@@ -12,112 +12,9 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Mock Data for the demonstration
-const MOCK_RESULTS = [
-  {
-    id: 'calculator',
-    name: 'Calculator.ts',
-    lang: 'TypeScript',
-    coverage: 100,
-    status: 'passed',
-    source: `export class Calculator {
-  add(a: number, b: number): number {
-    return a + b;
-  }
-  subtract(a: number, b: number): number {
-    return a - b;
-  }
-  multiply(a: number, b: number): number {
-    return a * b;
-  }
-  divide(a: number, b: number): number {
-    if (b === 0) throw new Error("Divide by zero");
-    return a / b;
-  }
-}`,
-    test: `import { Calculator } from './Calculator';
-
-describe('Calculator', () => {
-  const calc = new Calculator();
-  
-  test('adds numbers correctly', () => {
-    expect(calc.add(2, 3)).toBe(5);
-  });
-
-  test('throws on divide by zero', () => {
-    expect(() => calc.divide(10, 0)).toThrow();
-  });
-});`
-  },
-  {
-    id: 'dateutils',
-    name: 'dateUtils.js',
-    lang: 'JavaScript',
-    coverage: 92,
-    status: 'passed',
-    source: `function formatDate(date) {
-    const d = new Date(date);
-    let month = '' + (d.getMonth() + 1);
-    let day = '' + d.getDate();
-    const year = d.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
-}`,
-    test: `const { formatDate } = require('./dateUtils');
-
-describe('formatDate', () => {
-  it('should format valid dates correctly', () => {
-    expect(formatDate('2023-05-15')).toBe('2023-05-15');
-  });
-
-  it('should handle single digit days/months', () => {
-    expect(formatDate('2023-1-1')).toBe('2023-01-01');
-  });
-});`
-  },
-  {
-    id: 'mathutils',
-    name: 'math_utils.go',
-    lang: 'Go',
-    coverage: 85,
-    status: 'passed',
-    source: `package main
-
-func Add(a, b int) int {
-	return a + b
-}
-
-func Divide(a, b int) (int, error) {
-	if b == 0 {
-		return 0, errors.New("cannot divide by zero")
-	}
-	return a / b, nil
-}`,
-    test: `package main
-import "testing"
-
-func TestAdd(t *testing.T) {
-	result := Add(10, 5)
-	if result != 15 {
-		t.Errorf("Expected 15, got %d", result)
-	}
-}
-
-func TestDivideByZero(t *testing.T) {
-	_, err := Divide(10, 0)
-	if err == nil {
-		t.Error("Expected error, got nil")
-	}
-}`
-  }
-];
-
 const App: React.FC = () => {
-  const [results, setResults] = useState(MOCK_RESULTS);
-  const [selectedFile, setSelectedFile] = useState(MOCK_RESULTS[0]);
+  const [results, setResults] = useState<any[]>([]);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -136,8 +33,16 @@ const App: React.FC = () => {
           setSelectedFile(data[0]);
         }
       })
-      .catch(err => console.error("Error loading live results, falling back to mock:", err));
+      .catch(() => console.log("No results.json found or empty, waiting for AI to generate tests."));
   }, []);
+
+  if (!selectedFile) {
+    return (
+      <div className="dashboard-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--text-secondary)' }}>
+        <h2>No AI-Generated Tests Found Yet. Waiting for CI Pipeline...</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">

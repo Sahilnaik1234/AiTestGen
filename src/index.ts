@@ -59,7 +59,7 @@ program
 
             const underCoveredFiles = reports.filter(f => {
                 const isUnderThreshold = f.coverage < threshold;
-                const isUnwanted = /node_modules|coverage|target|jacoco|dist|build|__pycache__|maven-status|bin/.test(f.filePath);
+                const isUnwanted = /node_modules|coverage|target\/site|jacoco|dist|build|__pycache__|maven-status|bin|\.test\.|_test\.|Test\./i.test(f.filePath);
 
                 let isIncluded = true;
                 if (options.include) {
