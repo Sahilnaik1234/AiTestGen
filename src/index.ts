@@ -9,6 +9,7 @@ import * as path from 'path';
 dotenv.config();
 
 const program = new Command();
+let globalSourceDirs: string[] = ['src', 'examples'];
 
 program
     .name('ai-test-gen')
@@ -21,7 +22,9 @@ program
     .argument('<pattern>', 'File or glob pattern (e.g. "src/**/*.ts") to generate tests for')
     .option('-m, --model <model>', 'AI model to use (openai, gemini, groq)', 'gemini')
     .option('-v, --version <version>', 'Specific model version')
+    .option('-s, --source-dir <dirs...>', 'Source directories to search for files', ['src', 'examples'])
     .action(async (pattern, options) => {
+        globalSourceDirs = options.sourceDir;
         await runBatchGeneration(pattern, options);
     });
 
@@ -31,18 +34,17 @@ program
     .option('-t, --threshold <threshold>', 'Coverage threshold percentage', '75')
     .option('-m, --model <model>', 'AI model to use (openai, gemini, groq)', 'gemini')
     .option('-v, --version <version>', 'Specific model version')
+    .option('-s, --source-dir <dirs...>', 'Source directories to search for files', ['src', 'examples'])
     .option('--exit', 'Exit with error code if below threshold', false)
     .option('--check-only', 'Only check coverage without generating tests', false)
     .action(async (options) => {
+        globalSourceDirs = options.sourceDir;
         try {
             const threshold = parseFloat(options.threshold);
             console.log(chalk.blue(`\n📊 Analyzing coverage reports (Threshold: ${threshold}%)...`));
 
             const reports: FileCoverage[] = [
-                ...CoverageParser.parseJest(path.join(process.cwd(), 'coverage', 'coverage-final.json')),
-                ...CoverageParser.parseGo(path.join(process.cwd(), 'examples', 'coverage.out')),
-                ...CoverageParser.parsePython(path.join(process.cwd(), 'coverage.json')),
-                ...CoverageParser.parseJacoco(path.join(process.cwd(), 'examples', 'target', 'site', 'jacoco', 'jacoco.xml'))
+                ...findAndParseReports()
             ];
 
             if (reports.length === 0) {
@@ -168,25 +170,66 @@ function getApiKey(type: string): string {
     return apiKey;
 }
 
+function findAndParseReports(): FileCoverage[] {
+    const { globSync } = require('glob');
+    const results: FileCoverage[] = [];
+
+    // 1. Find Jest/Istanbul reports
+    const jestReports = globSync('**/coverage-final.json', { ignore: ['node_modules/**'] });
+    jestReports.forEach((report: string) => {
+        results.push(...CoverageParser.parseJest(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
+    });
+
+    // 2. Find Go reports
+    const goReports = globSync('**/coverage.out', { ignore: ['node_modules/**'] });
+    goReports.forEach((report: string) => {
+        results.push(...CoverageParser.parseGo(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
+    });
+
+    // 3. Find Python reports
+    const pyReports = globSync('**/coverage.json', { ignore: ['node_modules/**'] });
+    pyReports.forEach((report: string) => {
+        results.push(...CoverageParser.parsePython(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
+    });
+
+    // 4. Find Java/JaCoCo reports
+    const javaReports = globSync('**/jacoco.xml', { ignore: ['node_modules/**'] });
+    javaReports.forEach((report: string) => {
+        results.push(...CoverageParser.parseJacoco(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
+    });
+
+    return results;
+}
+
 function resolveFilePath(reportPath: string): string | null {
-    // Check if it's already an absolute path and exists
+    // 1. Direct check (Absolute or relative to CWD)
+    if (fs.existsSync(reportPath) && fs.statSync(reportPath).isFile()) return reportPath;
     if (path.isAbsolute(reportPath) && fs.existsSync(reportPath)) return reportPath;
 
-    // Common locations to check
-    const searchDirs = [
-        process.cwd(),
-        path.join(process.cwd(), 'src'),
-        path.join(process.cwd(), 'examples')
-    ];
+    // 2. Simple relative check
+    const fullPath = path.join(process.cwd(), reportPath);
+    if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) return fullPath;
 
-    for (const dir of searchDirs) {
-        const fullPath = path.join(dir, reportPath);
-        if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) return fullPath;
+    // 3. Dynamic Discovery: Search the entire workspace (excluding noise)
+    const baseName = path.basename(reportPath);
+    try {
+        const { globSync } = require('glob');
+        // Search for the filename anywhere in the repo, ignoring huge non-source folders
+        const matches = globSync(`**/${baseName}`, {
+            ignore: ['node_modules/**', '.git/**', 'target/**', 'dist/**', 'build/**', 'coverage/**'],
+            absolute: true
+        });
 
-        // Handle cases like "StringUtils.java" in reports but "examples/StringUtils.java" on disk
-        const baseName = path.basename(reportPath);
-        const nestedCheck = path.join(dir, baseName);
-        if (fs.existsSync(nestedCheck) && fs.statSync(nestedCheck).isFile()) return nestedCheck;
+        if (matches.length > 0) {
+            // If multiple matches, try to find the one that best matches the report path
+            if (matches.length > 1) {
+                const bestMatch = matches.find((m: string) => m.replace(/\\/g, '/').includes(reportPath.replace(/\\/g, '/')));
+                return bestMatch || matches[0];
+            }
+            return matches[0];
+        }
+    } catch (e) {
+        console.warn(`⚠️ Error during dynamic file discovery: ${e}`);
     }
 
     return null;

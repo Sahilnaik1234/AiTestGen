@@ -48,16 +48,15 @@ jobs:
 
     - name: Run Go Coverage Check
       run: |
-        cd examples
         go test -coverprofile=coverage.out ./... || true
 
     - name: Run Python Coverage Check
       run: |
-        pytest examples/ --cov=examples/ --cov-report=json:coverage.json || true
+        pytest . --cov=. --cov-report=json:coverage.json || true
 
     - name: Run Java Coverage Check
       run: |
-        cd examples
+        # Generate a pom.xml at the root that includes all source folders
         cat <<EOF > pom.xml
         <?xml version="1.0" encoding="UTF-8"?>
         <project xmlns="http://maven.apache.org/POM/4.0.0" 
@@ -65,7 +64,7 @@ jobs:
                  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
           <modelVersion>4.0.0</modelVersion>
           <groupId>com.example</groupId>
-          <artifactId>examples</artifactId>
+          <artifactId>ai-test-gen-all</artifactId>
           <version>1.0-SNAPSHOT</version>
           <properties>
             <maven.compiler.source>17</maven.compiler.source>
@@ -147,13 +146,9 @@ jobs:
       run: |
         echo "🔄 Rerunning tests to verify AI-generated coverage..."
         npm test || true
-        cd examples
         go test -coverprofile=coverage.out ./... || true
-        cd ..
-        pytest examples/ --cov=examples/ --cov-report=json:coverage.json || true
-        cd examples
+        pytest . --cov=. --cov-report=json:coverage.json || true
         mvn clean test || true
-        cd ..
 
     - name: Final Coverage Check
       run: |
