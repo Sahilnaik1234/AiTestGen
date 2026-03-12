@@ -18,7 +18,14 @@ export class CoverageParser {
             const total = Object.keys(summary).length;
             const covered = Object.values(summary).filter((count: any) => count > 0).length;
             const percentage = total === 0 ? 100 : (covered / total) * 100;
-            results.push({ filePath, coverage: percentage });
+
+            // Normalize path: Convert absolute path to relative path if possible
+            let normalizedPath = filePath;
+            if (path.isAbsolute(filePath) && filePath.includes(process.cwd())) {
+                normalizedPath = path.relative(process.cwd(), filePath);
+            }
+
+            results.push({ filePath: normalizedPath, coverage: percentage });
         }
         return results;
     }

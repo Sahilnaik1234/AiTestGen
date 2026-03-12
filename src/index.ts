@@ -59,7 +59,7 @@ program
 
             const underCoveredFiles = reports.filter(f => {
                 const isUnderThreshold = f.coverage < threshold;
-                const isUnwanted = /node_modules|coverage|target|jacoco|dist|build/.test(f.filePath);
+                const isUnwanted = /node_modules|coverage|target|jacoco|dist|build|__pycache__|maven-status|bin/.test(f.filePath);
 
                 let isIncluded = true;
                 if (options.include) {
@@ -73,7 +73,11 @@ program
                     isExcluded = excludes.some((p: string) => f.filePath.toLowerCase().includes(p));
                 }
 
-                return isUnderThreshold && !isUnwanted && isIncluded && !isExcluded;
+                // Supported Extensions Check
+                const supportedExts = ['.ts', '.js', '.py', '.java', '.go', '.cpp', '.cs', '.rs'];
+                const hasSupportedExt = supportedExts.some(ext => f.filePath.toLowerCase().endsWith(ext));
+
+                return isUnderThreshold && !isUnwanted && isIncluded && !isExcluded && hasSupportedExt;
             });
 
             console.log(chalk.cyan(`✅ Found ${reports.length} files in reports.`));
