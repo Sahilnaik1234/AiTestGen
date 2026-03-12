@@ -4,7 +4,7 @@ from math_functions import (
     permutations, combinations, fibonacci, mean, median, variance, standard_deviation,
     solve_quadratic, is_palindrome, gcd, lcm, convert_temp, calculate_bmi, circle_area,
     sphere_volume, hypotenuse, find_max, find_min, filter_even, filter_odd, scale_list,
-    unique_elements, logic_gate_1
+    unique_elements
 )
 
 class TestMathFunctions(unittest.TestCase):

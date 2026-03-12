@@ -147,10 +147,11 @@ jobs:
     - name: Rerun Tests for Final Coverage
       if: always()
       run: |
-        echo "🔄 Rerunning tests to verify AI-generated coverage..."
+        echo "🔄 Cleaning old reports and rerunning tests..."
+        rm -f coverage.json coverage/coverage-final.json examples/coverage.out
         npm test || true
         go test -coverprofile=coverage.out ./... || true
-        pytest . --cov=. --cov-report=json:coverage.json || true
+        pytest . --cov=. --cov-report=json:coverage.json -v || true
         mvn clean test || true
 
     - name: Final Coverage Check
