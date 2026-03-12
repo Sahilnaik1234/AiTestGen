@@ -13,7 +13,7 @@ jobs:
   generate-tests:
     runs-on: ubuntu-latest
     env:
-      INCLUDE_PATTERN: "examples"  # Add folder/file substring here to ONLY check those (e.g. "src")
+      INCLUDE_PATTERN: "services"  # Add folder/file substring here to ONLY check those (e.g. "src")
       EXCLUDE_PATTERN: ""  # Add folder/file substring here to IGNORE (e.g. "legacy")
 
     steps:
