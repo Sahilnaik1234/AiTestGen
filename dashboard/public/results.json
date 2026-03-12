@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "authservice",
+    "name": "AuthService.ts",
+    "lang": "ts",
+    "source": "export class AuthService {\n    private users: Map<string, any> = new Map();\n    private sessions: Set<string> = new Set();\n\n    register(username: string, email: string): { success: boolean; message: string } {\n        if (!username || !email) {\n            return { success: false, message: \"Username and email are required\" };\n        }\n        if (this.users.has(username)) {\n            return { success: false, message: \"User already exists\" };\n        }\n        if (!email.includes(\"@\")) {\n            return { success: false, message: \"Invalid email format\" };\n        }\n\n        this.users.set(username, { username, email, registeredAt: new Date(), role: 'user' });\n        return { success: true, message: \"User registered successfully\" };\n    }\n\n    login(username: string): { success: boolean; token?: string; message: string } {\n        if (!this.users.has(username)) {\n            return { success: false, message: \"User not found\" };\n        }\n\n        const token = Math.random().toString(36).substring(7);\n        this.sessions.add(token);\n        return { success: true, token, message: \"Login successful\" };\n    }\n\n    // --- Untested/Partially tested logic ---\n\n    validateSession(token: string): boolean {\n        return this.sessions.has(token);\n    }\n\n    logout(token: string): boolean {\n        if (this.sessions.has(token)) {\n            this.sessions.delete(token);\n            return true;\n        }\n        return false;\n    }\n\n    promoteUser(username: string, code: string): boolean {\n        if (code === \"SECRET_SERVICE_KEY\" && this.users.has(username)) {\n            const user = this.users.get(username);\n            user.role = \"admin\";\n            this.users.set(username, user);\n            return true;\n        }\n        return false;\n    }\n\n    resetUser(username: string): boolean {\n        if (this.users.has(username)) {\n            this.users.delete(username);\n            return true;\n        }\n        return false;\n    }\n}\n",
+    "coverage": 93.55,
+    "status": "passed"
+  }
+]
