@@ -22,7 +22,8 @@ export class GroqAdapter extends AIModelAdapter {
       ${coverageContext}
       
       RULES FOR IMPORTS:
-      - If the language is TypeScript or JavaScript, ensure you import/require the code WITHOUT the file extension (e.g., use './${fileName.split('.')[0]}').
+      - If the language is TypeScript/JavaScript and the code defines a class (e.g., "class MyService"), you MUST use a named import: "import { MyService } from './${fileName.split('.')[0]}';".
+      - Never use side-effect imports like "import './${fileName.split('.')[0]}';" for testing classes.
       - For Java, always use JUnit Jupiter (JUnit 5).
       - For other languages, use their standard import conventions.
 
