@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 permissions:
   contents: write
@@ -126,6 +126,19 @@ jobs:
       run: |
         npm start -- coverage --threshold 75 --model groq --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
 
+    - name: Set PR Variables
+      id: pr_vars
+      run: |
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          CLEAN_BRANCH=$(echo "${{ github.head_ref }}" | sed 's/\//-/g')
+          echo "branch=ai-tests-$CLEAN_BRANCH" >> $GITHUB_OUTPUT
+          echo "base=${{ github.base_ref }}" >> $GITHUB_OUTPUT
+        else
+          CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/\//-/g')
+          echo "branch=ai-tests-$CLEAN_BRANCH" >> $GITHUB_OUTPUT
+          echo "base=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        fi
+
     - name: Create Pull Request for Review
       uses: peter-evans/create-pull-request@v6
       if: always()
@@ -141,7 +154,8 @@ jobs:
           1. 🧑‍💻 Please review the generated tests manually.
           2. 🤖 Use GitHub Copilot to refine or complete them if necessary.
           3. ✅ Ensure all tests pass before merging into the main branch.
-        branch: "ai-generated-tests"
+        branch: ${{ steps.pr_vars.outputs.branch }}
+        base: ${{ steps.pr_vars.outputs.base }}
         delete-branch: true
         add-paths: |
           **/*.test.ts
