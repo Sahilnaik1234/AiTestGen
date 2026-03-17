@@ -76,7 +76,6 @@ describe('dateUtils', () => {
         });
     });
 
-
     describe('isWeekend', () => {
         it('should return true for weekends', () => {
             const date = new Date('2022-01-01');
@@ -100,6 +99,85 @@ describe('dateUtils', () => {
         it('should handle dates in different years', () => {
             const date = new Date('2023-01-01');
             expect(dateUtils.getFiscalYear(date)).toBe(2022);
+        });
+    });
+
+    describe('getDaysInMonth', () => {
+        it('should return correct number of days in month', () => {
+            expect(dateUtils.getDaysInMonth(1, 2022)).toBe(31);
+            expect(dateUtils.getDaysInMonth(2, 2022)).toBe(28);
+            expect(dateUtils.getDaysInMonth(3, 2022)).toBe(31);
+        });
+
+        it('should handle leap years', () => {
+            expect(dateUtils.getDaysInMonth(2, 2020)).toBe(29);
+        });
+    });
+
+    describe('isLeapYear', () => {
+        it('should return true for leap years', () => {
+            expect(dateUtils.isLeapYear(2020)).toBe(true);
+        });
+
+        it('should return false for non-leap years', () => {
+            expect(dateUtils.isLeapYear(2022)).toBe(false);
+        });
+    });
+
+    describe('addDays', () => {
+        it('should add days correctly', () => {
+            const date = new Date('2022-01-01');
+            const result = dateUtils.addDays(date, 5);
+            expect(result.toISOString().split('T')[0]).toBe('2022-01-06');
+        });
+
+        it('should handle negative days', () => {
+            const date = new Date('2022-01-01');
+            const result = dateUtils.addDays(date, -5);
+            expect(result.toISOString().split('T')[0]).toBe('2022-12-27');
+        });
+    });
+
+    describe('diffDays', () => {
+        it('should return correct difference in days', () => {
+            const date1 = new Date('2022-01-01');
+            const date2 = new Date('2022-01-05');
+            expect(dateUtils.diffDays(date1, date2)).toBe(4);
+        });
+
+        it('should handle dates in different orders', () => {
+            const date1 = new Date('2022-01-05');
+            const date2 = new Date('2022-01-01');
+            expect(dateUtils.diffDays(date1, date2)).toBe(4);
+        });
+    });
+
+    describe('isValidDate', () => {
+        it('should return true for valid dates', () => {
+            const date = new Date('2022-01-01');
+            expect(dateUtils.isValidDate(date)).toBe(true);
+        });
+
+        it('should return false for invalid dates', () => {
+            const date = new Date('invalid date');
+            expect(dateUtils.isValidDate(date)).toBe(false);
+        });
+    });
+
+    describe('convertToTimezone', () => {
+        it('should convert to timezone correctly', () => {
+            const date = new Date('2022-01-01');
+            const result = dateUtils.convertToTimezone(date, 'America/New_York');
+            expect(result.getTimezoneOffset()).not.toBe(date.getTimezoneOffset());
+        });
+    });
+
+    describe('getQuarter', () => {
+        it('should return correct quarter', () => {
+            const date = new Date('2022-01-01');
+            expect(dateUtils.getQuarter(date)).toBe(1);
+            const date2 = new Date('2022-04-01');
+            expect(dateUtils.getQuarter(date2)).toBe(2);
         });
     });
 });
