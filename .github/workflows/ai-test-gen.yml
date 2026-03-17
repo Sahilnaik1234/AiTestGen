@@ -144,24 +144,41 @@ jobs:
         git config --global user.name "AI Test Generator"
         git config --global user.email "ai-test-gen@github.com"
         
-        # Check for changes in tracked files and new test files
-        git add .
+        # ONLY stage the generated test files
+        git add **/*.test.ts **/*.test.js **/*_test.py **/*_test.go **/*Test.java
         
-        if [[ -n "$(git status --porcelain)" ]]; then
-          echo "✨ New tests generated or coverage updated. Committing..."
-          git commit -m "chore: AI-generated tests to improve coverage"
+        if git diff --cached --quiet; then
+          echo "✅ No new test cases generated."
+        else
+          echo "✨ New tests generated. Committing..."
+          git commit -m "chore: add AI-generated test cases"
           
           # Rebase to latest to avoid conflicts
           git pull --rebase origin ${GITHUB_REF_NAME:-${GITHUB_HEAD_REF}}
           
-          # Push to the head branch (works for both push and pull_request events)
+          # Push to the head branch
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             git push origin HEAD:${{ github.head_ref }}
           else
             git push origin HEAD:${{ github.ref_name }}
           fi
+        fi
+
+    - name: Create Pull Request to Dev
+      if: always() && github.event_name != 'pull_request' && github.ref_name != 'dev' && github.ref_name != 'main'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Check if PR already exists
+        PR_EXISTS=$(gh pr list --base dev --head ${{ github.ref_name }} --json number --jq '.[0].number')
+        
+        if [ -z "$PR_EXISTS" ]; then
+          echo "🚀 Creating Pull Request to dev..."
+          gh pr create --base dev --head ${{ github.ref_name }} \
+            --title "🤖 AI Generated Tests - ${{ github.ref_name }}" \
+            --body "This PR was automatically created to merge AI-generated tests from ${{ github.ref_name }} into dev."
         else
-          echo "✅ No new tests generated."
+          echo "ℹ️ Pull Request already exists: #$PR_EXISTS"
         fi
 
     - name: Upload Coverage Results
