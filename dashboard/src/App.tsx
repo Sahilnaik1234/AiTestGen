@@ -101,7 +101,12 @@ const App: React.FC = () => {
         <header className="header-section">
           <div>
             <h1 style={{ fontSize: '1.75rem' }}>Test Generation Analysis</h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Reviewing <span style={{ color: 'var(--accent-cyan)' }}>{selectedFile.lang}</span> model artifacts for <span style={{ color: 'var(--text-primary)' }}>{selectedFile.name}</span></p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+              Reviewing <span style={{ color: 'var(--accent-cyan)' }}>{selectedFile.lang}</span> model artifacts for <span style={{ color: 'var(--text-primary)' }}>{selectedFile.name}</span>
+              {selectedFile.generatedAt && (
+                <> • Generated: <span style={{ color: 'var(--text-primary)' }}>{new Date(selectedFile.generatedAt).toLocaleString()}</span></>
+              )}
+            </p>
           </div>
 
           <motion.button

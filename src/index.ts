@@ -275,18 +275,8 @@ function saveResults(newResults: any[]) {
         }
     }
 
-    // Merge: Update existing or add new
-    const merged = [...existingResults];
-    for (const res of newResults) {
-        const index = merged.findIndex(e => e.id === res.id);
-        if (index >= 0) {
-            merged[index] = { ...merged[index], ...res };
-        } else {
-            merged.push(res);
-        }
-    }
-
-    fs.writeFileSync(resultsPath, JSON.stringify(merged, null, 2));
+    // Overwrite: Only show the results from the most recent AI generation run
+    fs.writeFileSync(resultsPath, JSON.stringify(newResults, null, 2));
     console.log(chalk.green(`\n📊 Dashboard data updated in dashboard/public/results.json`));
 }
 

@@ -71,7 +71,8 @@ export class Orchestrator {
             source: fs.readFileSync(filePath, 'utf-8'), // Save original for dashboard
             test: testCode,
             model: this.modelName,
-            coverage: coverageData ? coverageData.coverage : 0
+            coverage: coverageData ? coverageData.coverage : 0,
+            generatedAt: new Date().toISOString()
         };
     }
 
