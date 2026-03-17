@@ -156,15 +156,14 @@ jobs:
         echo "review_branch=$REVIEW_BRANCH" >> $GITHUB_OUTPUT
         echo "source_branch=$SOURCE_BRANCH" >> $GITHUB_OUTPUT
 
-        # Use Git's internal globbing (quoted) to be more robust across different shells/environments
-        # This will recursively find all matching test files. 
-        # We use '|| true' to prevent failure if some patterns don't match anything.
-        git add "**/src/**/*.test.ts" "**/src/**/*.test.js" "**/*_test.py" "**/*_test.go" "**/*Test.java" "**/examples/**/*.test.ts" "**/examples/**/*.test.js" 2>/dev/null || true
+        # Dynamically add all modified or new test files
+        # 1. Add all NEW or MODIFIED test files recursively
+        git ls-files --others --modified --exclude-standard | grep -E "\.test\.(ts|js)$|_test\.py$|_test\.go$|Test\.java$" | xargs -r git add
         
-        # Also specifically add the known files the user mentioned if they exist
-        git add "src/services/CartService.test.ts" "examples/email_validator_test.py" "examples/dateUtils.test.js" 2>/dev/null || true
+        # 2. Add updates to ALREADY tracked test files (handles deletions inside files)
+        git add -u **/*.test.ts **/*.test.js **/*_test.py **/*_test.go **/*Test.java 2>/dev/null || true
 
-        git status
+        git status # Debug info to see what is staged
         
         if git diff --cached --quiet; then
           echo "has_changes=false" >> $GITHUB_OUTPUT
