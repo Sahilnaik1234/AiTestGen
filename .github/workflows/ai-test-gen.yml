@@ -138,57 +138,66 @@ jobs:
         pytest . --cov=. --cov-report=json:coverage.json -v || true
         mvn clean test || true
 
-    - name: Commit and Push AI Tests to Current Branch
+    - name: Commit and Push AI Tests to Review Branch
       if: always()
+      id: ai_push
       run: |
         git config --global user.name "AI Test Generator"
         git config --global user.email "ai-test-gen@github.com"
         
+        # Determine the branch names
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          SOURCE_BRANCH="${{ github.head_ref }}"
+        else
+          SOURCE_BRANCH="${{ github.ref_name }}"
+        fi
+        
+        REVIEW_BRANCH="ai-review/$SOURCE_BRANCH"
+        echo "review_branch=$REVIEW_BRANCH" >> $GITHUB_OUTPUT
+        echo "source_branch=$SOURCE_BRANCH" >> $GITHUB_OUTPUT
+
         # ONLY stage the generated test files
         git add **/*.test.ts **/*.test.js **/*_test.py **/*_test.go **/*Test.java
         
         if git diff --cached --quiet; then
+          echo "has_changes=false" >> $GITHUB_OUTPUT
           echo "✅ No new test cases generated."
         else
-          echo "✨ New tests generated. Committing..."
-          git commit -m "chore: add AI-generated test cases"
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+          echo "✨ New tests generated. Creating review branch..."
           
-          # DISCARD all other unstaged changes (coverage reports, pom.xml, etc.) 
-          # to allow rebase/pull to work
-          git checkout -- .
-          git clean -fd
-          
-          # Determine the actual branch name
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            TARGET_BRANCH="${{ github.head_ref }}"
-          else
-            TARGET_BRANCH="${{ github.ref_name }}"
-          fi
-
-          echo "🎯 Target branch is: $TARGET_BRANCH"
-
-          # Rebase to latest to avoid conflicts
-          git pull --rebase origin "$TARGET_BRANCH"
-          
-          # Push to the head branch
-          git push origin "HEAD:$TARGET_BRANCH"
+          # Create and push to a separate review branch
+          git checkout -b "$REVIEW_BRANCH"
+          git commit -m "chore: AI-generated tests for review"
+          git push origin "$REVIEW_BRANCH" --force
         fi
 
-    - name: Create Pull Request to Dev
-      if: always() && github.event_name != 'pull_request' && github.ref_name != 'dev' && github.ref_name != 'main'
+    - name: Open Review Pull Request
+      if: steps.ai_push.outputs.has_changes == 'true'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        # Check if PR already exists
-        PR_EXISTS=$(gh pr list --base dev --head ${{ github.ref_name }} --json number --jq '.[0].number')
+        SOURCE="${{ steps.ai_push.outputs.source_branch }}"
+        REVIEW="${{ steps.ai_push.outputs.review_branch }}"
+        
+        # Check if a review PR already exists
+        PR_EXISTS=$(gh pr list --base "$SOURCE" --head "$REVIEW" --json number --jq '.[0].number')
         
         if [ -z "$PR_EXISTS" ]; then
-          echo "🚀 Creating Pull Request to dev..."
-          gh pr create --base dev --head ${{ github.ref_name }} \
-            --title "🤖 AI Generated Tests - ${{ github.ref_name }}" \
-            --body "This PR was automatically created to merge AI-generated tests from ${{ github.ref_name }} into dev."
+          echo "🚀 Opening Review PR ($REVIEW -> $SOURCE)..."
+          gh pr create --base "$SOURCE" --head "$REVIEW" \
+            --title "🔍 Review Needed: AI Generated Tests for $SOURCE" \
+            --body "## 🤖 AI Test Generation Complete
+            I've generated some test cases to improve your code coverage.
+            
+            **What should you do?**
+            1. Click the **'Files changed'** tab to see my suggestions.
+            2. If they look good, **Merge** this PR into your branch.
+            3. If you want changes, use **GitHub Copilot** to refine them here.
+            
+            *Once merged, these tests will be part of your main feature PR.*"
         else
-          echo "ℹ️ Pull Request already exists: #$PR_EXISTS"
+          echo "ℹ️ Review PR already exists: #$PR_EXISTS"
         fi
 
     - name: Upload Coverage Results
