@@ -158,15 +158,20 @@ jobs:
           git checkout -- .
           git clean -fd
           
+          # Determine the actual branch name
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            TARGET_BRANCH="${{ github.head_ref }}"
+          else
+            TARGET_BRANCH="${{ github.ref_name }}"
+          fi
+
+          echo "🎯 Target branch is: $TARGET_BRANCH"
+
           # Rebase to latest to avoid conflicts
-          git pull --rebase origin ${GITHUB_REF_NAME:-${GITHUB_HEAD_REF}}
+          git pull --rebase origin "$TARGET_BRANCH"
           
           # Push to the head branch
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            git push origin HEAD:${{ github.head_ref }}
-          else
-            git push origin HEAD:${{ github.ref_name }}
-          fi
+          git push origin "HEAD:$TARGET_BRANCH"
         fi
 
     - name: Create Pull Request to Dev
