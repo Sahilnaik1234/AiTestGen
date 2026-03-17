@@ -71,3 +71,52 @@ class EmailValidator:
                 "disposable": EmailValidator.is_disposable(email)
             }
         return results
+
+    @staticmethod
+    def is_subdomain(email: str, parent_domain: str) -> bool:
+        """Check if the email domain is a subdomain of the parent domain."""
+        domain = EmailValidator.get_domain(email)
+        if not domain:
+            return False
+        return domain == parent_domain or domain.endswith("." + parent_domain.lower())
+
+    @staticmethod
+    def get_tld(email: str) -> str | None:
+        """Extract the Top-Level Domain (TLD) from the email."""
+        domain = EmailValidator.get_domain(email)
+        if not domain:
+            return None
+        parts = domain.split('.')
+        return parts[-1] if len(parts) > 1 else None
+
+    @staticmethod
+    def has_alias(email: str) -> bool:
+        """Check if the email uses a '+' alias (e.g., user+extra@gmail.com)."""
+        username = EmailValidator.get_username(email)
+        return username is not None and '+' in username
+
+    @staticmethod
+    def is_blacklisted(email: str, blacklist: list[str]) -> bool:
+        """Check if the email domain or full address is in a blacklist."""
+        normalized = EmailValidator.normalize(email)
+        if not normalized:
+            return False
+        domain = EmailValidator.get_domain(email)
+        return normalized in [b.lower() for b in blacklist] or (domain and domain in [b.lower() for b in blacklist])
+
+    @staticmethod
+    def suggest_correction(email: str) -> str | None:
+        """Suggest a correction for common typos in domains (e.g., gmal.com -> gmail.com)."""
+        if not email:
+            return None
+        domain = email.strip().split('@')[-1].lower() if '@' in email else email.lower()
+        typos = {
+            "gmal.com": "gmail.com",
+            "yaho.com": "yahoo.com",
+            "hotmial.com": "hotmail.com",
+            "outlok.com": "outlook.com"
+        }
+        if domain in typos:
+            username = EmailValidator.get_username(email) or "user"
+            return f"{username}@{typos[domain]}"
+        return None
