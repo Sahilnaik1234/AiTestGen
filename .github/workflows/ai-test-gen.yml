@@ -164,10 +164,10 @@ jobs:
           echo "✅ No new test cases generated."
         else
           echo "has_changes=true" >> $GITHUB_OUTPUT
-          echo "✨ New tests generated. Creating review branch..."
+          echo "✨ New tests generated. Updating review branch..."
           
-          # Create and push to a separate review branch
-          git checkout -b "$REVIEW_BRANCH"
+          # Force create/reset the review branch to current HEAD
+          git checkout -B "$REVIEW_BRANCH"
           git commit -m "chore: AI-generated tests for review"
           git push origin "$REVIEW_BRANCH" --force
         fi
