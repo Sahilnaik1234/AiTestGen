@@ -153,6 +153,11 @@ jobs:
           echo "✨ New tests generated. Committing..."
           git commit -m "chore: add AI-generated test cases"
           
+          # DISCARD all other unstaged changes (coverage reports, pom.xml, etc.) 
+          # to allow rebase/pull to work
+          git checkout -- .
+          git clean -fd
+          
           # Rebase to latest to avoid conflicts
           git pull --rebase origin ${GITHUB_REF_NAME:-${GITHUB_HEAD_REF}}
           
