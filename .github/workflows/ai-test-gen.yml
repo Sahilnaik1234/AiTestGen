@@ -156,20 +156,24 @@ jobs:
         echo "review_branch=$REVIEW_BRANCH" >> $GITHUB_OUTPUT
         echo "source_branch=$SOURCE_BRANCH" >> $GITHUB_OUTPUT
 
-        # Enable recursive globbing for the add command
-        shopt -s globstar || true
-        git add **/*.test.ts **/*.test.js **/*_test.py **/*_test.go **/*Test.java
+        # Use Git's internal globbing (quoted) to be more robust across different shells/environments
+        # This will recursively find all matching test files. 
+        # We use '|| true' to prevent failure if some patterns don't match anything.
+        git add "**/src/**/*.test.ts" "**/src/**/*.test.js" "**/*_test.py" "**/*_test.go" "**/*Test.java" "**/examples/**/*.test.ts" "**/examples/**/*.test.js" 2>/dev/null || true
         
-        git status # Debug info to see what is staged
+        # Also specifically add the known files the user mentioned if they exist
+        git add "src/services/CartService.test.ts" "examples/email_validator_test.py" "examples/dateUtils.test.js" 2>/dev/null || true
+
+        git status
         
         if git diff --cached --quiet; then
           echo "has_changes=false" >> $GITHUB_OUTPUT
-          echo "✅ No new test cases generated."
+          echo "✅ No new test cases generated or staged."
         else
           echo "has_changes=true" >> $GITHUB_OUTPUT
           echo "✨ New tests generated. Updating review branch..."
           
-          # Force create/reset the review branch to current HEAD
+          # Switch to the review branch, bringing the staged changes along
           git checkout -B "$REVIEW_BRANCH"
           git commit -m "chore: AI-generated tests for review"
           git push origin "$REVIEW_BRANCH" --force
