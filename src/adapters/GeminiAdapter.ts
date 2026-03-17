@@ -4,7 +4,7 @@ import { AIModelAdapter, AIModelResponse } from './BaseAdapter';
 export class GeminiAdapter extends AIModelAdapter {
     private apiUrl: string = 'https://generativelanguage.googleapis.com/v1beta/models';
 
-    async generateTest(sourceCode: string, language: string, fileName: string, coverageData?: any): Promise<AIModelResponse> {
+    async generateTest(sourceCode: string, language: string, fileName: string, coverageData?: any, existingTestCode?: string): Promise<AIModelResponse> {
         let coverageContext = '';
         if (coverageData) {
             coverageContext = `
@@ -16,10 +16,27 @@ export class GeminiAdapter extends AIModelAdapter {
       `;
         }
 
+        let existingCodeContext = '';
+        if (existingTestCode) {
+            existingCodeContext = `
+      EXISTING TEST CODE:
+      Below is the content of the current test file. 
+      You MUST merge your new test cases INTO this existing suite. 
+      Maintain existing imports and structure. 
+      Do NOT delete any existing tests. 
+      ONLY add new test cases that improve coverage.
+      
+      \`\`\`${language}
+      ${existingTestCode}
+      \`\`\`
+      `;
+        }
+
         const prompt = `
       You are an expert software engineer. Generate a comprehensive test suite for the following ${language} code.
       The source file is named "${fileName}".
       ${coverageContext}
+      ${existingCodeContext}
       
       RULES FOR IMPORTS:
       - If the language is TypeScript or JavaScript, ensure you import/require the code WITHOUT the file extension (e.g., use './${fileName.split('.')[0]}').
