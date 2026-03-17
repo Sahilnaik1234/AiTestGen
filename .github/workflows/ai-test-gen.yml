@@ -126,7 +126,27 @@ jobs:
       run: |
         npm start -- coverage --threshold 75 --model groq --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
 
+
+    - name: Rerun Tests for Final Coverage
+      if: always()
+      run: |
+        echo "🔄 Deep cleaning old reports and rerunning tests..."
+        rm -rf coverage/
+        rm -f coverage.json examples/coverage.out
+        npm test || true
+        go test -coverprofile=coverage.out ./... || true
+        pytest . --cov=. --cov-report=json:coverage.json -v || true
+        mvn clean test || true
+
+    - name: Final Coverage Check
+      id: final_check
+      run: |
+        echo "🎯 Final validation against 75% threshold..."
+        # This will exit 1 if still below 75%, but won't trigger AI generation again
+        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+
     - name: Set PR Variables
+      if: always()
       id: pr_vars
       run: |
         if [ "${{ github.event_name }}" == "pull_request" ]; then
@@ -163,23 +183,6 @@ jobs:
           **/*_test.py
           **/*_test.go
           **/*Test.java
-
-    - name: Rerun Tests for Final Coverage
-      if: always()
-      run: |
-        echo "🔄 Deep cleaning old reports and rerunning tests..."
-        rm -rf coverage/
-        rm -f coverage.json examples/coverage.out
-        npm test || true
-        go test -coverprofile=coverage.out ./... || true
-        pytest . --cov=. --cov-report=json:coverage.json -v || true
-        mvn clean test || true
-
-    - name: Final Coverage Check
-      run: |
-        echo "🎯 Final validation against 75% threshold..."
-        # This will exit 1 if still below 75%, but won't trigger AI generation again
-        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
 
     - name: Upload Coverage Results
       uses: actions/upload-artifact@v4
