@@ -2,7 +2,7 @@ name: AI Test Generation CI
 
 on:
   push:
-    branches: [ "feature/**" ]
+    branches: [ "**" ]
   pull_request:
     branches: [ main, dev, "feature/**" ]
 
@@ -47,8 +47,39 @@ jobs:
         npm install
         pip install pytest pytest-cov
 
+    - name: Set Branch Variables
+      id: vars
+      run: |
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          SOURCE="${{ github.head_ref }}"
+          BASE="${{ github.base_ref }}"
+        else
+          SOURCE="${{ github.ref_name }}"
+          BASE="dev"
+        fi
+        CLEAN_SOURCE=$(echo "$SOURCE" | sed 's/\//-/g')
+        echo "source=$SOURCE" >> $GITHUB_OUTPUT
+        echo "base=$BASE" >> $GITHUB_OUTPUT
+        echo "review_branch=ai-tests-$CLEAN_SOURCE" >> $GITHUB_OUTPUT
+
+    - name: Shadow Merge Existing Tests (Respect Developer Refinements)
+      run: |
+        REVIEW_BRANCH="${{ steps.vars.outputs.review_branch }}"
+        git fetch origin "+refs/heads/$REVIEW_BRANCH:refs/remotes/origin/$REVIEW_BRANCH" || echo "No existing review branch found."
+        
+        if git show-ref --verify --quiet "refs/remotes/origin/$REVIEW_BRANCH"; then
+          echo "🔍 Found existing tests on $REVIEW_BRANCH. Shadow merging into runner..."
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git merge "origin/$REVIEW_BRANCH" --no-edit || echo "Merge conflict, skipping shadow merge."
+        else
+          echo "✅ No existing review tests to merge."
+        fi
+
     - name: Run TypeScript/JS Coverage Check
-      run: npm test || true # Don't fail here, we want to generate tests if it's low
+      run: |
+        rm -rf coverage/
+        npm test || true
 
     - name: Run Go Coverage Check
       run: |
@@ -126,19 +157,6 @@ jobs:
       run: |
         npm start -- coverage --threshold 75 --model groq --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
 
-    - name: Set PR Variables
-      id: pr_vars
-      run: |
-        if [ "${{ github.event_name }}" == "pull_request" ]; then
-          CLEAN_BRANCH=$(echo "${{ github.head_ref }}" | sed 's/\//-/g')
-          echo "branch=ai-tests-$CLEAN_BRANCH" >> $GITHUB_OUTPUT
-          echo "base=${{ github.base_ref }}" >> $GITHUB_OUTPUT
-        else
-          CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/\//-/g')
-          echo "branch=ai-tests-$CLEAN_BRANCH" >> $GITHUB_OUTPUT
-          echo "base=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-        fi
-
     - name: Create Pull Request for Review
       uses: peter-evans/create-pull-request@v6
       if: always()
@@ -152,10 +170,10 @@ jobs:
           
           **Action Required:**
           1. 🧑‍💻 Please review the generated tests manually.
-          2. 🤖 Use GitHub Copilot to refine or complete them if necessary.
+          2. 🔥 Includes both AI tests and existing developer modifications.
           3. ✅ Ensure all tests pass before merging into the main branch.
-        branch: ${{ steps.pr_vars.outputs.branch }}
-        base: ${{ steps.pr_vars.outputs.base }}
+        branch: ${{ steps.vars.outputs.review_branch }}
+        base: ${{ steps.vars.outputs.base }}
         delete-branch: true
         add-paths: |
           **/*.test.ts
