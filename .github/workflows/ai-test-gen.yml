@@ -135,7 +135,6 @@ jobs:
       if: always()
       with:
         commit_message: "🤖 chore: auto-generate missing tests based on coverage"
-        file_pattern: "**/*.test.ts **/*.test.js **/*_test.py **/*_test.go **/*Test.java"
 
     - name: Rerun Tests for Final Coverage
       if: always()
