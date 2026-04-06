@@ -2,9 +2,9 @@ name: AI Test Generation CI
 
 on:
   push:
-    branches: [ "**" ]
+    branches: [ "main", "dev" ]
   pull_request:
-    branches: [ main, dev, "feature/**" ]
+    branches: [ "main", "dev" ]
 
 permissions:
   contents: write
