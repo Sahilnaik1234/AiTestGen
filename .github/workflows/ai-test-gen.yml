@@ -14,13 +14,39 @@ jobs:
   generate-tests:
     runs-on: ubuntu-latest
     env:
-      INCLUDE_PATTERN: "services"  # Add folder/file substring here to ONLY check those (e.g. "src")
-      EXCLUDE_PATTERN: ""  # Add folder/file substring here to IGNORE (e.g. "legacy")
+    env:
+      BASE_FOLDERS: "services,sourcess,examples"  # The folders we care about
+      INCLUDE_PATTERN: ""  # Will be dynamically calculated
 
     steps:
     - uses: actions/checkout@v4
       with:
         ref: ${{ github.head_ref || github.ref_name }}
+        fetch-depth: 0
+
+    - name: Identify Changed Files
+      id: changed-files
+      run: |
+        echo "🔍 Determining files changed in this branch..."
+        # If it's a PR, compare with the base branch (main/dev)
+        # If it's a push, compare with the previous commit
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          DIFF_RANGE="origin/${{ github.base_ref }}...HEAD"
+        else
+          DIFF_RANGE="${{ github.event.before }}..${{ github.event.after }}"
+        fi
+
+        # Find changed files, filter for relevant folders and .ts/.js/.go/.py/.java extensions
+        CHANGED_FILES=$(git diff --name-only $DIFF_RANGE | grep -E "^(src/services/|src/sourcess/|examples/)" | grep -E "\.(ts|js|go|py|java)$" | grep -v "\.test\." | grep -v "_test\." | paste -sd "," - || true)
+
+        if [ -z "$CHANGED_FILES" ]; then
+          echo "✅ No relevant source files changed. Skipping AI generation."
+          echo "SKIP_AI=true" >> $GITHUB_ENV
+        else
+          echo "📝 Files to check: $CHANGED_FILES"
+          echo "INCLUDE_PATTERN=$CHANGED_FILES" >> $GITHUB_ENV
+          echo "SKIP_AI=false" >> $GITHUB_ENV
+        fi
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -123,21 +149,22 @@ jobs:
         mvn clean test || true
 
     - name: Generate AI Tests from Coverage
+      if: env.SKIP_AI == 'false'
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
-        npm start -- coverage --threshold 75 --model groq --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+        npm start -- coverage --threshold 75 --model groq --include "${{ env.INCLUDE_PATTERN }}"
 
     - name: Auto-Commit AI Tests to Feature Branch
       uses: stefanzweifel/git-auto-commit-action@v5
-      if: always()
+      if: env.SKIP_AI == 'false' && always()
       with:
         commit_message: "🤖 chore: auto-generate missing tests based on coverage"
 
     - name: Rerun Tests for Final Coverage
-      if: always()
+      if: env.SKIP_AI == 'false' && always()
       run: |
         echo "🔄 Deep cleaning old reports and rerunning tests..."
         rm -rf coverage/
@@ -148,10 +175,11 @@ jobs:
         mvn clean test || true
 
     - name: Final Coverage Check
+      if: env.SKIP_AI == 'false'
       run: |
         echo "🎯 Final validation against 75% threshold..."
         # This will exit 1 if still below 75%, but won't trigger AI generation again
-        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}"
 
     - name: Upload Coverage Results
       uses: actions/upload-artifact@v4
