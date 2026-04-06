@@ -64,7 +64,7 @@ describe('NotificationService', () => {
 
         it('should return false if the notification does not exist', () => {
             service.send('userId', 'message', 'email');
-            expect(service.markAsRead('userId', 'non-existent-id')).toBe(false);
+            expect(service.markAsRead('userId', 'wrongNotifId')).toBe(false);
         });
 
         it('should mark the notification as read', () => {
@@ -94,7 +94,7 @@ describe('NotificationService', () => {
 
         it('should return false if the notification does not exist', () => {
             service.send('userId', 'message', 'email');
-            expect(service.deleteNotification('userId', 'non-existent-id')).toBe(false);
+            expect(service.deleteNotification('userId', 'wrongNotifId')).toBe(false);
         });
 
         it('should delete the notification', () => {

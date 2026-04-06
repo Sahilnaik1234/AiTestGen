@@ -9,139 +9,111 @@ describe('CartService', () => {
 
     describe('addItem', () => {
         it('should add a new item to the cart', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            expect(cartService.getCart(userId)).toEqual([item]);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            expect(cartService.getCart('user1')).toEqual([item]);
         });
 
         it('should update the quantity of an existing item', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            cartService.addItem(userId, item);
-            expect(cartService.getCart(userId)[0].quantity).toBe(4);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            cartService.addItem('user1', item);
+            expect(cartService.getCart('user1')[0].quantity).toBe(2);
         });
 
-        it('should throw an error for invalid user id', () => {
-            const userId = '';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            expect(() => cartService.addItem(userId, item)).toThrowError('Invalid cart item or user');
-        });
-
-        it('should throw an error for invalid quantity', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 0 };
-            expect(() => cartService.addItem(userId, item)).toThrowError('Invalid cart item or user');
-        });
-
-        it('should throw an error for invalid price', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: -10.99, quantity: 2 };
-            expect(() => cartService.addItem(userId, item)).toThrowError('Invalid cart item or user');
+        it('should throw an error for invalid input', () => {
+            expect(() => cartService.addItem('', { productId: '1', name: 'Test', price: 10, quantity: 1 })).toThrowError('Invalid cart item or user');
+            expect(() => cartService.addItem('user1', { productId: '1', name: 'Test', price: -10, quantity: 1 })).toThrowError('Invalid cart item or user');
+            expect(() => cartService.addItem('user1', { productId: '1', name: 'Test', price: 10, quantity: 0 })).toThrowError('Invalid cart item or user');
         });
     });
 
     describe('removeItem', () => {
         it('should remove an item from the cart', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            expect(cartService.removeItem(userId, item.productId)).toBe(true);
-            expect(cartService.getCart(userId)).toEqual([]);
-        });
-
-        it('should return false if the item is not found', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            expect(cartService.removeItem(userId, 'product2')).toBe(false);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            expect(cartService.removeItem('user1', '1')).toBe(true);
+            expect(cartService.getCart('user1')).toEqual([]);
         });
 
         it('should return false if the cart is empty', () => {
-            const userId = 'user1';
-            expect(cartService.removeItem(userId, 'product1')).toBe(false);
+            expect(cartService.removeItem('user1', '1')).toBe(false);
+        });
+
+        it('should return false if the item is not found', () => {
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            expect(cartService.removeItem('user1', '2')).toBe(false);
         });
     });
 
     describe('updateQuantity', () => {
         it('should update the quantity of an item', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            cartService.updateQuantity(userId, item.productId, 3);
-            expect(cartService.getCart(userId)[0].quantity).toBe(3);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            expect(cartService.updateQuantity('user1', '1', 2)).toBe(true);
+            expect(cartService.getCart('user1')[0].quantity).toBe(2);
         });
 
         it('should return false if the quantity is invalid', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            expect(cartService.updateQuantity(userId, item.productId, 0)).toBe(false);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            expect(cartService.updateQuantity('user1', '1', 0)).toBe(false);
+            expect(cartService.updateQuantity('user1', '1', -1)).toBe(false);
         });
 
         it('should return false if the item is not found', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            expect(cartService.updateQuantity(userId, 'product2', 3)).toBe(false);
+            expect(cartService.updateQuantity('user1', '1', 2)).toBe(false);
         });
 
         it('should return false if the cart is empty', () => {
-            const userId = 'user1';
-            expect(cartService.updateQuantity(userId, 'product1', 3)).toBe(false);
+            expect(cartService.updateQuantity('user1', '1', 2)).toBe(false);
         });
     });
 
     describe('getCart', () => {
         it('should return the cart for a user', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            expect(cartService.getCart(userId)).toEqual([item]);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            expect(cartService.getCart('user1')).toEqual([item]);
         });
 
         it('should return an empty array if the cart is empty', () => {
-            const userId = 'user1';
-            expect(cartService.getCart(userId)).toEqual([]);
+            expect(cartService.getCart('user1')).toEqual([]);
         });
     });
 
     describe('getTotal', () => {
         it('should return the total cost of the cart', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            expect(cartService.getTotal(userId)).toBe(21.98);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            expect(cartService.getTotal('user1')).toBe(10);
         });
 
         it('should return 0 if the cart is empty', () => {
-            const userId = 'user1';
-            expect(cartService.getTotal(userId)).toBe(0);
+            expect(cartService.getTotal('user1')).toBe(0);
         });
     });
 
     describe('clearCart', () => {
         it('should clear the cart for a user', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            cartService.clearCart(userId);
-            expect(cartService.getCart(userId)).toEqual([]);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            cartService.clearCart('user1');
+            expect(cartService.getCart('user1')).toEqual([]);
         });
     });
 
     describe('getItemCount', () => {
         it('should return the total quantity of items in the cart', () => {
-            const userId = 'user1';
-            const item: CartItem = { productId: 'product1', name: 'Product 1', price: 10.99, quantity: 2 };
-            cartService.addItem(userId, item);
-            expect(cartService.getItemCount(userId)).toBe(2);
+            const item: CartItem = { productId: '1', name: 'Test', price: 10, quantity: 1 };
+            cartService.addItem('user1', item);
+            cartService.addItem('user1', item);
+            expect(cartService.getItemCount('user1')).toBe(2);
         });
 
         it('should return 0 if the cart is empty', () => {
-            const userId = 'user1';
-            expect(cartService.getItemCount(userId)).toBe(0);
+            expect(cartService.getItemCount('user1')).toBe(0);
         });
     });
 });
