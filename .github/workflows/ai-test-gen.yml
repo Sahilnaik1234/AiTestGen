@@ -1,0 +1,183 @@
+name: AI Test Generation CI
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ main, dev, "feature/**" ]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-tests:
+    runs-on: ubuntu-latest
+    env:
+      INCLUDE_PATTERN: "services,sourcess,examples"  # Add folder/file substring here to ONLY check those (e.g. "src")
+      EXCLUDE_PATTERN: ""  # Add folder/file substring here to IGNORE (e.g. "legacy")
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref || github.ref_name }}
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21'
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Install dependencies
+      run: |
+        npm install
+        pip install pytest pytest-cov
+
+    - name: Run TypeScript/JS Coverage Check
+      run: |
+        rm -rf coverage/
+        npm test || true
+
+    - name: Run Go Coverage Check
+      run: |
+        go test -coverprofile=coverage.out ./... || true
+
+    - name: Run Python Coverage Check
+      run: |
+        pytest . --cov=. --cov-report=json:coverage.json || true
+
+    - name: Run Java Coverage Check
+      run: |
+        # Generate a pom.xml at the root that includes all source folders
+        cat <<EOF > pom.xml
+        <?xml version="1.0" encoding="UTF-8"?>
+        <project xmlns="http://maven.apache.org/POM/4.0.0" 
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+          <modelVersion>4.0.0</modelVersion>
+          <groupId>com.example</groupId>
+          <artifactId>ai-test-gen-all</artifactId>
+          <version>1.0-SNAPSHOT</version>
+          <properties>
+            <maven.compiler.source>17</maven.compiler.source>
+            <maven.compiler.target>17</maven.compiler.target>
+            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+          </properties>
+          <dependencies>
+            <dependency>
+              <groupId>org.junit.jupiter</groupId>
+              <artifactId>junit-jupiter</artifactId>
+              <version>5.10.1</version>
+            </dependency>
+          </dependencies>
+          <build>
+            <sourceDirectory>.</sourceDirectory>
+            <testSourceDirectory>.</testSourceDirectory>
+            <plugins>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                  <includes>
+                    <include>**/*Test.java</include>
+                  </includes>
+                </configuration>
+              </plugin>
+              <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                  <execution>
+                    <id>prepare-agent</id>
+                    <goals><goal>prepare-agent</goal></goals>
+                  </execution>
+                  <execution>
+                    <id>report</id>
+                    <phase>test</phase>
+                    <goals><goal>report</goal></goals>
+                  </execution>
+                </executions>
+              </plugin>
+            </plugins>
+          </build>
+        </project>
+        EOF
+        mvn clean test || true
+
+    - name: Generate AI Tests from Coverage
+      env:
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        npm start -- coverage --threshold 75 --model groq --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+
+    - name: Auto-Commit AI Tests to Feature Branch
+      uses: stefanzweifel/git-auto-commit-action@v5
+      if: always()
+      with:
+        commit_message: "🤖 chore: auto-generate missing tests based on coverage"
+        file_pattern: "**/*.test.ts **/*.test.js **/*_test.py **/*_test.go **/*Test.java"
+
+    - name: Rerun Tests for Final Coverage
+      if: always()
+      run: |
+        echo "🔄 Deep cleaning old reports and rerunning tests..."
+        rm -rf coverage/
+        rm -f coverage.json examples/coverage.out
+        npm test || true
+        go test -coverprofile=coverage.out ./... || true
+        pytest . --cov=. --cov-report=json:coverage.json -v || true
+        mvn clean test || true
+
+    - name: Final Coverage Check
+      run: |
+        echo "🎯 Final validation against 75% threshold..."
+        # This will exit 1 if still below 75%, but won't trigger AI generation again
+        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+
+    - name: Upload Coverage Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-reports
+        path: |
+          coverage/
+          examples/coverage.out
+          coverage.json
+          examples/target/site/jacoco/jacoco.xml
+
+    - name: Debug Deployment Info
+      run: |
+        echo "Current Ref: ${{ github.ref }}"
+        echo "Event Name: ${{ github.event_name }}"
+
+    - name: Build Dashboard
+      run: |
+        cd dashboard
+        npm install
+        npm run build --emptyOutDir || npm run build
+
+    - name: Deploy to GitHub Pages
+      if: contains(github.ref, 'main') || contains(github.ref, 'dev')
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: dashboard/dist
+        branch: gh-pages
