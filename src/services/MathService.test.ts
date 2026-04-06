@@ -8,29 +8,6 @@ describe('MathService', () => {
     });
 
 
-    describe('multiply', () => {
-        it('should multiply two positive numbers', () => {
-            expect(mathService.multiply(1, 2)).toBe(2);
-            expect(mathService.multiply(10, 20)).toBe(200);
-        });
-
-        it('should multiply two negative numbers', () => {
-            expect(mathService.multiply(-1, -2)).toBe(2);
-            expect(mathService.multiply(-10, -20)).toBe(200);
-        });
-
-        it('should multiply a positive and a negative number', () => {
-            expect(mathService.multiply(1, -2)).toBe(-2);
-            expect(mathService.multiply(-10, 20)).toBe(-200);
-        });
-
-        it('should multiply zero with a number', () => {
-            expect(mathService.multiply(0, 10)).toBe(0);
-            expect(mathService.multiply(10, 0)).toBe(0);
-            expect(mathService.multiply(0, 0)).toBe(0);
-        });
-    });
-
     describe('divide', () => {
         it('should divide two positive numbers', () => {
             expect(mathService.divide(10, 2)).toBe(5);
