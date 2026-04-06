@@ -175,7 +175,7 @@ jobs:
         npm run build --emptyOutDir || npm run build
 
     - name: Deploy to GitHub Pages
-      if: contains(github.ref, 'main') || contains(github.ref, 'dev')
+      if: always()
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: dashboard/dist
