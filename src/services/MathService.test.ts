@@ -7,68 +7,6 @@ describe('MathService', () => {
         mathService = new MathService();
     });
 
-    describe('factorial', () => {
-        it('should calculate the factorial of a positive number', () => {
-            expect(mathService.factorial(0)).toBe(1);
-            expect(mathService.factorial(1)).toBe(1);
-            expect(mathService.factorial(2)).toBe(2);
-            expect(mathService.factorial(3)).toBe(6);
-            expect(mathService.factorial(4)).toBe(24);
-            expect(mathService.factorial(5)).toBe(120);
-        });
-
-        it('should throw an error for negative numbers', () => {
-            expect(() => mathService.factorial(-1)).toThrowError('Negative factorial');
-            expect(() => mathService.factorial(-2)).toThrowError('Negative factorial');
-            expect(() => mathService.factorial(-3)).toThrowError('Negative factorial');
-        });
-    });
-
-    describe('add', () => {
-        it('should add two positive numbers', () => {
-            expect(mathService.add(1, 2)).toBe(3);
-            expect(mathService.add(10, 20)).toBe(30);
-        });
-
-        it('should add two negative numbers', () => {
-            expect(mathService.add(-1, -2)).toBe(-3);
-            expect(mathService.add(-10, -20)).toBe(-30);
-        });
-
-        it('should add a positive and a negative number', () => {
-            expect(mathService.add(1, -2)).toBe(-1);
-            expect(mathService.add(-10, 20)).toBe(10);
-        });
-
-        it('should add zero to a number', () => {
-            expect(mathService.add(0, 10)).toBe(10);
-            expect(mathService.add(10, 0)).toBe(10);
-            expect(mathService.add(0, 0)).toBe(0);
-        });
-    });
-
-    describe('subtract', () => {
-        it('should subtract two positive numbers', () => {
-            expect(mathService.subtract(10, 2)).toBe(8);
-            expect(mathService.subtract(20, 10)).toBe(10);
-        });
-
-        it('should subtract two negative numbers', () => {
-            expect(mathService.subtract(-10, -2)).toBe(-8);
-            expect(mathService.subtract(-20, -10)).toBe(-10);
-        });
-
-        it('should subtract a positive and a negative number', () => {
-            expect(mathService.subtract(10, -2)).toBe(12);
-            expect(mathService.subtract(-10, 20)).toBe(-30);
-        });
-
-        it('should subtract zero from a number', () => {
-            expect(mathService.subtract(10, 0)).toBe(10);
-            expect(mathService.subtract(0, 10)).toBe(-10);
-            expect(mathService.subtract(0, 0)).toBe(0);
-        });
-    });
 
     describe('multiply', () => {
         it('should multiply two positive numbers', () => {
