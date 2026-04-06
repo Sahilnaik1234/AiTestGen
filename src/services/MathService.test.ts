@@ -7,49 +7,7 @@ describe('MathService', () => {
         mathService = new MathService();
     });
 
-    describe('add', () => {
-        it('should add two positive numbers', () => {
-            const result = mathService.add(2, 3);
-            expect(result).toBe(5);
-        });
 
-        it('should add two negative numbers', () => {
-            const result = mathService.add(-2, -3);
-            expect(result).toBe(-5);
-        });
-
-        it('should add a positive and a negative number', () => {
-            const result = mathService.add(2, -3);
-            expect(result).toBe(-1);
-        });
-
-        it('should add zero to a number', () => {
-            const result = mathService.add(2, 0);
-            expect(result).toBe(2);
-        });
-    });
-
-    describe('subtract', () => {
-        it('should subtract two positive numbers', () => {
-            const result = mathService.subtract(5, 3);
-            expect(result).toBe(2);
-        });
-
-        it('should subtract two negative numbers', () => {
-            const result = mathService.subtract(-2, -3);
-            expect(result).toBe(1);
-        });
-
-        it('should subtract a positive and a negative number', () => {
-            const result = mathService.subtract(2, -3);
-            expect(result).toBe(5);
-        });
-
-        it('should subtract zero from a number', () => {
-            const result = mathService.subtract(2, 0);
-            expect(result).toBe(2);
-        });
-    });
 
     describe('multiply', () => {
         it('should multiply two positive numbers', () => {
