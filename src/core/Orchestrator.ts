@@ -48,9 +48,16 @@ export class Orchestrator {
 
         const adapter = ModelFactory.createAdapter(this.adapterType, this.apiKey, this.modelName);
         const fileName = path.basename(filePath);
-        const response = await adapter.generateTest(sourceCode, language, fileName, coverageData);
 
         const testFilePath = this.getTestFilePath(filePath, extension);
+        let existingTestCode = '';
+        if (fs.existsSync(testFilePath)) {
+            existingTestCode = fs.readFileSync(testFilePath, 'utf-8');
+            console.log(chalk.gray(`   - Found existing test file. Sending to AI for merging...`));
+        }
+
+        const response = await adapter.generateTest(sourceCode, language, fileName, coverageData, existingTestCode);
+
         const testCode = response.testCode;
         fs.writeFileSync(testFilePath, testCode);
 

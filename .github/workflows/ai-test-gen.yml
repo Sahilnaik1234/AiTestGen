@@ -148,11 +148,58 @@ jobs:
         pytest . --cov=. --cov-report=json:coverage.json -v || true
         mvn clean test || true
 
-    - name: Final Coverage Check
+    - name: Commit and Push AI Tests to Current Branch
+      if: always()
       run: |
-        echo "🎯 Final validation against 75% threshold..."
-        # This will exit 1 if still below 75%, but won't trigger AI generation again
-        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+        git config --global user.name "AI Test Generator"
+        git config --global user.email "ai-test-gen@github.com"
+        
+        # ONLY stage the generated test files
+        git add **/*.test.ts **/*.test.js **/*_test.py **/*_test.go **/*Test.java
+        
+        if git diff --cached --quiet; then
+          echo "✅ No new test cases generated."
+        else
+          echo "✨ New tests generated. Committing..."
+          git commit -m "chore: add AI-generated test cases"
+          
+          # DISCARD all other unstaged changes (coverage reports, pom.xml, etc.) 
+          # to allow rebase/pull to work
+          git checkout -- .
+          git clean -fd
+          
+          # Determine the actual branch name
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            TARGET_BRANCH="${{ github.head_ref }}"
+          else
+            TARGET_BRANCH="${{ github.ref_name }}"
+          fi
+
+          echo "🎯 Target branch is: $TARGET_BRANCH"
+
+          # Rebase to latest to avoid conflicts
+          git pull --rebase origin "$TARGET_BRANCH"
+          
+          # Push to the head branch
+          git push origin "HEAD:$TARGET_BRANCH"
+        fi
+
+    - name: Create Pull Request to Dev
+      if: always() && github.event_name != 'pull_request' && github.ref_name != 'dev' && github.ref_name != 'main'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Check if PR already exists
+        PR_EXISTS=$(gh pr list --base dev --head ${{ github.ref_name }} --json number --jq '.[0].number')
+        
+        if [ -z "$PR_EXISTS" ]; then
+          echo "🚀 Creating Pull Request to dev..."
+          gh pr create --base dev --head ${{ github.ref_name }} \
+            --title "🤖 AI Generated Tests - ${{ github.ref_name }}" \
+            --body "This PR was automatically created to merge AI-generated tests from ${{ github.ref_name }} into dev."
+        else
+          echo "ℹ️ Pull Request already exists: #$PR_EXISTS"
+        fi
 
     - name: Upload Coverage Results
       uses: actions/upload-artifact@v4
