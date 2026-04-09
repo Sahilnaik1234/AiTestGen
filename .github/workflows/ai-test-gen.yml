@@ -16,119 +16,119 @@ jobs:
     env:
       INCLUDE_PATTERN: "services"  # Add folder/file substring here to ONLY check those (e.g. "src")
       EXCLUDE_PATTERN: ""  # Add folder/file substring here to IGNORE (e.g. "legacy")
+      COVERAGE_THRESHOLD: "75"
 
     steps:
     - uses: actions/checkout@v4
       with:
         ref: ${{ github.head_ref || github.ref_name }}
 
+    # ── Node.js is always needed (the tool itself is TypeScript) ──
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
 
+    - name: Install tool dependencies
+      run: npm install
+
+    # ── Dynamic Language Detection ──
+    - name: Detect languages in workspace
+      id: detect
+      run: |
+        # Run the detect command and capture JSON
+        DETECT_JSON=$(npx ts-node src/index.ts detect --json)
+        echo "$DETECT_JSON"
+
+        # Parse language names into individual flags
+        LANGS=$(echo "$DETECT_JSON" | node -e "
+          const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+          const names = data.languages.map(l => l.name);
+          console.log('languages=' + names.join(','));
+          console.log('has_typescript=' + names.includes('typescript'));
+          console.log('has_javascript=' + (names.includes('javascript') || names.includes('typescript')));
+          console.log('has_go=' + names.includes('go'));
+          console.log('has_python=' + names.includes('python'));
+          console.log('has_java=' + names.includes('java'));
+          console.log('has_rust=' + names.includes('rust'));
+          console.log('has_csharp=' + names.includes('csharp'));
+
+          // Extract versions from detection
+          for (const l of data.languages) {
+            const key = l.name.replace(/[^a-z]/g, '');
+            if (l.setupVersion) console.log(key + '_version=' + l.setupVersion);
+          }
+        ")
+        echo "$LANGS" >> $GITHUB_OUTPUT
+
+        # Log what was detected
+        echo "🔍 Detected languages:"
+        echo "$LANGS"
+
+    # ── Conditional Runtime Setup (only install what's needed) ──
     - name: Set up Go
+      if: steps.detect.outputs.has_go == 'true'
       uses: actions/setup-go@v5
       with:
-        go-version: '1.21'
+        go-version: ${{ steps.detect.outputs.go_version || '1.21' }}
 
     - name: Set up Python
+      if: steps.detect.outputs.has_python == 'true'
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: ${{ steps.detect.outputs.python_version || '3.10' }}
 
     - name: Set up Java
+      if: steps.detect.outputs.has_java == 'true'
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: ${{ steps.detect.outputs.java_version || '17' }}
         distribution: 'temurin'
 
-    - name: Install dependencies
+    # ── Conditional Dependency Installation ──
+    - name: Install Python test dependencies
+      if: steps.detect.outputs.has_python == 'true'
       run: |
-        npm install
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        fi
         pip install pytest pytest-cov
 
-    - name: Run TypeScript/JS Coverage Check
+    # ── Conditional Coverage Collection ──
+    - name: Run TypeScript/JS Coverage
+      if: steps.detect.outputs.has_typescript == 'true' || steps.detect.outputs.has_javascript == 'true'
       run: |
         rm -rf coverage/
         npm test || true
 
-    - name: Run Go Coverage Check
+    - name: Run Go Coverage
+      if: steps.detect.outputs.has_go == 'true'
       run: |
         go test -coverprofile=coverage.out ./... || true
 
-    - name: Run Python Coverage Check
+    - name: Run Python Coverage
+      if: steps.detect.outputs.has_python == 'true'
       run: |
         pytest . --cov=. --cov-report=json:coverage.json || true
 
-    - name: Run Java Coverage Check
+    - name: Run Java Coverage
+      if: steps.detect.outputs.has_java == 'true'
       run: |
-        # Generate a pom.xml at the root that includes all source folders
-        cat <<EOF > pom.xml
-        <?xml version="1.0" encoding="UTF-8"?>
-        <project xmlns="http://maven.apache.org/POM/4.0.0" 
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-          <modelVersion>4.0.0</modelVersion>
-          <groupId>com.example</groupId>
-          <artifactId>ai-test-gen-all</artifactId>
-          <version>1.0-SNAPSHOT</version>
-          <properties>
-            <maven.compiler.source>17</maven.compiler.source>
-            <maven.compiler.target>17</maven.compiler.target>
-            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-          </properties>
-          <dependencies>
-            <dependency>
-              <groupId>org.junit.jupiter</groupId>
-              <artifactId>junit-jupiter</artifactId>
-              <version>5.10.1</version>
-            </dependency>
-          </dependencies>
-          <build>
-            <sourceDirectory>.</sourceDirectory>
-            <testSourceDirectory>.</testSourceDirectory>
-            <plugins>
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
-                <configuration>
-                  <includes>
-                    <include>**/*Test.java</include>
-                  </includes>
-                </configuration>
-              </plugin>
-              <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.11</version>
-                <executions>
-                  <execution>
-                    <id>prepare-agent</id>
-                    <goals><goal>prepare-agent</goal></goals>
-                  </execution>
-                  <execution>
-                    <id>report</id>
-                    <phase>test</phase>
-                    <goals><goal>report</goal></goals>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-          </build>
-        </project>
-        EOF
         mvn clean test || true
 
+    # ── AI Test Generation ──
     - name: Generate AI Tests from Coverage
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
-        npm start -- coverage --threshold 75 --model groq --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+        npm start -- coverage \
+          --threshold ${{ env.COVERAGE_THRESHOLD }} \
+          --model groq \
+          --include "${{ env.INCLUDE_PATTERN }}" \
+          --exclude "${{ env.EXCLUDE_PATTERN }}"
 
     - name: Auto-Commit AI Tests to Feature Branch
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -136,22 +136,45 @@ jobs:
       with:
         commit_message: "🤖 chore: auto-generate missing tests based on coverage"
 
+    # ── Final Validation (rerun only detected languages) ──
     - name: Rerun Tests for Final Coverage
       if: always()
       run: |
-        echo "🔄 Deep cleaning old reports and rerunning tests..."
+        echo "🔄 Rerunning tests for detected languages..."
         rm -rf coverage/
-        rm -f coverage.json examples/coverage.out
-        npm test || true
-        go test -coverprofile=coverage.out ./... || true
-        pytest . --cov=. --cov-report=json:coverage.json -v || true
-        mvn clean test || true
+        rm -f coverage.json coverage.out
+
+        DETECTED="${{ steps.detect.outputs.languages }}"
+
+        if echo "$DETECTED" | grep -q "typescript\|javascript"; then
+          echo "▶ Running JS/TS tests..."
+          npm test || true
+        fi
+
+        if echo "$DETECTED" | grep -q "go"; then
+          echo "▶ Running Go tests..."
+          go test -coverprofile=coverage.out ./... || true
+        fi
+
+        if echo "$DETECTED" | grep -q "python"; then
+          echo "▶ Running Python tests..."
+          pytest . --cov=. --cov-report=json:coverage.json -v || true
+        fi
+
+        if echo "$DETECTED" | grep -q "java"; then
+          echo "▶ Running Java tests..."
+          mvn clean test || true
+        fi
 
     - name: Final Coverage Check
       run: |
-        echo "🎯 Final validation against 75% threshold..."
-        # This will exit 1 if still below 75%, but won't trigger AI generation again
-        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+        echo "🎯 Final validation against ${{ env.COVERAGE_THRESHOLD }}% threshold..."
+        npm start -- coverage \
+          --threshold ${{ env.COVERAGE_THRESHOLD }} \
+          --exit \
+          --check-only \
+          --include "${{ env.INCLUDE_PATTERN }}" \
+          --exclude "${{ env.EXCLUDE_PATTERN }}"
 
     - name: Upload Coverage Results
       uses: actions/upload-artifact@v4
@@ -180,3 +203,4 @@ jobs:
       with:
         folder: dashboard/dist
         branch: gh-pages
+ 

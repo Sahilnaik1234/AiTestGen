@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { Orchestrator } from './core/Orchestrator';
 import { CoverageParser, FileCoverage } from './utils/CoverageParser';
+import { LanguageDetector } from './utils/LanguageDetector';
 import * as dotenv from 'dotenv';
 import chalk from 'chalk';
 import * as fs from 'fs';
