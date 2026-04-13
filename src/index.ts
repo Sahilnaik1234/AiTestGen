@@ -334,7 +334,13 @@ function saveResults(newResults: any[]) {
     // Merge: Update existing or add new
     const merged = [...existingResults];
     for (const res of newResults) {
-        const index = merged.findIndex(e => e.id === res.id);
+        // Find by ID or name
+        const index = merged.findIndex(e => 
+            e.id === res.id || 
+            e.name === res.name ||
+            (e.filePath && res.filePath && e.filePath.toLowerCase().endsWith(res.name.toLowerCase()))
+        );
+
         if (index >= 0) {
             merged[index] = { ...merged[index], ...res };
         } else {
@@ -343,7 +349,7 @@ function saveResults(newResults: any[]) {
     }
 
     fs.writeFileSync(resultsPath, JSON.stringify(merged, null, 2));
-    console.log(chalk.green(`\n📊 Dashboard data updated in dashboard/public/results.json`));
+    console.log(chalk.green(`\n📊 Dashboard data updated with ${newResults.length} records.`));
 }
 
 
