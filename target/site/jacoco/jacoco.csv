@@ -1,5 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-ai-test-gen-all,default,StringUtils,584,0,36,0,239,0,231,0,213,0
-ai-test-gen-all,com.aitestgen.services,OrderServiceTest,0,10,0,0,0,4,0,2,0,2
-ai-test-gen-all,com.aitestgen.services,OrderService.Order,45,0,0,0,16,0,8,0,8,0
-ai-test-gen-all,com.aitestgen.services,OrderService,209,48,24,0,45,9,21,1,9,1
