@@ -194,5 +194,57 @@ class TestPaymentService(unittest.TestCase):
         service.process_payment(amount, method, currency)
         self.assertAlmostEqual(service.get_total_volume(), amount * 2)
 
+    def test_process_payment_multiple_methods(self):
+        service = PaymentService()
+        amount = 10.0
+        method1 = "CREDIT_CARD"
+        method2 = "DEBIT_CARD"
+        currency = "USD"
+        service.process_payment(amount, method1, currency)
+        service.process_payment(amount, method2, currency)
+        self.assertAlmostEqual(service.get_total_volume(), amount * 2)
+        self.assertAlmostEqual(service.get_total_volume(method1), amount)
+        self.assertAlmostEqual(service.get_total_volume(method2), amount)
+
+    def test_refund_payment_after_multiple_payments(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = "USD"
+        transaction1 = service.process_payment(amount, method, currency)
+        transaction2 = service.process_payment(amount, method, currency)
+        self.assertTrue(service.refund_payment(transaction1["id"]))
+        self.assertAlmostEqual(service.get_total_volume(), amount)
+
+    def test_get_transaction_after_refund(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = "USD"
+        transaction = service.process_payment(amount, method, currency)
+        self.assertTrue(service.refund_payment(transaction["id"]))
+        refunded_transaction = service.get_transaction(transaction["id"])
+        self.assertEqual(refunded_transaction["status"], "REFUNDED")
+
+    def test_process_payment_with_different_currencies(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency1 = "USD"
+        currency2 = "EUR"
+        service.process_payment(amount, method, currency1)
+        service.process_payment(amount, method, currency2)
+        self.assertAlmostEqual(service.get_total_volume(), amount * 2)
+
+    def test_get_total_volume_with_different_currencies(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency1 = "USD"
+        currency2 = "EUR"
+        service.process_payment(amount, method, currency1)
+        service.process_payment(amount, method, currency2)
+        self.assertAlmostEqual(service.get_total_volume(), amount * 2)
+
 if __name__ == '__main__':
     unittest.main()
