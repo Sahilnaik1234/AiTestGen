@@ -1,206 +1,209 @@
-name: AI Test Generation CI
+name: AI DevSecOps Pipeline
 
 on:
   push:
     branches: [ "main", "dev" ]
   pull_request:
     branches: [ "main", "dev" ]
+  workflow_dispatch:
+    inputs:
+      secret_tool:
+        description: 'Secret Tool'
+        default: 'gitleaks'
+        type: string
+      sast_tool:
+        description: 'SAST Tool'
+        default: 'semgrep'
+        type: string
 
 permissions:
   contents: write
   pull-requests: write
+  security-events: write
 
 jobs:
-  generate-tests:
+  # ============================================================
+  # SECURITY SCANNING STAGE
+  # ============================================================
+  security-scans:
+    name: "🛡️ Security Scanning"
     runs-on: ubuntu-latest
     env:
-      INCLUDE_PATTERN: "services"  # Add folder/file substring here to ONLY check those (e.g. "src")
-      EXCLUDE_PATTERN: ""  # Add folder/file substring here to IGNORE (e.g. "legacy")
-      COVERAGE_THRESHOLD: "75"
-
+      SCAN_INCLUDE: 'src'
+      SCAN_EXCLUDE: 'node_modules,tests,docs'
     steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/checkout@v4
 
-    # ── Node.js is always needed (the tool itself is TypeScript) ──
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Run Secret Scan
+        env:
+          TOOL: ${{ github.event.inputs.secret_tool || 'gitleaks' }}
+        run: |
+          chmod +x tools/secrets/$TOOL.sh
+          ./tools/secrets/$TOOL.sh || true
 
-    - name: Install tool dependencies
-      run: npm install
+      - name: Run SAST Scan
+        env:
+          TOOL: ${{ github.event.inputs.sast_tool || 'semgrep' }}
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        run: |
+          chmod +x tools/sast/$TOOL.sh
+          ./tools/sast/$TOOL.sh || true
 
-    # ── Dynamic Language Detection ──
-    - name: Detect languages in workspace
-      id: detect
-      run: |
-        # Run the detect command and capture JSON
-        DETECT_JSON=$(npx ts-node src/index.ts detect --json)
-        echo "$DETECT_JSON"
+      - name: Claude Code Security Audit
+        if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          pip install anthropic
+          chmod +x tools/sast/claude.sh
+          ./tools/sast/claude.sh || true
 
-        # Parse language names into individual flags
-        LANGS=$(echo "$DETECT_JSON" | node -e "
-          const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
-          const names = data.languages.map(l => l.name);
-          console.log('languages=' + names.join(','));
-          console.log('has_typescript=' + names.includes('typescript'));
-          console.log('has_javascript=' + (names.includes('javascript') || names.includes('typescript')));
-          console.log('has_go=' + names.includes('go'));
-          console.log('has_python=' + names.includes('python'));
-          console.log('has_java=' + names.includes('java'));
-          console.log('has_rust=' + names.includes('rust'));
-          console.log('has_csharp=' + names.includes('csharp'));
+      - name: Upload Security Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            gitleaks-report.json
+            semgrep-report.json
+            claude-report.json
 
-          // Extract versions from detection
-          for (const l of data.languages) {
-            const key = l.name.replace(/[^a-z]/g, '');
-            if (l.setupVersion) console.log(key + '_version=' + l.setupVersion);
-          }
-        ")
-        echo "$LANGS" >> $GITHUB_OUTPUT
+  # ============================================================
+  # NORMALIZE & UNIFY SECURITY DATA
+  # ============================================================
+  security-normalize:
+    name: "📊 Normalize Security Findings"
+    runs-on: ubuntu-latest
+    needs: [security-scans]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
 
-        # Log what was detected
-        echo "🔍 Detected languages:"
-        echo "$LANGS"
+      - name: Download Reports
+        uses: actions/download-artifact@v4
+        with:
+          name: security-reports
+          path: .
+        continue-on-error: true
 
-    # ── Conditional Runtime Setup (only install what's needed) ──
-    - name: Set up Go
-      if: steps.detect.outputs.has_go == 'true'
-      uses: actions/setup-go@v5
-      with:
-        go-version: ${{ steps.detect.outputs.go_version || '1.21' }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Set up Python
-      if: steps.detect.outputs.has_python == 'true'
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ steps.detect.outputs.python_version || '3.10' }}
+      - name: Unify Security Reports
+        run: python scripts/normalize.py
 
-    - name: Set up Java
-      if: steps.detect.outputs.has_java == 'true'
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ steps.detect.outputs.java_version || '17' }}
-        distribution: 'temurin'
+      - name: Upload Unified Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-security-report
+          path: final-security-report.json
 
-    # ── Conditional Dependency Installation ──
-    - name: Install Python test dependencies
-      if: steps.detect.outputs.has_python == 'true'
-      run: |
-        if [ -f requirements.txt ]; then
-          pip install -r requirements.txt
-        fi
-        pip install pytest pytest-cov
+  # ============================================================
+  # AI TEST GENERATION STAGE
+  # ============================================================
+  generate-tests:
+    name: "🧪 AI Test Generation"
+    runs-on: ubuntu-latest
+    needs: [security-normalize]
+    env:
+      INCLUDE_PATTERN: "services"
+      EXCLUDE_PATTERN: ""
+      COVERAGE_THRESHOLD: "75"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
-    # ── Conditional Coverage Collection ──
-    - name: Run TypeScript/JS Coverage
-      if: steps.detect.outputs.has_typescript == 'true' || steps.detect.outputs.has_javascript == 'true'
-      run: |
-        rm -rf coverage/
-        npm test || true
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-    - name: Run Go Coverage
-      if: steps.detect.outputs.has_go == 'true'
-      run: |
-        go test -coverprofile=coverage.out ./... || true
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Run Python Coverage
-      if: steps.detect.outputs.has_python == 'true'
-      run: |
-        pytest . --cov=. --cov-report=json:coverage.json || true
+      - name: Detect Languages
+        id: detect
+        run: |
+          DETECT_JSON=$(npx ts-node src/index.ts detect --json)
+          LANGS=$(echo "$DETECT_JSON" | node -e "
+            const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            const names = data.languages.map(l => l.name);
+            console.log('languages=' + names.join(','));
+            console.log('has_typescript=' + names.includes('typescript'));
+            console.log('has_javascript=' + (names.includes('javascript') || names.includes('typescript')));
+            console.log('has_go=' + names.includes('go'));
+            console.log('has_python=' + names.includes('python'));
+            console.log('has_java=' + names.includes('java'));
+          ")
+          echo "$LANGS" >> $GITHUB_OUTPUT
 
-    - name: Run Java Coverage
-      if: steps.detect.outputs.has_java == 'true'
-      run: |
-        mvn clean test || true
-
-    # ── AI Test Generation ──
-    - name: Generate AI Tests from Coverage
-      env:
-        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        npm start -- coverage \
-          --threshold ${{ env.COVERAGE_THRESHOLD }} \
-          --model groq \
-          --include "${{ env.INCLUDE_PATTERN }}" \
-          --exclude "${{ env.EXCLUDE_PATTERN }}"
-
-    - name: Auto-Commit AI Tests to Feature Branch
-      uses: stefanzweifel/git-auto-commit-action@v5
-      if: always()
-      with:
-        commit_message: "🤖 chore: auto-generate missing tests based on coverage"
-
-    # ── Final Validation (rerun only detected languages) ──
-    - name: Rerun Tests for Final Coverage
-      if: always()
-      run: |
-        echo "🔄 Rerunning tests for detected languages..."
-        rm -rf coverage/
-        rm -f coverage.json coverage.out
-
-        DETECTED="${{ steps.detect.outputs.languages }}"
-
-        if echo "$DETECTED" | grep -q "typescript\|javascript"; then
-          echo "▶ Running JS/TS tests..."
+      - name: Run Coverage
+        run: |
+          rm -rf coverage/
           npm test || true
-        fi
 
-        if echo "$DETECTED" | grep -q "go"; then
-          echo "▶ Running Go tests..."
-          go test -coverprofile=coverage.out ./... || true
-        fi
+      - name: Generate AI Tests
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          npm start -- coverage \
+            --threshold ${{ env.COVERAGE_THRESHOLD }} \
+            --model groq \
+            --include "${{ env.INCLUDE_PATTERN }}" \
+            --exclude "${{ env.EXCLUDE_PATTERN }}"
 
-        if echo "$DETECTED" | grep -q "python"; then
-          echo "▶ Running Python tests..."
-          pytest . --cov=. --cov-report=json:coverage.json -v || true
-        fi
+      - name: Auto-Commit Generated Tests
+        uses: stefanzweifel/git-auto-commit-action@v5
+        if: always()
+        with:
+          commit_message: "🤖 chore: auto-generate missing tests based on coverage"
 
-        if echo "$DETECTED" | grep -q "java"; then
-          echo "▶ Running Java tests..."
-          mvn clean test || true
-        fi
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            results.json
+            coverage/
 
-    - name: Final Coverage Check
-      run: |
-        echo "🎯 Final validation against ${{ env.COVERAGE_THRESHOLD }}% threshold..."
-        npm start -- coverage \
-          --threshold ${{ env.COVERAGE_THRESHOLD }} \
-          --exit \
-          --check-only \
-          --include "${{ env.INCLUDE_PATTERN }}" \
-          --exclude "${{ env.EXCLUDE_PATTERN }}"
+  # ============================================================
+  # DASHBOARD DEPLOYMENT
+  # ============================================================
+  deploy-dashboard:
+    name: "🚀 Deploy DevSecOps Dashboard"
+    runs-on: ubuntu-latest
+    needs: [generate-tests, security-normalize]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Upload Coverage Results
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-reports
-        path: |
-          coverage/
-          examples/coverage.out
-          coverage.json
-          examples/target/site/jacoco/jacoco.xml
+      - name: Download Test Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: dashboard/public/
 
-    - name: Debug Deployment Info
-      run: |
-        echo "Current Ref: ${{ github.ref }}"
-        echo "Event Name: ${{ github.event_name }}"
+      - name: Download Security Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: final-security-report
+          path: dashboard/public/
 
-    - name: Build Dashboard
-      run: |
-        cd dashboard
-        npm install
-        npm run build --emptyOutDir || npm run build
+      - name: Build Dashboard
+        run: |
+          cd dashboard
+          npm install
+          npm run build
 
-    - name: Deploy to GitHub Pages
-      if: always()
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: dashboard/dist
-        branch: gh-pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dashboard/dist
+          branch: gh-pages
  
