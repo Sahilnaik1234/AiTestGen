@@ -215,20 +215,33 @@ jobs:
             --include "${{ env.INCLUDE_PATTERN }}" \
             --exclude "${{ env.EXCLUDE_PATTERN }}"
 
-      - name: 🚀 Final Verification Pass (Rerun AI Tests)
+      - name: 🚀 Targeted Verification Pass (Rerun AI Tests Only)
         run: |
-          echo "🔄 Rerunning all tests including AI-generated ones..."
+          echo "🔍 Detecting newly generated AI tests..."
           
-          if [ "${{ steps.detect.outputs.has_python }}" == "true" ]; then
-            pytest . --cov=. --cov-report=json:coverage.json || true
+          # Detect new Python tests
+          PY_TESTS=$(git ls-files --others --exclude-standard | grep -P "test_.*\.py$|\.test\.py$" || true)
+          if [ ! -z "$PY_TESTS" ] && [ "${{ steps.detect.outputs.has_python }}" == "true" ]; then
+            echo "🐍 Verifying Python tests: $PY_TESTS"
+            pytest $PY_TESTS --cov=. --cov-append --cov-report=json:coverage.json || true
           fi
 
-          if [ "${{ steps.detect.outputs.has_java }}" == "true" ]; then
-            mvn clean test || true
+          # Detect new Java tests
+          JAVA_TEST_FILES=$(git ls-files --others --exclude-standard | grep -P "Test\.java$" || true)
+          if [ ! -z "$JAVA_TEST_FILES" ] && [ "${{ steps.detect.outputs.has_java }}" == "true" ]; then
+            # Extract class names from file paths
+            JAVA_CLASSES=$(echo "$JAVA_TEST_FILES" | xargs -n 1 basename | sed 's/\.java//' | tr '\n' ',' | sed 's/,$//')
+            if [ ! -z "$JAVA_CLASSES" ]; then
+              echo "☕ Verifying Java test classes: $JAVA_CLASSES"
+              mvn test -Dtest=$JAVA_CLASSES || true
+            fi
           fi
 
-          if [ "${{ steps.detect.outputs.has_javascript }}" == "true" ] || [ "${{ steps.detect.outputs.has_typescript }}" == "true" ]; then
-            npm test || true
+          # Detect new TS/JS tests
+          JS_TESTS=$(git ls-files --others --exclude-standard | grep -P "\.test\.(ts|js)$" || true)
+          if [ ! -z "$JS_TESTS" ] && [ "${{ steps.detect.outputs.has_javascript }}" == "true" ]; then
+            echo "📦 Verifying JS/TS tests: $JS_TESTS"
+            npx jest $JS_TESTS || true
           fi
 
           echo "📊 Finalizing dashboard metrics..."
