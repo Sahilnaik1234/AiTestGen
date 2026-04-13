@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1776061290750" clover="3.2.0">
-  <project timestamp="1776061290750" name="All files">
-    <metrics statements="593" coveredstatements="68" conditionals="295" coveredconditionals="40" methods="114" coveredmethods="29" elements="1002" coveredelements="137" complexity="0" loc="593" ncloc="593" packages="7" files="15" classes="15"/>
+<coverage generated="1776062196037" clover="3.2.0">
+  <project timestamp="1776062196037" name="All files">
+    <metrics statements="536" coveredstatements="68" conditionals="248" coveredconditionals="40" methods="96" coveredmethods="29" elements="880" coveredelements="137" complexity="0" loc="536" ncloc="536" packages="6" files="13" classes="13"/>
     <package name="AiTestGen">
       <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="jest.config.js" path="/home/runner/work/AiTestGen/AiTestGen/jest.config.js">
@@ -434,72 +434,6 @@
         <line num="62" count="1" type="stmt"/>
         <line num="63" count="1" type="stmt"/>
         <line num="67" count="4" type="cond" truecount="2" falsecount="0"/>
-      </file>
-    </package>
-    <package name="AiTestGen.src.sourcess">
-      <metrics statements="57" coveredstatements="0" conditionals="47" coveredconditionals="0" methods="18" coveredmethods="0"/>
-      <file name="InventoryManager.ts" path="/home/runner/work/AiTestGen/AiTestGen/src/sourcess/InventoryManager.ts">
-        <metrics statements="26" coveredstatements="0" conditionals="28" coveredconditionals="0" methods="8" coveredmethods="0"/>
-        <line num="1" count="0" type="stmt"/>
-        <line num="2" count="0" type="stmt"/>
-        <line num="3" count="0" type="stmt"/>
-        <line num="6" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="7" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="11" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="15" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="16" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="17" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="22" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="23" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="29" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="30" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="31" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="32" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
-        <line num="38" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="42" count="0" type="stmt"/>
-        <line num="46" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="47" count="0" type="stmt"/>
-        <line num="48" count="0" type="stmt"/>
-        <line num="49" count="0" type="stmt"/>
-      </file>
-      <file name="OrderProcessor.ts" path="/home/runner/work/AiTestGen/AiTestGen/src/sourcess/OrderProcessor.ts">
-        <metrics statements="31" coveredstatements="0" conditionals="19" coveredconditionals="0" methods="10" coveredmethods="0"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="9" count="0" type="stmt"/>
-        <line num="12" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="22" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="23" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="30" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="31" count="0" type="stmt"/>
-        <line num="32" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="37" count="0" type="stmt"/>
-        <line num="38" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="39" count="0" type="stmt"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-        <line num="45" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="46" count="0" type="stmt"/>
-        <line num="47" count="0" type="stmt"/>
-        <line num="51" count="0" type="stmt"/>
-        <line num="52" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="53" count="0" type="stmt"/>
-        <line num="54" count="0" type="stmt"/>
-        <line num="58" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
       </file>
     </package>
     <package name="AiTestGen.src.utils">
