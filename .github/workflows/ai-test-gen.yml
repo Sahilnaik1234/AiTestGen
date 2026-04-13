@@ -159,10 +159,49 @@ jobs:
           ")
           echo "$LANGS" >> $GITHUB_OUTPUT
 
-      - name: Run Coverage
+      - name: Set up Go
+        if: steps.detect.outputs.has_go == 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+      
+      - name: Set up Python
+        if: steps.detect.outputs.has_python == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Java
+        if: steps.detect.outputs.has_java == 'true'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Collect Multi-Language Coverage
         run: |
-          rm -rf coverage/
-          npm test || true
+          echo "🔄 Collecting coverage for detected languages..."
+          
+          if [ "${{ steps.detect.outputs.has_javascript }}" == "true" ] || [ "${{ steps.detect.outputs.has_typescript }}" == "true" ]; then
+            echo "▶ Running JS/TS tests..."
+            npm test || true
+          fi
+
+          if [ "${{ steps.detect.outputs.has_go }}" == "true" ]; then
+            echo "▶ Running Go tests..."
+            go test -coverprofile=coverage.out ./... || true
+          fi
+
+          if [ "${{ steps.detect.outputs.has_python }}" == "true" ]; then
+            echo "▶ Running Python tests..."
+            pip install pytest pytest-cov
+            pytest . --cov=. --cov-report=json:coverage.json || true
+          fi
+
+          if [ "${{ steps.detect.outputs.has_java }}" == "true" ]; then
+            echo "▶ Running Java tests (Maven)..."
+            mvn clean test || true
+          fi
 
       - name: Generate AI Tests
         env:
