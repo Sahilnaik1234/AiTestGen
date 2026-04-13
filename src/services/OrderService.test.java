@@ -125,4 +125,73 @@ public class OrderServiceTest {
         double totalRevenue = service.getTotalRevenue();
         assertEquals(2000, totalRevenue, 0.01);
     }
+
+    @Test
+    void testCreateOrderWithMultipleProducts() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE", "TABLET");
+        Order order = service.createOrder("John Doe", products);
+        assertNotNull(order);
+        assertEquals("John Doe", order.getCustomerName());
+        assertEquals(3, order.getProducts().size());
+        assertTrue(order.getProducts().contains("LAPTOP"));
+        assertTrue(order.getProducts().contains("PHONE"));
+        assertTrue(order.getProducts().contains("TABLET"));
+    }
+
+    @Test
+    void testCreateOrderWithUnknownProduct() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "UNKNOWN");
+        Order order = service.createOrder("John Doe", products);
+        assertNotNull(order);
+        assertEquals("John Doe", order.getCustomerName());
+        assertEquals(1, order.getProducts().size());
+        assertTrue(order.getProducts().contains("LAPTOP"));
+    }
+
+    @Test
+    void testGetOrdersByCustomerWithNoOrders() {
+        OrderService service = new OrderService();
+        String customerName = "John Doe";
+        List<OrderService.Order> orders = service.getOrdersByCustomer(customerName);
+        assertEquals(0, orders.size());
+    }
+
+    @Test
+    void testGetTotalRevenueWithNoOrders() {
+        OrderService service = new OrderService();
+        double totalRevenue = service.getTotalRevenue();
+        assertEquals(0, totalRevenue, 0.01);
+    }
+
+    @Test
+    void testCancelOrderWithOrderIdThatDoesNotExist() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        service.createOrder("John Doe", products);
+        assertFalse(service.cancelOrder("non-existent-id"));
+    }
+
+    @Test
+    void testCreateOrderWithSameCustomerMultipleTimes() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        service.createOrder("John Doe", products);
+        service.createOrder("John Doe", products);
+        List<OrderService.Order> orders = service.getOrdersByCustomer("John Doe");
+        assertEquals(2, orders.size());
+    }
+
+    @Test
+    void testCalculateDiscountWithMultipleDiscounts() {
+        OrderService service = new OrderService();
+        String customerName = "John Doe";
+        for (int i = 0; i < 6; i++) {
+            service.createOrder(customerName, Arrays.asList("LAPTOP"));
+        }
+        double amount = 2500;
+        double discount = service.calculateDiscount(amount, customerName);
+        assertEquals(475, discount, 0.01);
+    }
 }
