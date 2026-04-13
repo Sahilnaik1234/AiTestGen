@@ -154,6 +154,32 @@ pre {
 
 .badge-cyan { background: rgba(6, 182, 212, 0.1); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.2); }
 .badge-green { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.2); }
+.badge-magenta { background: rgba(217, 70, 239, 0.1); color: var(--accent-magenta); border: 1px solid rgba(217, 70, 239, 0.2); }
+.badge-yellow { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2); }
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.security-view table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.security-view table td {
+  font-size: 0.9rem;
+}
+
+.nav-item.security-btn {
+  margin-bottom: 0.5rem;
+}
 
 /* Scrollbar Styles */
 ::-webkit-scrollbar { width: 8px; }

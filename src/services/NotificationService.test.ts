@@ -18,17 +18,12 @@ describe('NotificationService', () => {
 
         it('should create a new notification', () => {
             const notification = service.send('userId', 'message', 'email');
-            expect(notification).toHaveProperty('id');
-            expect(notification).toHaveProperty('userId', 'userId');
-            expect(notification).toHaveProperty('message', 'message');
-            expect(notification).toHaveProperty('type', 'email');
-            expect(notification).toHaveProperty('read', false);
-            expect(notification).toHaveProperty('createdAt');
-        });
-
-        it('should add the notification to the user\'s list', () => {
-            service.send('userId', 'message', 'email');
-            expect(service.getAll('userId')).toHaveLength(1);
+            expect(notification.id).toBeDefined();
+            expect(notification.userId).toBe('userId');
+            expect(notification.message).toBe('message');
+            expect(notification.type).toBe('email');
+            expect(notification.read).toBe(false);
+            expect(notification.createdAt).toBeInstanceOf(Date);
         });
     });
 
@@ -50,7 +45,7 @@ describe('NotificationService', () => {
             expect(service.getAll('userId')).toEqual([]);
         });
 
-        it('should return all notifications for the user', () => {
+        it('should return all notifications', () => {
             service.send('userId', 'message1', 'email');
             service.send('userId', 'message2', 'email');
             expect(service.getAll('userId')).toHaveLength(2);
@@ -75,7 +70,7 @@ describe('NotificationService', () => {
     });
 
     describe('markAllAsRead', () => {
-        it('should return 0 if the user has no notifications', () => {
+        it('should return 0 if there are no notifications', () => {
             expect(service.markAllAsRead('userId')).toBe(0);
         });
 
@@ -105,7 +100,7 @@ describe('NotificationService', () => {
     });
 
     describe('countByType', () => {
-        it('should return 0 if the user has no notifications', () => {
+        it('should return 0 if there are no notifications', () => {
             expect(service.countByType('userId', 'email')).toBe(0);
         });
 

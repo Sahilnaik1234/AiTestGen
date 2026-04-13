@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { Orchestrator } from './core/Orchestrator';
 import { CoverageParser, FileCoverage } from './utils/CoverageParser';
+import { LanguageDetector } from './utils/LanguageDetector';
 import * as dotenv from 'dotenv';
 import chalk from 'chalk';
 import * as fs from 'fs';
@@ -15,6 +16,39 @@ program
     .name('ai-test-gen')
     .description('Generate AI-powered test cases for any language')
     .version('1.0.0');
+
+program
+    .command('detect')
+    .description('Detect programming languages in the current repository')
+    .option('--json', 'Output results as JSON', false)
+    .action((options) => {
+        try {
+            const detector = new LanguageDetector(process.cwd());
+            const result = detector.detect();
+
+            if (options.json) {
+                console.log(JSON.stringify(result, null, 2));
+            } else {
+                console.log(chalk.blue('\n🔍 Language Detection Results:\n'));
+                if (result.languages.length === 0) {
+                    console.log(chalk.yellow('  No languages detected.'));
+                } else {
+                    for (const lang of result.languages) {
+                        console.log(chalk.cyan(`  • ${lang.name}`));
+                        console.log(chalk.gray(`    Extensions: ${lang.extensions.join(', ')}`));
+                        if (lang.setupVersion) console.log(chalk.gray(`    Version: ${lang.setupVersion}`));
+                        if (lang.ecosystem) console.log(chalk.gray(`    Detected via: ${lang.ecosystem}`));
+                        if (lang.testCommand) console.log(chalk.gray(`    Test command: ${lang.testCommand}`));
+                        if (lang.installCommand) console.log(chalk.gray(`    Install: ${lang.installCommand}`));
+                    }
+                }
+                console.log(chalk.blue(`\n  Summary: ${result.summary.join(', ')}\n`));
+            }
+        } catch (error: any) {
+            console.error(chalk.red(`\n❌ Detection Error: ${error.message}`));
+            process.exit(1);
+        }
+    });
 
 program
     .command('generate')

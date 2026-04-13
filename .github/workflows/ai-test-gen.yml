@@ -1,182 +1,209 @@
-name: AI Test Generation CI
+name: AI DevSecOps Pipeline
 
 on:
   push:
     branches: [ "main", "dev" ]
   pull_request:
     branches: [ "main", "dev" ]
+  workflow_dispatch:
+    inputs:
+      secret_tool:
+        description: 'Secret Tool'
+        default: 'gitleaks'
+        type: string
+      sast_tool:
+        description: 'SAST Tool'
+        default: 'semgrep'
+        type: string
 
 permissions:
   contents: write
   pull-requests: write
+  security-events: write
 
 jobs:
-  generate-tests:
+  # ============================================================
+  # SECURITY SCANNING STAGE
+  # ============================================================
+  security-scans:
+    name: "🛡️ Security Scanning"
     runs-on: ubuntu-latest
     env:
-      INCLUDE_PATTERN: "services"  # Add folder/file substring here to ONLY check those (e.g. "src")
-      EXCLUDE_PATTERN: ""  # Add folder/file substring here to IGNORE (e.g. "legacy")
-
+      SCAN_INCLUDE: 'src'
+      SCAN_EXCLUDE: 'node_modules,tests,docs'
     steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Run Secret Scan
+        env:
+          TOOL: ${{ github.event.inputs.secret_tool || 'gitleaks' }}
+        run: |
+          chmod +x tools/secrets/$TOOL.sh
+          ./tools/secrets/$TOOL.sh || true
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.21'
+      - name: Run SAST Scan
+        env:
+          TOOL: ${{ github.event.inputs.sast_tool || 'semgrep' }}
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        run: |
+          chmod +x tools/sast/$TOOL.sh
+          ./tools/sast/$TOOL.sh || true
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+      - name: Claude Code Security Audit
+        if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          pip install anthropic
+          chmod +x tools/sast/claude.sh
+          ./tools/sast/claude.sh || true
 
-    - name: Set up Java
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Upload Security Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            gitleaks-report.json
+            semgrep-report.json
+            claude-report.json
 
-    - name: Install dependencies
-      run: |
-        npm install
-        pip install pytest pytest-cov
+  # ============================================================
+  # NORMALIZE & UNIFY SECURITY DATA
+  # ============================================================
+  security-normalize:
+    name: "📊 Normalize Security Findings"
+    runs-on: ubuntu-latest
+    needs: [security-scans]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Run TypeScript/JS Coverage Check
-      run: |
-        rm -rf coverage/
-        npm test || true
+      - name: Download Reports
+        uses: actions/download-artifact@v4
+        with:
+          name: security-reports
+          path: .
+        continue-on-error: true
 
-    - name: Run Go Coverage Check
-      run: |
-        go test -coverprofile=coverage.out ./... || true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Run Python Coverage Check
-      run: |
-        pytest . --cov=. --cov-report=json:coverage.json || true
+      - name: Unify Security Reports
+        run: python scripts/normalize.py
 
-    - name: Run Java Coverage Check
-      run: |
-        # Generate a pom.xml at the root that includes all source folders
-        cat <<EOF > pom.xml
-        <?xml version="1.0" encoding="UTF-8"?>
-        <project xmlns="http://maven.apache.org/POM/4.0.0" 
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-          <modelVersion>4.0.0</modelVersion>
-          <groupId>com.example</groupId>
-          <artifactId>ai-test-gen-all</artifactId>
-          <version>1.0-SNAPSHOT</version>
-          <properties>
-            <maven.compiler.source>17</maven.compiler.source>
-            <maven.compiler.target>17</maven.compiler.target>
-            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-          </properties>
-          <dependencies>
-            <dependency>
-              <groupId>org.junit.jupiter</groupId>
-              <artifactId>junit-jupiter</artifactId>
-              <version>5.10.1</version>
-            </dependency>
-          </dependencies>
-          <build>
-            <sourceDirectory>.</sourceDirectory>
-            <testSourceDirectory>.</testSourceDirectory>
-            <plugins>
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
-                <configuration>
-                  <includes>
-                    <include>**/*Test.java</include>
-                  </includes>
-                </configuration>
-              </plugin>
-              <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.11</version>
-                <executions>
-                  <execution>
-                    <id>prepare-agent</id>
-                    <goals><goal>prepare-agent</goal></goals>
-                  </execution>
-                  <execution>
-                    <id>report</id>
-                    <phase>test</phase>
-                    <goals><goal>report</goal></goals>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-          </build>
-        </project>
-        EOF
-        mvn clean test || true
+      - name: Upload Unified Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-security-report
+          path: final-security-report.json
 
-    - name: Generate AI Tests from Coverage
-      env:
-        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        npm start -- coverage --threshold 75 --model groq --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+  # ============================================================
+  # AI TEST GENERATION STAGE
+  # ============================================================
+  generate-tests:
+    name: "🧪 AI Test Generation"
+    runs-on: ubuntu-latest
+    needs: [security-normalize]
+    env:
+      INCLUDE_PATTERN: "services"
+      EXCLUDE_PATTERN: ""
+      COVERAGE_THRESHOLD: "75"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
-    - name: Auto-Commit AI Tests to Feature Branch
-      uses: stefanzweifel/git-auto-commit-action@v5
-      if: always()
-      with:
-        commit_message: "🤖 chore: auto-generate missing tests based on coverage"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-    - name: Rerun Tests for Final Coverage
-      if: always()
-      run: |
-        echo "🔄 Deep cleaning old reports and rerunning tests..."
-        rm -rf coverage/
-        rm -f coverage.json examples/coverage.out
-        npm test || true
-        go test -coverprofile=coverage.out ./... || true
-        pytest . --cov=. --cov-report=json:coverage.json -v || true
-        mvn clean test || true
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Final Coverage Check
-      run: |
-        echo "🎯 Final validation against 75% threshold..."
-        # This will exit 1 if still below 75%, but won't trigger AI generation again
-        npm start -- coverage --threshold 75 --exit --check-only --include "${{ env.INCLUDE_PATTERN }}" --exclude "${{ env.EXCLUDE_PATTERN }}"
+      - name: Detect Languages
+        id: detect
+        run: |
+          DETECT_JSON=$(npx ts-node src/index.ts detect --json)
+          LANGS=$(echo "$DETECT_JSON" | node -e "
+            const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+            const names = data.languages.map(l => l.name);
+            console.log('languages=' + names.join(','));
+            console.log('has_typescript=' + names.includes('typescript'));
+            console.log('has_javascript=' + (names.includes('javascript') || names.includes('typescript')));
+            console.log('has_go=' + names.includes('go'));
+            console.log('has_python=' + names.includes('python'));
+            console.log('has_java=' + names.includes('java'));
+          ")
+          echo "$LANGS" >> $GITHUB_OUTPUT
 
-    - name: Upload Coverage Results
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-reports
-        path: |
-          coverage/
-          examples/coverage.out
-          coverage.json
-          examples/target/site/jacoco/jacoco.xml
+      - name: Run Coverage
+        run: |
+          rm -rf coverage/
+          npm test || true
 
-    - name: Debug Deployment Info
-      run: |
-        echo "Current Ref: ${{ github.ref }}"
-        echo "Event Name: ${{ github.event_name }}"
+      - name: Generate AI Tests
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          npm start -- coverage \
+            --threshold ${{ env.COVERAGE_THRESHOLD }} \
+            --model groq \
+            --include "${{ env.INCLUDE_PATTERN }}" \
+            --exclude "${{ env.EXCLUDE_PATTERN }}"
 
-    - name: Build Dashboard
-      run: |
-        cd dashboard
-        npm install
-        npm run build --emptyOutDir || npm run build
+      - name: Auto-Commit Generated Tests
+        uses: stefanzweifel/git-auto-commit-action@v5
+        if: always()
+        with:
+          commit_message: "🤖 chore: auto-generate missing tests based on coverage"
 
-    - name: Deploy to GitHub Pages
-      if: contains(github.ref, 'main') || contains(github.ref, 'dev')
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: dashboard/dist
-        branch: gh-pages
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            results.json
+            coverage/
+
+  # ============================================================
+  # DASHBOARD DEPLOYMENT
+  # ============================================================
+  deploy-dashboard:
+    name: "🚀 Deploy DevSecOps Dashboard"
+    runs-on: ubuntu-latest
+    needs: [generate-tests, security-normalize]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Test Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: dashboard/public/
+
+      - name: Download Security Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: final-security-report
+          path: dashboard/public/
+
+      - name: Build Dashboard
+        run: |
+          cd dashboard
+          npm install
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dashboard/dist
+          branch: gh-pages
+ 
