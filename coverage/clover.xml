@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1776070811183" clover="3.2.0">
-  <project timestamp="1776070811183" name="All files">
-    <metrics statements="544" coveredstatements="69" conditionals="252" coveredconditionals="41" methods="98" coveredmethods="30" elements="894" coveredelements="140" complexity="0" loc="544" ncloc="544" packages="6" files="13" classes="13"/>
+<coverage generated="1776071451409" clover="3.2.0">
+  <project timestamp="1776071451409" name="All files">
+    <metrics statements="545" coveredstatements="69" conditionals="257" coveredconditionals="41" methods="98" coveredmethods="30" elements="900" coveredelements="140" complexity="0" loc="545" ncloc="545" packages="6" files="13" classes="13"/>
     <package name="AiTestGen">
       <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="jest.config.js" path="/home/runner/work/AiTestGen/AiTestGen/jest.config.js">
@@ -10,9 +10,9 @@
       </file>
     </package>
     <package name="AiTestGen.src">
-      <metrics statements="208" coveredstatements="0" conditionals="86" coveredconditionals="0" methods="26" coveredmethods="0"/>
+      <metrics statements="209" coveredstatements="0" conditionals="91" coveredconditionals="0" methods="26" coveredmethods="0"/>
       <file name="index.ts" path="/home/runner/work/AiTestGen/AiTestGen/src/index.ts">
-        <metrics statements="208" coveredstatements="0" conditionals="86" coveredconditionals="0" methods="26" coveredmethods="0"/>
+        <metrics statements="209" coveredstatements="0" conditionals="91" coveredconditionals="0" methods="26" coveredmethods="0"/>
         <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
@@ -187,40 +187,41 @@
         <line num="330" count="0" type="stmt"/>
         <line num="335" count="0" type="stmt"/>
         <line num="336" count="0" type="stmt"/>
-        <line num="337" count="0" type="stmt"/>
-        <line num="338" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="339" count="0" type="stmt"/>
-        <line num="341" count="0" type="stmt"/>
+        <line num="338" count="0" type="stmt"/>
+        <line num="339" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="344" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="345" count="0" type="stmt"/>
-        <line num="346" count="0" type="stmt"/>
+        <line num="347" count="0" type="stmt"/>
         <line num="351" count="0" type="stmt"/>
         <line num="352" count="0" type="stmt"/>
-        <line num="354" count="0" type="stmt"/>
-        <line num="355" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="356" count="0" type="stmt"/>
         <line num="357" count="0" type="stmt"/>
-        <line num="359" count="0" type="stmt"/>
+        <line num="358" count="0" type="stmt"/>
+        <line num="360" count="0" type="stmt"/>
+        <line num="361" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="362" count="0" type="stmt"/>
         <line num="363" count="0" type="stmt"/>
         <line num="365" count="0" type="stmt"/>
-        <line num="366" count="0" type="stmt"/>
         <line num="369" count="0" type="stmt"/>
-        <line num="370" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="374" count="0" type="stmt"/>
+        <line num="371" count="0" type="stmt"/>
+        <line num="372" count="0" type="stmt"/>
         <line num="375" count="0" type="stmt"/>
-        <line num="376" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="377" count="0" type="stmt"/>
-        <line num="380" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="376" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="380" count="0" type="stmt"/>
+        <line num="381" count="0" type="stmt"/>
         <line num="382" count="0" type="cond" truecount="0" falsecount="3"/>
         <line num="383" count="0" type="stmt"/>
-        <line num="384" count="0" type="stmt"/>
-        <line num="385" count="0" type="stmt"/>
+        <line num="386" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="388" count="0" type="cond" truecount="0" falsecount="3"/>
         <line num="389" count="0" type="stmt"/>
-        <line num="398" count="0" type="stmt"/>
-        <line num="402" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="403" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="390" count="0" type="stmt"/>
+        <line num="391" count="0" type="stmt"/>
+        <line num="395" count="0" type="stmt"/>
         <line num="404" count="0" type="stmt"/>
-        <line num="405" count="0" type="stmt"/>
-        <line num="409" count="0" type="stmt"/>
+        <line num="408" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="409" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="410" count="0" type="stmt"/>
+        <line num="411" count="0" type="stmt"/>
+        <line num="415" count="0" type="stmt"/>
       </file>
     </package>
     <package name="AiTestGen.src.adapters">

@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-04-13T08:59:32.716455+00:00",
+  "generated_at": "2026-04-13T09:10:11.220834+00:00",
   "summary": {
-    "total_findings": 90,
+    "total_findings": 91,
     "gitleaks": 0,
     "semgrep": 20,
     "dependency": 0,
-    "compliance": 70,
+    "compliance": 71,
     "claude": 0,
     "soc2_count": 70,
-    "hipaa_count": 0,
+    "hipaa_count": 1,
     "by_severity": {
-      "WARNING": 83,
+      "WARNING": 84,
       "ERROR": 7
     }
   },
@@ -521,7 +521,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 346
+      "line": 352
     },
     {
       "tool": "compliance",
@@ -529,7 +529,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 350
+      "line": 356
     },
     {
       "tool": "compliance",
@@ -537,7 +537,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 363
+      "line": 369
     },
     {
       "tool": "compliance",
@@ -545,7 +545,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 381
+      "line": 387
     },
     {
       "tool": "compliance",
@@ -553,7 +553,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 385
+      "line": 391
     },
     {
       "tool": "compliance",
@@ -561,7 +561,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 398
+      "line": 404
     },
     {
       "tool": "compliance",
@@ -569,7 +569,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 402
+      "line": 408
     },
     {
       "tool": "compliance",
@@ -577,7 +577,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 405
+      "line": 411
     },
     {
       "tool": "compliance",
@@ -754,6 +754,14 @@
       "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 144
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "HIPAA: HIPAA Compliance: Missing audit log for PHI access. HIPAA requires logging of all interactions with Protected Health Information.",
+      "rule_id": "tools.configs.hipaa-universal-missing-access-log",
+      "file": "/src/src/index.ts",
+      "line": 352
     }
   ]
 }
