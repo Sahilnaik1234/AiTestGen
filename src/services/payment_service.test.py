@@ -246,5 +246,53 @@ class TestPaymentService(unittest.TestCase):
         service.process_payment(amount, method, currency2)
         self.assertAlmostEqual(service.get_total_volume(), amount * 2)
 
+    def test_calculate_fees_with_zero_amount(self):
+        service = PaymentService()
+        amount = 0.0
+        method = "CREDIT_CARD"
+        fee = service.calculate_fees(amount, method)
+        self.assertAlmostEqual(fee, 0.0)
+
+    def test_calculate_fees_with_negative_amount(self):
+        service = PaymentService()
+        amount = -10.0
+        method = "CREDIT_CARD"
+        fee = service.calculate_fees(amount, method)
+        self.assertAlmostEqual(fee, 0.0)
+
+    def test_get_total_volume_with_refunded_transactions(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = "USD"
+        transaction = service.process_payment(amount, method, currency)
+        self.assertTrue(service.refund_payment(transaction["id"]))
+        self.assertAlmostEqual(service.get_total_volume(), 0.0)
+
+    def test_get_total_volume_by_method_with_refunded_transactions(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = "USD"
+        transaction = service.process_payment(amount, method, currency)
+        self.assertTrue(service.refund_payment(transaction["id"]))
+        self.assertAlmostEqual(service.get_total_volume(method), 0.0)
+
+    def test_process_payment_with_empty_currency(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = ""
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
+    def test_process_payment_with_none_currency(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = None
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
 if __name__ == '__main__':
     unittest.main()

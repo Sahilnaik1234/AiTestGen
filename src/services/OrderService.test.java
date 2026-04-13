@@ -241,4 +241,54 @@ public class OrderServiceTest {
         assertFalse(service.cancelOrder(order1.getId()));
         assertTrue(service.cancelOrder(order2.getId()));
     }
+
+    @Test
+    void testGetTotalRevenueAfterCancellation() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        Order order = service.createOrder("John Doe", products);
+        service.cancelOrder(order.getId());
+        double totalRevenue = service.getTotalRevenue();
+        assertEquals(0, totalRevenue, 0.01);
+    }
+
+    @Test
+    void testGetOrdersByCustomerAfterCancellation() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        Order order = service.createOrder("John Doe", products);
+        service.cancelOrder(order.getId());
+        List<OrderService.Order> orders = service.getOrdersByCustomer("John Doe");
+        assertEquals(0, orders.size());
+    }
+
+    @Test
+    void testCreateOrderWithSameProductMultipleTimes() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "LAPTOP");
+        Order order = service.createOrder("John Doe", products);
+        assertNotNull(order);
+        assertEquals("John Doe", order.getCustomerName());
+        assertEquals(1, order.getProducts().size());
+        assertTrue(order.getProducts().contains("LAPTOP"));
+    }
+
+    @Test
+    void testCalculateDiscountWithZeroAmount() {
+        OrderService service = new OrderService();
+        double amount = 0;
+        String customerName = "John Doe";
+        double discount = service.calculateDiscount(amount, customerName);
+        assertEquals(0, discount, 0.01);
+    }
+
+    @Test
+    void testGetTotalRevenueWithZeroAmount() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        Order order = service.createOrder("John Doe", products);
+        order.setTotalAmount(0);
+        double totalRevenue = service.getTotalRevenue();
+        assertEquals(0, totalRevenue, 0.01);
+    }
 }

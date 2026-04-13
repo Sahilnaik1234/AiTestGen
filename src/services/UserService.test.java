@@ -151,4 +151,86 @@ public class UserServiceTest {
         // Act and Assert
         assertThrows(NoSuchElementException.class, () -> userService.updateEmail(username, newEmail));
     }
+
+    @Test
+    public void testRegisterUserNullUsername() {
+        // Arrange
+        String username = null;
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testRegisterUserNullEmail() {
+        // Arrange
+        String username = "testUser";
+        String email = null;
+        String password = "password123";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testRegisterUserNullPassword() {
+        // Arrange
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = null;
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testUpdateEmailNullEmail() {
+        // Arrange
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password); // register user first
+        String newEmail = null;
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.updateEmail(username, newEmail));
+    }
+
+    @Test
+    public void testUpdateEmailNullUsername() {
+        // Arrange
+        String username = null;
+        String newEmail = "newEmail@example.com";
+
+        // Act and Assert
+        assertThrows(NoSuchElementException.class, () -> userService.updateEmail(username, newEmail));
+    }
+
+    @Test
+    public void testAuthenticateNullUsername() {
+        // Arrange
+        String username = null;
+        String password = "password123";
+
+        // Act
+        boolean authenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertFalse(authenticated);
+    }
+
+    @Test
+    public void testAuthenticateNullPassword() {
+        // Arrange
+        String username = "testUser";
+        String password = null;
+
+        // Act
+        boolean authenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertFalse(authenticated);
+    }
 }
