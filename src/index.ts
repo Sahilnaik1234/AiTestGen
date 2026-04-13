@@ -79,21 +79,44 @@ program
             const threshold = parseFloat(options.threshold);
             console.log(chalk.blue(`\n📊 Analyzing coverage reports (Threshold: ${threshold}%)...`));
 
-            const reports: FileCoverage[] = [
-                ...findAndParseReports()
-            ];
+            const reports: FileCoverage[] = findAndParseReports();
 
-            if (reports.length === 0) {
-                console.log(chalk.yellow('⚠️ No coverage reports found.'));
-                return;
-            }
+            // 1. Proactively find ALL source files in the project to catch 0% coverage files
+            const { globSync } = require('glob');
+            const supportedExtensions = ['ts', 'js', 'py', 'java', 'go'];
+            const allSourceFiles = globSync(`src/**/*.{${supportedExtensions.join(',')}}`, {
+                ignore: ['node_modules/**', '**/*.test.*', '**/*_test.*', '**/target/**', '**/dist/**', '**/build/**']
+            });
 
-            // Always sync the latest coverage scores to the dashboard results.json
-            updateCoverageOnly(reports, options);
+            // 2. Map existing reports for quick lookup
+            const reportMap = new Map<string, FileCoverage>();
+            reports.forEach(r => {
+                // Keep the most specific path match
+                reportMap.set(r.filePath.toLowerCase(), r);
+            });
 
-            const underCoveredFiles = reports.filter(f => {
+            // 3. Create a unified list of files to check
+            const filesToCheck: FileCoverage[] = allSourceFiles.map((file: string) => {
+                const normalizedFile = file.replace(/\\/g, '/');
+                const baseName = path.basename(normalizedFile).toLowerCase();
+                
+                // Try to find a match in the report by full path or at least basename
+                const reportMatch = reports.find(r => 
+                    normalizedFile.toLowerCase().endsWith(r.filePath.toLowerCase().replace(/\\/g, '/')) ||
+                    r.filePath.toLowerCase().endsWith(baseName)
+                );
+
+                return {
+                    filePath: normalizedFile,
+                    coverage: reportMatch ? reportMatch.coverage : 0, // Assume 0 if not in report
+                    details: reportMatch?.details
+                };
+            });
+
+            const underCoveredFiles = filesToCheck.filter(f => {
                 const isUnderThreshold = f.coverage < threshold;
-                const isUnwanted = /node_modules|coverage|target\/site|jacoco|dist|build|__pycache__|maven-status|bin|\.test\.|_test\.|Test\./i.test(f.filePath);
+                // Double check unwanted patterns
+                const isUnwanted = /node_modules|coverage|target|dist|build|__pycache__|\.test\.|_test\./i.test(f.filePath);
 
                 let isIncluded = true;
                 if (options.include) {
@@ -107,14 +130,13 @@ program
                     isExcluded = excludes.some((p: string) => f.filePath.toLowerCase().includes(p));
                 }
 
-                // Supported Extensions Check
-                const supportedExts = ['.ts', '.js', '.py', '.java', '.go', '.cpp', '.cs', '.rs'];
-                const hasSupportedExt = supportedExts.some(ext => f.filePath.toLowerCase().endsWith(ext));
-
-                return isUnderThreshold && !isUnwanted && isIncluded && !isExcluded && hasSupportedExt;
+                return isUnderThreshold && !isUnwanted && isIncluded && !isExcluded;
             });
 
-            console.log(chalk.cyan(`✅ Found ${reports.length} files in reports.`));
+            console.log(chalk.cyan(`✅ Analyzed ${filesToCheck.length} source files (${reports.length} found in reports).`));
+
+            // Always sync the latest coverage scores to the dashboard results.json
+            updateCoverageOnly(filesToCheck, options);
 
             if (options.checkOnly) {
                 if (underCoveredFiles.length === 0) {
@@ -330,49 +352,58 @@ function updateCoverageOnly(reports: FileCoverage[], options: any) {
     const resultsPath = path.join(dashboardDir, 'results.json');
 
     let existingResults: any[] = [];
-    if (!fs.existsSync(resultsPath)) {
-        // No results yet — nothing to update. Files are only added via saveResults() after AI generation.
-        return;
+    if (fs.existsSync(resultsPath)) {
+        try {
+            existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
+        } catch (e) {
+            existingResults = [];
+        }
     }
 
-    try {
-        existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
-    } catch (e) {
-        return;
-    }
+    let updated = false;
 
-    // ONLY update coverage scores for files already tracked (AI-generated)
-    // Do NOT add new files here — that's saveResults()'s job
-    const updated = existingResults.map((res: any) => {
-        const report = reports.find(r =>
-            path.basename(r.filePath) === res.name ||
-            r.filePath.toLowerCase().includes(res.name.toLowerCase())
+    reports.forEach(report => {
+        const baseName = path.basename(report.filePath).replace(/\.(ts|js|py|java|go)$/i, '').toLowerCase();
+        
+        // Find existing or add new
+        let item = existingResults.find(r => 
+            r.id === baseName || 
+            path.basename(report.filePath) === r.name
         );
 
-        // Refresh source code from disk
-        const resolvedPath = resolveFilePath(res.name);
-        let latestSource = res.source;
+        const resolvedPath = resolveFilePath(path.basename(report.filePath));
+        let latestSource = '';
         if (resolvedPath && fs.existsSync(resolvedPath)) {
             latestSource = fs.readFileSync(resolvedPath, 'utf-8');
         }
 
-        if (report) {
-            return {
-                ...res,
+        if (item) {
+            // Update existing stats
+            if (item.coverage !== report.coverage || item.source !== latestSource) {
+                item.coverage = report.coverage;
+                item.source = latestSource;
+                updated = true;
+            }
+        } else {
+            // Tracking a new file from our proactive scan
+            existingResults.push({
+                id: baseName,
+                name: path.basename(report.filePath),
+                filePath: report.filePath,
+                coverage: report.coverage,
                 source: latestSource,
-                coverage: Math.round(report.coverage * 100) / 100,
-                status: report.coverage >= options.threshold ? 'passed' : 'warning'
-            };
+                testCases: [],
+                status: 'active'
+            });
+            updated = true;
         }
-        return { ...res, source: latestSource };
     });
 
-    try {
-        fs.writeFileSync(resultsPath, JSON.stringify(updated, null, 2));
-        console.log(chalk.green(`\n📈 Refreshed coverage for ${updated.length} tracked files.`));
-    } catch (e) {
-        console.warn(chalk.yellow('⚠️ Could not update dashboard results.json'));
+    if (updated) {
+        if (!fs.existsSync(dashboardDir)) fs.mkdirSync(dashboardDir, { recursive: true });
+        fs.writeFileSync(resultsPath, JSON.stringify(existingResults, null, 2));
+        console.log(chalk.green(`📈 Updated dashboard data for ${reports.length} files.`));
     }
 }
 
-program.parse();
+program.parse();

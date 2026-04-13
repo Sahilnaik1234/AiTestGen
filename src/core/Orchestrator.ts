@@ -98,13 +98,8 @@ export class Orchestrator {
             case 'go':
                 testName = `${base}_test.go`;
                 break;
-            case 'py':
-                testName = `${base}_test.py`;
-                break;
-            case 'java':
-                testName = `${base}Test.java`;
-                break;
             default:
+                // Universal format used in the project: filename.test.ext
                 testName = `${base}.test.${ext}`;
         }
 
