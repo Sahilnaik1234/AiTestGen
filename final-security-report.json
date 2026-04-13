@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-04-13T07:41:38.652667+00:00",
+  "generated_at": "2026-04-13T08:05:05.688308+00:00",
   "summary": {
-    "total_findings": 111,
+    "total_findings": 83,
     "gitleaks": 0,
-    "semgrep": 31,
+    "semgrep": 20,
     "dependency": 0,
-    "compliance": 80,
+    "compliance": 63,
     "claude": 0,
-    "soc2_count": 80,
+    "soc2_count": 63,
     "hipaa_count": 0,
     "by_severity": {
-      "WARNING": 98,
-      "ERROR": 13
+      "WARNING": 76,
+      "ERROR": 7
     }
   },
   "findings": [
@@ -193,105 +193,6 @@
       "rule_id": "javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization",
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 253,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/com.aitestgen.services/OrderService$Order.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/com.aitestgen.services/OrderService.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/com.aitestgen.services/OrderServiceTest.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/com.aitestgen.services/index.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/com.aitestgen.services/index.source.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/default/StringUtils.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/default/index.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/default/index.source.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/index.html",
-      "line": 1,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: RegExp() called with a `options` function argument, this might allow an attacker to cause a Regular Expression Denial-of-Service (ReDoS) within your application as RegExP blocks the main thread. For this reason, it is recommended to use hardcoded regexes instead. If your regex is run on user-controlled input, consider performing input validation or use a regex checking/sanitization library such as https://www.npmjs.com/package/recheck to verify that the regex does not appear vulnerable to ReDoS.",
-      "rule_id": "javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 1020,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "This link points to a plaintext HTTP URL. Prefer an encrypted HTTPS URL if possible.",
-      "rule_id": "html.security.plaintext-http-link.plaintext-http-link",
-      "file": "/src/target/site/jacoco/jacoco-sessions.html",
-      "line": 1,
       "code": "requires login"
     },
     {
@@ -683,54 +584,6 @@
       "severity": "WARNING",
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 84
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 85
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 88
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 95
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 101
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 105
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/CartService.ts",
       "line": 34
     },
@@ -845,94 +698,6 @@
       "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 144
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Unencrypted data transmission (HTTP). SOC2 requires Encryption in Transit (HTTPS/TLS) for all non-local traffic.",
-      "rule_id": "tools.configs.soc2-universal-unencrypted-transmission",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 7
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 12
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Unencrypted data transmission (HTTP). SOC2 requires Encryption in Transit (HTTPS/TLS) for all non-local traffic.",
-      "rule_id": "tools.configs.soc2-universal-unencrypted-transmission",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 22
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 109
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 128
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Unencrypted data transmission (HTTP). SOC2 requires Encryption in Transit (HTTPS/TLS) for all non-local traffic.",
-      "rule_id": "tools.configs.soc2-universal-unencrypted-transmission",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 179
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 203
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 222
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Unencrypted data transmission (HTTP). SOC2 requires Encryption in Transit (HTTPS/TLS) for all non-local traffic.",
-      "rule_id": "tools.configs.soc2-universal-unencrypted-transmission",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 1089
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Unencrypted data transmission (HTTP). SOC2 requires Encryption in Transit (HTTPS/TLS) for all non-local traffic.",
-      "rule_id": "tools.configs.soc2-universal-unencrypted-transmission",
-      "file": "/src/target/site/jacoco/jacoco-resources/prettify.js",
-      "line": 1150
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Unencrypted data transmission (HTTP). SOC2 requires Encryption in Transit (HTTPS/TLS) for all non-local traffic.",
-      "rule_id": "tools.configs.soc2-universal-unencrypted-transmission",
-      "file": "/src/target/site/jacoco/jacoco-resources/sort.js",
-      "line": 5
     }
   ]
 }
