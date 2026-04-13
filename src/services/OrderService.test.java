@@ -3,11 +3,126 @@ package com.aitestgen.services;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class OrderServiceTest {
     @Test
     void triggerCoverage() {
         // This is a placeholder to trigger Jacoco reporting
         OrderService service = new OrderService();
         assertNotNull(service);
+    }
+
+    @Test
+    void testCreateOrder() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        Order order = service.createOrder("John Doe", products);
+        assertNotNull(order);
+        assertEquals("John Doe", order.getCustomerName());
+        assertEquals(2, order.getProducts().size());
+        assertTrue(order.getProducts().contains("LAPTOP"));
+        assertTrue(order.getProducts().contains("PHONE"));
+    }
+
+    @Test
+    void testCreateOrderWithInvalidCustomerName() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        assertThrows(IllegalArgumentException.class, () -> service.createOrder(null, products));
+        assertThrows(IllegalArgumentException.class, () -> service.createOrder("", products));
+        assertThrows(IllegalArgumentException.class, () -> service.createOrder("   ", products));
+    }
+
+    @Test
+    void testCreateOrderWithEmptyProducts() {
+        OrderService service = new OrderService();
+        assertThrows(IllegalArgumentException.class, () -> service.createOrder("John Doe", null));
+        assertThrows(IllegalArgumentException.class, () -> service.createOrder("John Doe", new ArrayList<>()));
+    }
+
+    @Test
+    void testCalculateDiscount() {
+        OrderService service = new OrderService();
+        double amount = 1000;
+        String customerName = "John Doe";
+        double discount = service.calculateDiscount(amount, customerName);
+        assertEquals(0, discount, 0.01);
+    }
+
+    @Test
+    void testCalculateDiscountWithLoyalCustomer() {
+        OrderService service = new OrderService();
+        String customerName = "John Doe";
+        for (int i = 0; i < 6; i++) {
+            service.createOrder(customerName, Arrays.asList("LAPTOP"));
+        }
+        double amount = 1000;
+        double discount = service.calculateDiscount(amount, customerName);
+        assertEquals(150, discount, 0.01);
+    }
+
+    @Test
+    void testCalculateDiscountWithReturningCustomer() {
+        OrderService service = new OrderService();
+        String customerName = "John Doe";
+        for (int i = 0; i < 3; i++) {
+            service.createOrder(customerName, Arrays.asList("LAPTOP"));
+        }
+        double amount = 1000;
+        double discount = service.calculateDiscount(amount, customerName);
+        assertEquals(50, discount, 0.01);
+    }
+
+    @Test
+    void testCalculateDiscountWithBulkOrder() {
+        OrderService service = new OrderService();
+        double amount = 2500;
+        String customerName = "John Doe";
+        double discount = service.calculateDiscount(amount, customerName);
+        assertEquals(250, discount, 0.01);
+    }
+
+    @Test
+    void testGetOrdersByCustomer() {
+        OrderService service = new OrderService();
+        String customerName = "John Doe";
+        service.createOrder(customerName, Arrays.asList("LAPTOP"));
+        service.createOrder(customerName, Arrays.asList("PHONE"));
+        List<OrderService.Order> orders = service.getOrdersByCustomer(customerName);
+        assertEquals(2, orders.size());
+    }
+
+    @Test
+    void testCancelOrder() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        Order order = service.createOrder("John Doe", products);
+        assertTrue(service.cancelOrder(order.getId()));
+    }
+
+    @Test
+    void testCancelOrderWithInvalidOrderId() {
+        OrderService service = new OrderService();
+        assertFalse(service.cancelOrder("invalid-id"));
+    }
+
+    @Test
+    void testCancelOrderAfter24Hours() throws InterruptedException {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        Order order = service.createOrder("John Doe", products);
+        Thread.sleep(24 * 60 * 60 * 1000 + 1); // sleep for 24 hours and 1 millisecond
+        assertFalse(service.cancelOrder(order.getId()));
+    }
+
+    @Test
+    void testGetTotalRevenue() {
+        OrderService service = new OrderService();
+        List<String> products = Arrays.asList("LAPTOP", "PHONE");
+        service.createOrder("John Doe", products);
+        double totalRevenue = service.getTotalRevenue();
+        assertEquals(2000, totalRevenue, 0.01);
     }
 }
