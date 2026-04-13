@@ -357,58 +357,44 @@ function updateCoverageOnly(reports: FileCoverage[], options: any) {
     const dashboardDir = path.join(process.cwd(), 'dashboard', 'public');
     const resultsPath = path.join(dashboardDir, 'results.json');
 
-    let existingResults: any[] = [];
-    if (fs.existsSync(resultsPath)) {
-        try {
-            existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
-        } catch (e) {
-            existingResults = [];
-        }
-    }
+    if (!fs.existsSync(resultsPath)) return;
 
-    let updated = false;
+    try {
+        const existingResults = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
+        let updated = false;
 
-    reports.forEach(report => {
-        const baseName = path.basename(report.filePath).replace(/\.(ts|js|py|java|go)$/i, '').toLowerCase();
-        
-        // Find existing or add new
-        let item = existingResults.find(r => 
-            r.id === baseName || 
-            path.basename(report.filePath) === r.name
-        );
+        // ONLY update coverage and source for files ALREADY in the dashboard
+        const refreshedResults = existingResults.map((item: any) => {
+            const report = reports.find(r => 
+                path.basename(r.filePath).replace(/\.(ts|js|py|java|go)$/i, '').toLowerCase() === item.id || 
+                path.basename(r.filePath) === item.name ||
+                r.filePath.toLowerCase().endsWith(item.name.toLowerCase())
+            );
 
-        const resolvedPath = resolveFilePath(path.basename(report.filePath));
-        let latestSource = '';
-        if (resolvedPath && fs.existsSync(resolvedPath)) {
-            latestSource = fs.readFileSync(resolvedPath, 'utf-8');
-        }
-
-        if (item) {
-            // Update existing stats
-            if (item.coverage !== report.coverage || item.source !== latestSource) {
-                item.coverage = report.coverage;
-                item.source = latestSource;
-                updated = true;
+            const resolvedPath = resolveFilePath(item.name);
+            let latestSource = item.source;
+            if (resolvedPath && fs.existsSync(resolvedPath)) {
+                latestSource = fs.readFileSync(resolvedPath, 'utf-8');
             }
-        } else {
-            // Tracking a new file from our proactive scan
-            existingResults.push({
-                id: baseName,
-                name: path.basename(report.filePath),
-                filePath: report.filePath,
-                coverage: report.coverage,
-                source: latestSource,
-                testCases: [],
-                status: 'active'
-            });
-            updated = true;
-        }
-    });
 
-    if (updated) {
-        if (!fs.existsSync(dashboardDir)) fs.mkdirSync(dashboardDir, { recursive: true });
-        fs.writeFileSync(resultsPath, JSON.stringify(existingResults, null, 2));
-        console.log(chalk.green(`📈 Updated dashboard data for ${reports.length} files.`));
+            if (report || latestSource !== item.source) {
+                updated = true;
+                return {
+                    ...item,
+                    coverage: report ? report.coverage : item.coverage,
+                    source: latestSource,
+                    status: (report ? report.coverage : item.coverage) >= 75 ? 'passed' : 'warning'
+                };
+            }
+            return item;
+        });
+
+        if (updated) {
+            fs.writeFileSync(resultsPath, JSON.stringify(refreshedResults, null, 2));
+            console.log(chalk.green(`📈 Refreshed dashboard metrics for ${existingResults.length} tracked files.`));
+        }
+    } catch (e) {
+        console.warn(chalk.yellow('⚠️ Could not refresh dashboard data.'));
     }
 }
 
