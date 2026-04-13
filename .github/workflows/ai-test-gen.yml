@@ -49,6 +49,21 @@ jobs:
           chmod +x tools/sast/$TOOL.sh
           ./tools/sast/$TOOL.sh || true
 
+      - name: Run Dependency Scan
+        run: |
+          chmod +x tools/dependency/trivy.sh
+          ./tools/dependency/trivy.sh || true
+
+      - name: Run SOC2 Compliance
+        run: |
+          chmod +x tools/compliance/soc2.sh
+          ./tools/compliance/soc2.sh || true
+
+      - name: Run HIPAA Compliance
+        run: |
+          chmod +x tools/compliance/hipaa.sh
+          ./tools/compliance/hipaa.sh || true
+
       - name: Claude Code Security Audit
         if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
         env:
@@ -66,6 +81,9 @@ jobs:
           path: |
             gitleaks-report.json
             semgrep-report.json
+            dependency-report.json
+            soc2-report.json
+            hipaa-report.json
             claude-report.json
 
   # ============================================================

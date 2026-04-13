@@ -133,20 +133,36 @@ const App: React.FC = () => {
               </div>
             </header>
 
-            <div className="stat-grid">
-              <div className="stat-card">
-                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Total Findings</span>
-                <h3 style={{ fontSize: '2rem', margin: '0.5rem 0' }}>{securityReport?.summary?.total_findings || 0}</h3>
+            <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
+              <div className="stat-card" style={{ '--stat-color': 'var(--accent-magenta)' } as any}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Secrets & Keys</span>
+                <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.gitleaks || 0}</h3>
+                <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Detected by Gitleaks</p>
               </div>
-              <div className="stat-card" style={{ borderLeft: '4px solid var(--accent-magenta)' }}>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Critical Issues</span>
-                <h3 style={{ fontSize: '2rem', margin: '0.5rem 0', color: 'var(--accent-magenta)' }}>
-                  {securityReport?.summary?.by_severity?.CRITICAL || 0}
-                </h3>
+              <div className="stat-card" style={{ '--stat-color': 'var(--accent-cyan)' } as any}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Code Flaws</span>
+                <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.semgrep || 0}</h3>
+                <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Detected by Semgrep</p>
               </div>
-              <div className="stat-card">
-                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Compliance (SOC2/HIPAA)</span>
-                <h3 style={{ fontSize: '2rem', margin: '0.5rem 0' }}>{securityReport?.summary?.compliance || 0}</h3>
+              <div className="stat-card" style={{ '--stat-color': 'var(--accent-green)' } as any}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Dependencies</span>
+                <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.dependency || 0}</h3>
+                <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Detected by Trivy</p>
+              </div>
+              <div className="stat-card" style={{ borderLeft: '3px solid #0ea5e9' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>SOC2 Rules</span>
+                <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.soc2_count || 0}</h3>
+                <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Compliance Audit</p>
+              </div>
+              <div className="stat-card" style={{ borderLeft: '3px solid #10b981' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>HIPAA Rules</span>
+                <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.hipaa_count || 0}</h3>
+                <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Healthcare Compliance</p>
+              </div>
+              <div className="stat-card" style={{ borderLeft: '3px solid #f59e0b' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Claude Insights</span>
+                <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.claude || 0}</h3>
+                <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>AI Security Scan</p>
               </div>
             </div>
 
