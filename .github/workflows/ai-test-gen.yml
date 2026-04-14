@@ -291,6 +291,7 @@ jobs:
             --exclude "${{ env.EXCLUDE_PATTERN }}"
 
       - name: Upload Coverage Results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
@@ -301,6 +302,7 @@ jobs:
             examples/target/site/jacoco/jacoco.xml
 
       - name: Upload Test Results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
