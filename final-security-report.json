@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-04-13T11:22:02.277354+00:00",
+  "generated_at": "2026-04-14T06:39:58.116480+00:00",
   "summary": {
-    "total_findings": 206,
+    "total_findings": 218,
     "gitleaks": 0,
-    "semgrep": 20,
+    "semgrep": 11,
     "dependency": 0,
-    "compliance": 186,
+    "compliance": 207,
     "claude": 0,
-    "soc2_count": 185,
-    "hipaa_count": 1,
+    "soc2_count": 207,
+    "hipaa_count": 0,
     "by_severity": {
-      "WARNING": 186,
-      "ERROR": 20
+      "WARNING": 199,
+      "ERROR": 19
     }
   },
   "findings": [
@@ -39,7 +39,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/index.ts",
-      "line": 256,
+      "line": 250,
       "code": "requires login"
     },
     {
@@ -48,7 +48,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/index.ts",
-      "line": 263,
+      "line": 257,
       "code": "requires login"
     },
     {
@@ -57,7 +57,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/index.ts",
-      "line": 270,
+      "line": 264,
       "code": "requires login"
     },
     {
@@ -66,7 +66,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/index.ts",
-      "line": 277,
+      "line": 271,
       "code": "requires login"
     },
     {
@@ -75,7 +75,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/index.ts",
-      "line": 289,
+      "line": 283,
       "code": "requires login"
     },
     {
@@ -84,7 +84,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 41,
+      "line": 131,
       "code": "requires login"
     },
     {
@@ -93,7 +93,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 43,
+      "line": 165,
       "code": "requires login"
     },
     {
@@ -102,7 +102,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 58,
+      "line": 367,
       "code": "requires login"
     },
     {
@@ -111,88 +111,7 @@
       "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
       "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
       "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 60,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
-      "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 75,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
-      "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 94,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
-      "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 105,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
-      "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 118,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: `marker.replace` method will only replace the first occurrence when used with a string argument ('*'). If this method is used for escaping of dangerous data then there is a possibility for a bypass. Try to use sanitization library instead or use a Regex with a global flag.",
-      "rule_id": "javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 186,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: `m.replace` method will only replace the first occurrence when used with a string argument ('*'). If this method is used for escaping of dangerous data then there is a possibility for a bypass. Try to use sanitization library instead or use a Regex with a global flag.",
-      "rule_id": "javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 202,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
-      "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 244,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: Detected possible user input going into a `path.join` or `path.resolve` function. This could possibly lead to a path traversal vulnerability,  where the attacker can access arbitrary files stored in the file system. Instead, be sure to sanitize or validate user input first.",
-      "rule_id": "javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 244,
-      "code": "requires login"
-    },
-    {
-      "tool": "semgrep",
-      "severity": "WARNING",
-      "title": "SOC2: `marker.replace` method will only replace the first occurrence when used with a string argument ('*'). If this method is used for escaping of dangerous data then there is a possibility for a bypass. Try to use sanitization library instead or use a Regex with a global flag.",
-      "rule_id": "javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 253,
+      "line": 367,
       "code": "requires login"
     },
     {
@@ -505,7 +424,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 139
+      "line": 59
     },
     {
       "tool": "compliance",
@@ -513,7 +432,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 334
+      "line": 328
     },
     {
       "tool": "compliance",
@@ -521,7 +440,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 352
+      "line": 340
     },
     {
       "tool": "compliance",
@@ -529,7 +448,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 356
+      "line": 344
     },
     {
       "tool": "compliance",
@@ -537,7 +456,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 364
+      "line": 350
     },
     {
       "tool": "compliance",
@@ -545,7 +464,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 366
+      "line": 360
     },
     {
       "tool": "compliance",
@@ -553,7 +472,7 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 381
+      "line": 362
     },
     {
       "tool": "compliance",
@@ -561,127 +480,23 @@
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
-      "line": 392
+      "line": 387
     },
     {
       "tool": "compliance",
       "severity": "WARNING",
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 83
+      "file": "/src/src/index.ts",
+      "line": 388
     },
     {
       "tool": "compliance",
       "severity": "WARNING",
       "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 110
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 111
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 114
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 119
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 125
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.test.ts",
-      "line": 131
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.ts",
-      "line": 34
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/CartService.ts",
-      "line": 54
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/NotificationService.test.ts",
-      "line": 85
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/NotificationService.test.ts",
-      "line": 87
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/NotificationService.test.ts",
-      "line": 92
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/NotificationService.test.ts",
-      "line": 95
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/NotificationService.test.ts",
-      "line": 97
-    },
-    {
-      "tool": "compliance",
-      "severity": "WARNING",
-      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
-      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
-      "file": "/src/src/services/NotificationService.ts",
-      "line": 57
+      "file": "/src/src/index.ts",
+      "line": 390
     },
     {
       "tool": "compliance",
@@ -690,6 +505,54 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/ProductService.py",
       "line": 41
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/ProductService.test.py",
+      "line": 42
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/ProductService.test.py",
+      "line": 45
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/ProductService.test.py",
+      "line": 48
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/ProductService.test.py",
+      "line": 50
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/ProductService.test.py",
+      "line": 52
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/ProductService.test.py",
+      "line": 55
     },
     {
       "tool": "compliance",
@@ -1621,67 +1484,291 @@
     },
     {
       "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
-      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 38
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 242
     },
     {
       "tool": "compliance",
       "severity": "ERROR",
       "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
       "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 55
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
-      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 72
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
-      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 91
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
-      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 115
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
-      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 134
-    },
-    {
-      "tool": "compliance",
-      "severity": "ERROR",
-      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
-      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
-      "file": "/src/src/utils/LanguageDetector.ts",
-      "line": 144
+      "file": "/src/src/services/UserService.test.java",
+      "line": 242
     },
     {
       "tool": "compliance",
       "severity": "WARNING",
-      "title": "HIPAA: HIPAA Compliance: Missing audit log for PHI access. HIPAA requires logging of all interactions with Protected Health Information.",
-      "rule_id": "tools.configs.hipaa-universal-missing-access-log",
-      "file": "/src/src/index.ts",
-      "line": 352
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 242
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 245
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 253
+    },
+    {
+      "tool": "compliance",
+      "severity": "ERROR",
+      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
+      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 253
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 253
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 256
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 260
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 264
+    },
+    {
+      "tool": "compliance",
+      "severity": "ERROR",
+      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
+      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 264
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 264
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 265
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 269
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 273
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 277
+    },
+    {
+      "tool": "compliance",
+      "severity": "ERROR",
+      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
+      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 277
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 277
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 278
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 282
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 286
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 289
+    },
+    {
+      "tool": "compliance",
+      "severity": "ERROR",
+      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
+      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 289
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 289
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 292
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 292
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 292
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 295
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 299
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 302
+    },
+    {
+      "tool": "compliance",
+      "severity": "ERROR",
+      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
+      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 302
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 302
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 305
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 305
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 305
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/services/UserService.test.java",
+      "line": 308
     }
   ]
 }
