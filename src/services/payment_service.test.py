@@ -294,5 +294,66 @@ class TestPaymentService(unittest.TestCase):
         with self.assertRaises(ValueError):
             service.process_payment(amount, method, currency)
 
+    def test_calculate_fees_with_unsupported_method(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "UNSUPPORTED_METHOD"
+        fee = service.calculate_fees(amount, method)
+        self.assertAlmostEqual(fee, 0.0)
+
+    def test_get_total_volume_with_unsupported_method(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "UNSUPPORTED_METHOD"
+        currency = "USD"
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
+    def test_refund_payment_with_unsupported_method(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "UNSUPPORTED_METHOD"
+        currency = "USD"
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
+    def test_get_transaction_with_unsupported_method(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "UNSUPPORTED_METHOD"
+        currency = "USD"
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
+    def test_process_payment_with_max_amount(self):
+        service = PaymentService()
+        amount = 10000.0
+        method = "CREDIT_CARD"
+        currency = "USD"
+        transaction = service.process_payment(amount, method, currency)
+        self.assertIsNotNone(transaction)
+
+    def test_process_payment_with_min_amount(self):
+        service = PaymentService()
+        amount = 1.0
+        method = "CREDIT_CARD"
+        currency = "USD"
+        transaction = service.process_payment(amount, method, currency)
+        self.assertIsNotNone(transaction)
+
+    def test_calculate_fees_with_max_amount(self):
+        service = PaymentService()
+        amount = 10000.0
+        method = "CREDIT_CARD"
+        fee = service.calculate_fees(amount, method)
+        self.assertAlmostEqual(fee, amount * 0.03 + 0.30)
+
+    def test_calculate_fees_with_min_amount(self):
+        service = PaymentService()
+        amount = 1.0
+        method = "CREDIT_CARD"
+        fee = service.calculate_fees(amount, method)
+        self.assertAlmostEqual(fee, amount * 0.03 + 0.30)
+
 if __name__ == '__main__':
     unittest.main()

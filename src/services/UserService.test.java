@@ -233,4 +233,78 @@ public class UserServiceTest {
         // Assert
         assertFalse(authenticated);
     }
+
+    @Test
+    public void testRegisterUserUsernameWithSpaces() {
+        // Arrange
+        String username = "test user";
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testRegisterUserUsernameWithSpecialCharacters() {
+        // Arrange
+        String username = "test!@#$";
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testUpdateEmailEmailWithSpaces() {
+        // Arrange
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password); // register user first
+        String newEmail = "new email@example.com";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.updateEmail(username, newEmail));
+    }
+
+    @Test
+    public void testUpdateEmailEmailWithSpecialCharacters() {
+        // Arrange
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password); // register user first
+        String newEmail = "new!@#$email@example.com";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.updateEmail(username, newEmail));
+    }
+
+    @Test
+    public void testAuthenticateUsernameWithSpaces() {
+        // Arrange
+        String username = "test user";
+        String password = "password123";
+
+        // Act
+        boolean authenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertFalse(authenticated);
+    }
+
+    @Test
+    public void testAuthenticateUsernameWithSpecialCharacters() {
+        // Arrange
+        String username = "test!@#$";
+        String password = "password123";
+
+        // Act
+        boolean authenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertFalse(authenticated);
+    }
 }
