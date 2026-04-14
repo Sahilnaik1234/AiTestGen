@@ -8,7 +8,7 @@ soc2-report.json
 gitleaks-report.json
 trivy-report.json
 *.sarif
-
+tests/
 
 # Ignore dependencies
 node_modules/
