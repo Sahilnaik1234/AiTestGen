@@ -212,4 +212,81 @@ public class UserServiceTest {
         // Act and Assert
         assertThrows(NoSuchElementException.class, () -> userService.updateEmail(username, newEmail));
     }
+
+    @Test
+    public void testRegisterUserLongUsername() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "abcdefghijklmnopqrstuvwxyz";
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act
+        User registeredUser = userService.registerUser(username, email, password);
+
+        // Assert
+        assertNotNull(registeredUser);
+        assertEquals(username, registeredUser.getUsername());
+        assertEquals(email, registeredUser.getEmail());
+        assertNotNull(registeredUser.getPasswordHash());
+    }
+
+    @Test
+    public void testRegisterUserLongPassword() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password1234567890";
+
+        // Act
+        User registeredUser = userService.registerUser(username, email, password);
+
+        // Assert
+        assertNotNull(registeredUser);
+        assertEquals(username, registeredUser.getUsername());
+        assertEquals(email, registeredUser.getEmail());
+        assertNotNull(registeredUser.getPasswordHash());
+    }
+
+    @Test
+    public void testUpdateEmailLongEmail() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password);
+        String newEmail = "abcdefghijklmnopqrstuvwxyz@example.com";
+
+        // Act
+        userService.updateEmail(username, newEmail);
+
+        // Assert
+        User user = userService.userDatabase.get(username);
+        assertEquals(newEmail, user.getEmail());
+    }
+
+    @Test
+    public void testAuthenticateNullPassword() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password);
+
+        // Act and Assert
+        assertThrows(NullPointerException.class, () -> userService.authenticate(username, null));
+    }
+
+    @Test
+    public void testAuthenticateNullUsername() {
+        // Arrange
+        UserService userService = new UserService();
+        String password = "password123";
+
+        // Act and Assert
+        assertThrows(NullPointerException.class, () -> userService.authenticate(null, password));
+    }
 }
