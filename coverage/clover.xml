@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1776162815146" clover="3.2.0">
-  <project timestamp="1776162815146" name="All files">
-    <metrics statements="1175" coveredstatements="0" conditionals="613" coveredconditionals="0" methods="124" coveredmethods="0" elements="1912" coveredelements="0" complexity="0" loc="1175" ncloc="1175" packages="7" files="13" classes="13"/>
+<coverage generated="1776163235448" clover="3.2.0">
+  <project timestamp="1776163235449" name="All files">
+    <metrics statements="1175" coveredstatements="16" conditionals="613" coveredconditionals="12" methods="124" coveredmethods="5" elements="1912" coveredelements="33" complexity="0" loc="1175" ncloc="1175" packages="7" files="13" classes="13"/>
     <package name="AiTestGen">
       <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="jest.config.js" path="/home/runner/work/AiTestGen/AiTestGen/jest.config.js">
@@ -399,25 +399,25 @@
       </file>
     </package>
     <package name="AiTestGen.src.services">
-      <metrics statements="16" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="5" coveredmethods="0"/>
+      <metrics statements="16" coveredstatements="16" conditionals="12" coveredconditionals="12" methods="5" coveredmethods="5"/>
       <file name="auth_service.js" path="/home/runner/work/AiTestGen/AiTestGen/src/services/auth_service.js">
-        <metrics statements="16" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="5" coveredmethods="0"/>
-        <line num="6" count="0" type="stmt"/>
-        <line num="10" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="15" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="25" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="37" count="0" type="stmt"/>
-        <line num="38" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="42" count="0" type="stmt"/>
+        <metrics statements="16" coveredstatements="16" conditionals="12" coveredconditionals="12" methods="5" coveredmethods="5"/>
+        <line num="6" count="10" type="stmt"/>
+        <line num="10" count="7" type="cond" truecount="4" falsecount="0"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="15" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="16" count="4" type="stmt"/>
+        <line num="17" count="4" type="stmt"/>
+        <line num="18" count="4" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="25" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="33" count="4" type="stmt"/>
+        <line num="37" count="2" type="stmt"/>
+        <line num="38" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="42" count="1" type="stmt"/>
       </file>
     </package>
     <package name="AiTestGen.src.utils">

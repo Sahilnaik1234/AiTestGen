@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -110,85 +110,85 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * AuthService - A simple JavaScript service to test dynamic AI Test Generation.
  */
 class AuthService {
-<span class="fstat-no" title="function not covered" >    co</span>nstructor() {
-<span class="cstat-no" title="statement not covered" >        this.sessions = new Map();</span>
+    constructor() {
+        this.sessions = new Map();
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    lo</span>gin(username, password) {
-<span class="cstat-no" title="statement not covered" >        if (!username || !password) {</span>
-<span class="cstat-no" title="statement not covered" >            throw new Error('Username and password are required');</span>
+    login(username, password) {
+        if (!username || !password) {
+            throw new Error('Username and password are required');
         }
 &nbsp;
         // Mock authentication logic
-<span class="cstat-no" title="statement not covered" >        if (username === 'admin' &amp;&amp; password === 'admin123') {</span>
-            const sessionId = <span class="cstat-no" title="statement not covered" >`sess_${Math.random().toString(36).substr(2, 9)}`;</span>
-<span class="cstat-no" title="statement not covered" >            this.sessions.set(sessionId, { username, createdAt: new Date() });</span>
-<span class="cstat-no" title="statement not covered" >            return { success: true, sessionId };</span>
+        if (username === 'admin' &amp;&amp; password === 'admin123') {
+            const sessionId = `sess_${Math.random().toString(36).substr(2, 9)}`;
+            this.sessions.set(sessionId, { username, createdAt: new Date() });
+            return { success: true, sessionId };
         }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        return { success: false, message: 'Invalid credentials' };</span>
+        return { success: false, message: 'Invalid credentials' };
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    lo</span>gout(sessionId) {
-<span class="cstat-no" title="statement not covered" >        if (this.sessions.has(sessionId)) {</span>
-<span class="cstat-no" title="statement not covered" >            this.sessions.delete(sessionId);</span>
-<span class="cstat-no" title="statement not covered" >            return true;</span>
+    logout(sessionId) {
+        if (this.sessions.has(sessionId)) {
+            this.sessions.delete(sessionId);
+            return true;
         }
-<span class="cstat-no" title="statement not covered" >        return false;</span>
+        return false;
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    is</span>SessionValid(sessionId) {
-<span class="cstat-no" title="statement not covered" >        return this.sessions.has(sessionId);</span>
+    isSessionValid(sessionId) {
+        return this.sessions.has(sessionId);
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    ge</span>tSessionUser(sessionId) {
-        const session = <span class="cstat-no" title="statement not covered" >this.sessions.get(sessionId);</span>
-<span class="cstat-no" title="statement not covered" >        return session ? session.username : null;</span>
+    getSessionUser(sessionId) {
+        const session = this.sessions.get(sessionId);
+        return session ? session.username : null;
     }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = AuthService;</span>
+module.exports = AuthService;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -196,7 +196,7 @@ class AuthService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-14T10:33:35.106Z
+                at 2026-04-14T10:40:35.405Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
