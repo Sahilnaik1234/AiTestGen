@@ -307,4 +307,141 @@ public class UserServiceTest {
         // Assert
         assertFalse(authenticated);
     }
+
+    @Test
+    public void testRegisterUserUsernameWithOnlyNumbers() {
+        // Arrange
+        String username = "12345";
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testRegisterUserUsernameWithOnlySpecialCharacters() {
+        // Arrange
+        String username = "!@#$";
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testUpdateEmailEmailWithOnlyNumbers() {
+        // Arrange
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password); // register user first
+        String newEmail = "12345@example.com";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.updateEmail(username, newEmail));
+    }
+
+    @Test
+    public void testUpdateEmailEmailWithOnlySpecialCharacters() {
+        // Arrange
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password); // register user first
+        String newEmail = "!@#$@example.com";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> userService.updateEmail(username, newEmail));
+    }
+
+    @Test
+    public void testAuthenticateUsernameWithOnlyNumbers() {
+        // Arrange
+        String username = "12345";
+        String password = "password123";
+
+        // Act
+        boolean authenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertFalse(authenticated);
+    }
+
+    @Test
+    public void testAuthenticateUsernameWithOnlySpecialCharacters() {
+        // Arrange
+        String username = "!@#$";
+        String password = "password123";
+
+        // Act
+        boolean authenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertFalse(authenticated);
+    }
+
+    @Test
+    public void testRegisterUserMultipleUsers() {
+        // Arrange
+        String username1 = "testUser1";
+        String email1 = "test1@example.com";
+        String password1 = "password123";
+        String username2 = "testUser2";
+        String email2 = "test2@example.com";
+        String password2 = "password123";
+
+        // Act
+        userService.registerUser(username1, email1, password1);
+        userService.registerUser(username2, email2, password2);
+
+        // Assert
+        assertNotNull(userService.userDatabase.get(username1));
+        assertNotNull(userService.userDatabase.get(username2));
+    }
+
+    @Test
+    public void testUpdateEmailMultipleUsers() {
+        // Arrange
+        String username1 = "testUser1";
+        String email1 = "test1@example.com";
+        String password1 = "password123";
+        String username2 = "testUser2";
+        String email2 = "test2@example.com";
+        String password2 = "password123";
+        userService.registerUser(username1, email1, password1);
+        userService.registerUser(username2, email2, password2);
+        String newEmail1 = "new1@example.com";
+        String newEmail2 = "new2@example.com";
+
+        // Act
+        userService.updateEmail(username1, newEmail1);
+        userService.updateEmail(username2, newEmail2);
+
+        // Assert
+        assertEquals(newEmail1, userService.userDatabase.get(username1).getEmail());
+        assertEquals(newEmail2, userService.userDatabase.get(username2).getEmail());
+    }
+
+    @Test
+    public void testAuthenticateMultipleUsers() {
+        // Arrange
+        String username1 = "testUser1";
+        String email1 = "test1@example.com";
+        String password1 = "password123";
+        String username2 = "testUser2";
+        String email2 = "test2@example.com";
+        String password2 = "password123";
+        userService.registerUser(username1, email1, password1);
+        userService.registerUser(username2, email2, password2);
+
+        // Act
+        boolean authenticated1 = userService.authenticate(username1, password1);
+        boolean authenticated2 = userService.authenticate(username2, password2);
+
+        // Assert
+        assertTrue(authenticated1);
+        assertTrue(authenticated2);
+    }
 }

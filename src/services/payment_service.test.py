@@ -355,5 +355,37 @@ class TestPaymentService(unittest.TestCase):
         fee = service.calculate_fees(amount, method)
         self.assertAlmostEqual(fee, amount * 0.03 + 0.30)
 
+    def test_process_payment_with_currency_code_length_greater_than_3(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = "USDA"
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
+    def test_process_payment_with_currency_code_length_less_than_3(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = "US"
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
+    def test_process_payment_with_currency_code_not_all_uppercase(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = "usd"
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
+    def test_process_payment_with_currency_code_not_all_letters(self):
+        service = PaymentService()
+        amount = 10.0
+        method = "CREDIT_CARD"
+        currency = "USD1"
+        with self.assertRaises(ValueError):
+            service.process_payment(amount, method, currency)
+
 if __name__ == '__main__':
     unittest.main()
