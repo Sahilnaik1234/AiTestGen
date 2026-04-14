@@ -291,4 +291,108 @@ public class UserServiceTest {
         // Act and Assert
         assertThrows(NullPointerException.class, () -> userService.authenticate(null, password));
     }
+
+    @Test
+    public void testRegisterUserUsernameWithNumbers() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser123";
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act
+        User registeredUser = userService.registerUser(username, email, password);
+
+        // Assert
+        assertNotNull(registeredUser);
+        assertEquals(username, registeredUser.getUsername());
+        assertEquals(email, registeredUser.getEmail());
+        assertNotNull(registeredUser.getPasswordHash());
+    }
+
+    @Test
+    public void testRegisterUserUsernameWithSpecialCharacters() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "test_User!@#";
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act
+        User registeredUser = userService.registerUser(username, email, password);
+
+        // Assert
+        assertNotNull(registeredUser);
+        assertEquals(username, registeredUser.getUsername());
+        assertEquals(email, registeredUser.getEmail());
+        assertNotNull(registeredUser.getPasswordHash());
+    }
+
+    @Test
+    public void testUpdateEmailUsernameWithNumbers() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser123";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password);
+        String newEmail = "newEmail@example.com";
+
+        // Act
+        userService.updateEmail(username, newEmail);
+
+        // Assert
+        User user = userService.userDatabase.get(username);
+        assertEquals(newEmail, user.getEmail());
+    }
+
+    @Test
+    public void testUpdateEmailUsernameWithSpecialCharacters() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "test_User!@#";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password);
+        String newEmail = "newEmail@example.com";
+
+        // Act
+        userService.updateEmail(username, newEmail);
+
+        // Assert
+        User user = userService.userDatabase.get(username);
+        assertEquals(newEmail, user.getEmail());
+    }
+
+    @Test
+    public void testAuthenticateUsernameWithNumbers() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser123";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password);
+
+        // Act
+        boolean isAuthenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertTrue(isAuthenticated);
+    }
+
+    @Test
+    public void testAuthenticateUsernameWithSpecialCharacters() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "test_User!@#";
+        String email = "test@example.com";
+        String password = "password123";
+        userService.registerUser(username, email, password);
+
+        // Act
+        boolean isAuthenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertTrue(isAuthenticated);
+    }
 }
