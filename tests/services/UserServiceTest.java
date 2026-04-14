@@ -258,14 +258,13 @@ public class UserServiceTest {
         String username = "testUser";
         String email = "test@example.com";
         String password = "password123";
-        userService.registerUser(username, email, password);
+        User user = userService.registerUser(username, email, password);
         String newEmail = "abcdefghijklmnopqrstuvwxyz@example.com";
 
         // Act
         userService.updateEmail(username, newEmail);
 
         // Assert
-        User user = userService.userDatabase.get(username);
         assertEquals(newEmail, user.getEmail());
     }
 
@@ -335,14 +334,13 @@ public class UserServiceTest {
         String username = "testUser123";
         String email = "test@example.com";
         String password = "password123";
-        userService.registerUser(username, email, password);
+        User user = userService.registerUser(username, email, password);
         String newEmail = "newEmail@example.com";
 
         // Act
         userService.updateEmail(username, newEmail);
 
         // Assert
-        User user = userService.userDatabase.get(username);
         assertEquals(newEmail, user.getEmail());
     }
 
@@ -353,14 +351,13 @@ public class UserServiceTest {
         String username = "test_User!@#";
         String email = "test@example.com";
         String password = "password123";
-        userService.registerUser(username, email, password);
+        User user = userService.registerUser(username, email, password);
         String newEmail = "newEmail@example.com";
 
         // Act
         userService.updateEmail(username, newEmail);
 
         // Assert
-        User user = userService.userDatabase.get(username);
         assertEquals(newEmail, user.getEmail());
     }
 
