@@ -63,4 +63,50 @@ public class EmailServiceTest {
         emailService.sendEmail("test3@example.com", "Test Subject 3", "Test Body 3");
         assertEquals(3, emailService.getSentCount());
     }
+
+    @Test
+    public void testGetSentEmailsEmpty() {
+        EmailService emailService = new EmailService();
+        List<String> sentEmails = emailService.getSentEmails();
+        assertTrue(sentEmails.isEmpty());
+    }
+
+    @Test
+    public void testClearHistoryEmpty() {
+        EmailService emailService = new EmailService();
+        emailService.clearHistory();
+        assertEquals(0, emailService.getSentCount());
+    }
+
+    @Test
+    public void testSendEmailValidInputMultipleTimes() {
+        EmailService emailService = new EmailService();
+        for (int i = 0; i < 10; i++) {
+            boolean result = emailService.sendEmail("test@example.com", "Test Subject", "Test Body");
+            assertTrue(result);
+        }
+        assertEquals(10, emailService.getSentCount());
+    }
+
+    @Test
+    public void testGetSentEmailsMultipleTimes() {
+        EmailService emailService = new EmailService();
+        for (int i = 0; i < 10; i++) {
+            emailService.sendEmail("test@example.com", "Test Subject", "Test Body");
+        }
+        List<String> sentEmails = emailService.getSentEmails();
+        assertEquals(10, sentEmails.size());
+    }
+
+    @Test
+    public void testClearHistoryMultipleTimes() {
+        EmailService emailService = new EmailService();
+        for (int i = 0; i < 10; i++) {
+            emailService.sendEmail("test@example.com", "Test Subject", "Test Body");
+        }
+        for (int i = 0; i < 5; i++) {
+            emailService.clearHistory();
+        }
+        assertEquals(0, emailService.getSentCount());
+    }
 }
