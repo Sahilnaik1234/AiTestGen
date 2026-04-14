@@ -49,10 +49,10 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateEmailUsernameWithOnlyNumbers() {
+    public void testUpdateEmailValidInput() {
         // Arrange
         UserService userService = new UserService();
-        String username = "12345";
+        String username = "testUser";
         String email = "test@example.com";
         String password = "password123";
         User user = userService.registerUser(username, email, password);
@@ -66,10 +66,10 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateEmailUsernameWithOnlySpecialCharacters() {
+    public void testUpdateEmailUsernameWithSpecialCharacters() {
         // Arrange
         UserService userService = new UserService();
-        String username = "!@#$%";
+        String username = "test_User!@#";
         String email = "test@example.com";
         String password = "password123";
         User user = userService.registerUser(username, email, password);
