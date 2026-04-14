@@ -46,21 +46,41 @@ program
             const threshold = parseFloat(options.threshold);
             console.log(chalk.blue(`\n📊 Analyzing coverage reports (Threshold: ${threshold}%)...`));
 
-            const reports: FileCoverage[] = [
-                ...findAndParseReports()
-            ];
+            const reports: FileCoverage[] = findAndParseReports();
 
-            if (reports.length === 0) {
-                console.log(chalk.yellow('⚠️ No coverage reports found.'));
-                return;
-            }
+            // 1. Proactively find ALL source files in the project to catch 0% coverage files
+            const { globSync } = require('glob');
+            const supportedExtensions = ['ts', 'js', 'py', 'java', 'go'];
+            const allSourceFiles = globSync(`src/**/*.{${supportedExtensions.join(',')}}`, {
+                ignore: ['node_modules/**', '**/*.test.*', '**/*_test.*', '**/target/**', '**/dist/**', '**/build/**']
+            });
 
-            // Always sync the latest coverage scores to the dashboard results.json
-            updateCoverageOnly(reports, options);
+            // 2. Map existing reports for quick lookup
+            const reportMap = new Map<string, FileCoverage>();
+            reports.forEach(r => {
+                reportMap.set(r.filePath.toLowerCase(), r);
+            });
 
-            const underCoveredFiles = reports.filter(f => {
+            // 3. Create a unified list of files to check
+            const filesToCheck: FileCoverage[] = allSourceFiles.map((file: string) => {
+                const normalizedFile = file.replace(/\\/g, '/');
+                const baseName = path.basename(normalizedFile).toLowerCase();
+
+                const reportMatch = reports.find(r =>
+                    normalizedFile.toLowerCase().endsWith(r.filePath.toLowerCase().replace(/\\/g, '/')) ||
+                    r.filePath.toLowerCase().endsWith(baseName)
+                );
+
+                return {
+                    filePath: normalizedFile,
+                    coverage: reportMatch ? reportMatch.coverage : 0,
+                    details: reportMatch?.details
+                };
+            });
+
+            const underCoveredFiles = filesToCheck.filter(f => {
                 const isUnderThreshold = f.coverage < threshold;
-                const isUnwanted = /node_modules|coverage|target\/site|jacoco|dist|build|__pycache__|maven-status|bin|\.test\.|_test\.|Test\./i.test(f.filePath);
+                const isUnwanted = /node_modules|coverage|target|dist|build|__pycache__|\.test\.|_test\./i.test(f.filePath);
 
                 let isIncluded = true;
                 if (options.include) {
@@ -74,14 +94,13 @@ program
                     isExcluded = excludes.some((p: string) => f.filePath.toLowerCase().includes(p));
                 }
 
-                // Supported Extensions Check
-                const supportedExts = ['.ts', '.js', '.py', '.java', '.go', '.cpp', '.cs', '.rs'];
-                const hasSupportedExt = supportedExts.some(ext => f.filePath.toLowerCase().endsWith(ext));
-
-                return isUnderThreshold && !isUnwanted && isIncluded && !isExcluded && hasSupportedExt;
+                return isUnderThreshold && !isUnwanted && isIncluded && !isExcluded;
             });
 
-            console.log(chalk.cyan(`✅ Found ${reports.length} files in reports.`));
+            console.log(chalk.cyan(`✅ Analyzed ${filesToCheck.length} source files (${reports.length} found in reports).`));
+
+            // Always sync the latest coverage scores to the dashboard results.json
+            updateCoverageOnly(filesToCheck, options);
 
             if (options.checkOnly) {
                 if (underCoveredFiles.length === 0) {
