@@ -1,12 +1,18 @@
 # Ignore generated reports
-*report.json
 results.json
 *.log
 reports/
 scan-reports/
+*-report.json
+soc2-report.json
+gitleaks-report.json
+trivy-report.json
+*.sarif
+
 
 # Ignore dependencies
 node_modules/
+.semgrep_cache/
 vendor/
 .venv/
 __pycache__/
@@ -16,3 +22,7 @@ dist/
 build/
 target/
 .git/
+
+
+
+ 
