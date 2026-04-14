@@ -1,26 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.aitestgen.services.UserServiceTest
 -------------------------------------------------------------------------------
-Tests run: 26, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.132 s <<< FAILURE! -- in com.aitestgen.services.UserServiceTest
-com.aitestgen.services.UserServiceTest.testAuthenticateNullUsername -- Time elapsed: 0.007 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: Expected java.lang.NullPointerException to be thrown, but nothing was thrown.
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
-	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
-	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
-	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.aitestgen.services.UserServiceTest.testAuthenticateNullUsername(UserServiceTest.java:291)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-
-com.aitestgen.services.UserServiceTest.testAuthenticateNullPassword -- Time elapsed: 0.002 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: Expected java.lang.NullPointerException to be thrown, but nothing was thrown.
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
-	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
-	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
-	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.aitestgen.services.UserServiceTest.testAuthenticateNullPassword(UserServiceTest.java:281)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 s -- in com.aitestgen.services.UserServiceTest
