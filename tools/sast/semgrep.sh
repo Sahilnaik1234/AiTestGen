@@ -18,5 +18,6 @@ done
 # Default to /src if nothing specified
 TARGET_PATH="/src"
 
-docker run --rm -v "$(pwd):/src" -e SEMGREP_APP_TOKEN=$SEMGREP_APP_TOKEN semgrep/semgrep semgrep --config=auto --json --output=/src/semgrep-report.json $EXCLUDE_FLAGS --no-git-ignore $TARGET_PATH
+mkdir -p reports
+docker run --rm -v "$(pwd):/src" -e SEMGREP_APP_TOKEN=$SEMGREP_APP_TOKEN semgrep/semgrep semgrep --config=auto --json --output=/src/reports/semgrep-report.json --exclude="*report.json" --exclude="reports/" --exclude="node_modules" --no-git-ignore $TARGET_PATH
 echo "[Toolbox]  Semgrep SAST complete."

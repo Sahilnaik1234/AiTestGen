@@ -1,0 +1,18 @@
+# Ignore generated reports
+*report.json
+results.json
+*.log
+reports/
+scan-reports/
+
+# Ignore dependencies
+node_modules/
+vendor/
+.venv/
+__pycache__/
+
+# Ignore build artifacts
+dist/
+build/
+target/
+.git/

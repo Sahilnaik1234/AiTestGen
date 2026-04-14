@@ -79,11 +79,8 @@ jobs:
         with:
           name: security-reports
           path: |
-            gitleaks-report.json
-            semgrep-report.json
+            reports/*.json
             dependency-report.json
-            soc2-report.json
-            hipaa-report.json
             claude-report.json
 
   # ============================================================

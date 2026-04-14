@@ -137,7 +137,7 @@ def main():
     print(f"[normalize] 🚀 Normalizing findings...")
     
     # Search in current directory (CI) or root (Local)
-    search_dirs = [".", BASE_DIR, os.path.join(BASE_DIR, "scan-reports")]
+    search_dirs = [".", BASE_DIR, os.path.join(BASE_DIR, "scan-reports"), os.path.join(BASE_DIR, "reports")]
     
     def find_report(filename):
         for d in search_dirs:
