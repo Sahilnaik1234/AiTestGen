@@ -90,7 +90,39 @@ export class Orchestrator {
     }
 
     private getTestFilePath(originalPath: string, ext: string): string {
-        const dir = path.dirname(originalPath);
+        const relativePath = path.relative(process.cwd(), originalPath);
+        let targetDirRelative = '';
+
+        // Map src -> test directories based on language standards
+        switch (ext.toLowerCase()) {
+            case 'java':
+                targetDirRelative = relativePath.replace(/^src[\\\/]main[\\\/]java/, 'src/test/java');
+                if (targetDirRelative === relativePath) {
+                    targetDirRelative = relativePath.replace(/^src[\\\/]/, 'tests/');
+                }
+                break;
+            case 'go':
+                // Go tests normally stay next to the source
+                targetDirRelative = relativePath;
+                break;
+            default:
+                targetDirRelative = relativePath.replace(/^src[\\\/]/, 'tests/');
+                break;
+        }
+
+        // If no src replacement matched and it's not Go, inject 'tests/' at root
+        if (targetDirRelative === relativePath && ext.toLowerCase() !== 'go') {
+            const parsed = path.parse(relativePath);
+            targetDirRelative = path.join('tests', parsed.dir, parsed.base);
+        }
+
+        const absoluteTargetDir = path.resolve(process.cwd(), path.dirname(targetDirRelative));
+
+        // Create the directory safely
+        if (!fs.existsSync(absoluteTargetDir)) {
+            fs.mkdirSync(absoluteTargetDir, { recursive: true });
+        }
+
         const base = path.basename(originalPath, `.${ext}`);
 
         let testName = '';
@@ -98,11 +130,17 @@ export class Orchestrator {
             case 'go':
                 testName = `${base}_test.go`;
                 break;
+            case 'py':
+                testName = `test_${base}.py`;
+                break;
+            case 'java':
+                testName = `${base}Test.java`;
+                break;
             default:
                 // Universal format used in the project: filename.test.ext
                 testName = `${base}.test.${ext}`;
         }
 
-        return path.join(dir, testName);
+        return path.join(absoluteTargetDir, testName);
     }
 }

@@ -126,15 +126,26 @@ program
 
             const results = [];
             for (const fileItem of underCoveredFiles) {
-                // We need to resolve the actual file path because reports might have relative/partial paths
                 const resolvedPath = resolveFilePath(fileItem.filePath);
                 if (resolvedPath && fs.existsSync(resolvedPath)) {
                     console.log(chalk.yellow(`\n🛠️ Generating tests for: ${fileItem.filePath}`));
-                    try {
-                        const result = await orchestrator.run(resolvedPath, fileItem);
-                        results.push(result);
-                    } catch (err: any) {
-                        console.error(chalk.red(`❌ Error generating for ${fileItem.filePath}: ${err.message}`));
+                    let success = false;
+                    let retries = 0;
+                    while (!success && retries < 3) {
+                        try {
+                            const result = await orchestrator.run(resolvedPath, fileItem);
+                            results.push(result);
+                            success = true;
+                        } catch (err: any) {
+                            if (err.message && err.message.includes('Rate limit reached')) {
+                                console.log(chalk.yellow(`⏳ Rate limit hit! Waiting 35 seconds before retrying ${fileItem.filePath}...`));
+                                retries++;
+                                await new Promise(resolve => setTimeout(resolve, 35000));
+                            } else {
+                                console.error(chalk.red(`❌ Error generating for ${fileItem.filePath}: ${err.message}`));
+                                break;
+                            }
+                        }
                     }
                 } else {
                     console.warn(chalk.gray(`⚠️ Could not resolve file path for: ${fileItem.filePath}`));
