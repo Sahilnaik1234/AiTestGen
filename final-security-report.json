@@ -1,16 +1,17 @@
 {
-  "generated_at": "2026-04-15T06:19:20.718368+00:00",
+  "generated_at": "2026-04-15T06:33:10.393250+00:00",
   "summary": {
-    "total_findings": 53,
+    "total_findings": 56,
     "gitleaks": 0,
     "semgrep": 14,
     "dependency": 0,
-    "compliance": 39,
+    "compliance": 42,
     "claude": 0,
-    "soc2_count": 39,
+    "soc2_count": 42,
     "hipaa_count": 0,
     "by_severity": {
-      "WARNING": 53
+      "WARNING": 55,
+      "ERROR": 1
     }
   },
   "findings": [
@@ -195,6 +196,30 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/OpenAIAdapter.ts",
       "line": 72
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/config/aws-config.js",
+      "line": 6
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/src/config/aws-config.js",
+      "line": 7
+    },
+    {
+      "tool": "compliance",
+      "severity": "ERROR",
+      "title": "SOC2: SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults.",
+      "rule_id": "tools.configs.soc2-universal-hardcoded-secret",
+      "file": "/src/src/config/aws-config.js",
+      "line": 7
     },
     {
       "tool": "compliance",
