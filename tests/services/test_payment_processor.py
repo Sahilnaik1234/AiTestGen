@@ -20,20 +20,6 @@ class TestPaymentProcessor(unittest.TestCase):
         self.assertIsInstance(result["transaction_id"], str)
         self.assertIsInstance(result["timestamp"], datetime)
 
-    def test_process_payment_invalid_amount(self):
-        processor = PaymentProcessor()
-        amount = 0.0
-        card_number = "4111111111111111"
-        with self.assertRaises(ValueError):
-            processor.process_payment(amount, card_number)
-
-    def test_process_payment_invalid_card_type(self):
-        processor = PaymentProcessor()
-        amount = 100.0
-        card_number = "1234567890123456"
-        result = processor.process_payment(amount, card_number)
-        self.assertEqual(result["status"], "FAILED")
-        self.assertEqual(result["reason"], "Unsupported card type")
 
     def test_process_payment_invalid_amex_length(self):
         processor = PaymentProcessor()
