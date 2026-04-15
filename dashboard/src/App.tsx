@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tests' | 'security'>('tests');
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  const [selectedSeverity, setSelectedSeverity] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -191,7 +192,31 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <div className="findings-table-container" style={{ marginTop: '2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div className="filter-row" style={{ marginTop: '2rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Risk Level:</span>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'].map(sev => (
+                  <button
+                    key={sev}
+                    onClick={() => setSelectedSeverity(selectedSeverity === sev ? null : sev)}
+                    className={`filter-chip ${selectedSeverity === sev ? 'active' : ''}`}
+                    style={{ '--chip-color': sev === 'CRITICAL' ? 'var(--accent-magenta)' : sev === 'HIGH' ? '#f59e0b' : sev === 'MEDIUM' ? 'var(--accent-cyan)' : 'var(--accent-green)' } as any}
+                  >
+                    {sev}
+                  </button>
+                ))}
+              </div>
+              { (selectedTool || selectedSeverity) && (
+                <button 
+                  onClick={() => { setSelectedTool(null); setSelectedSeverity(null); }}
+                  style={{ background: 'none', border: 'none', color: 'var(--accent-magenta)', cursor: 'pointer', fontSize: '0.8rem', textDecoration: 'underline' }}
+                >
+                  Clear All Filters
+                </button>
+              )}
+            </div>
+
+            <div className="findings-table-container" style={{ marginTop: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
               <h3 style={{ marginBottom: '1.5rem' }}>Vulnerability Details</h3>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
@@ -204,7 +229,8 @@ const App: React.FC = () => {
                 </thead>
                 <tbody>
                   {(securityReport?.findings || [])
-                    .filter((f: any) => !selectedTool || f.tool.toLowerCase() === selectedTool.toLowerCase())
+                    .filter((f: any) => (!selectedTool || f.tool.toLowerCase() === selectedTool.toLowerCase()))
+                    .filter((f: any) => (!selectedSeverity || f.severity === selectedSeverity))
                     .map((f: any, i: number) => (
                     <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                       <td style={{ padding: '1rem 0' }}><span className="badge badge-cyan">{f.tool}</span></td>
@@ -213,7 +239,7 @@ const App: React.FC = () => {
                           {f.severity}
                         </span>
                       </td>
-                      <td style={{ padding: '1rem 0' }}>{f.title}</td>
+                      <td style={{ padding: '1rem 0' }}>{f.ai_description || f.title}</td>
                       <td style={{ padding: '1rem 0', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                         {f.file}:{f.line}
                       </td>

@@ -139,6 +139,13 @@ jobs:
       - name: Unify Security Reports
         run: python scripts/normalize.py
 
+      - name: AI Risk Audit
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          pip install anthropic
+          python3 tools/sast/risk_auditor.py || true
+
       - name: Upload Unified Report
         uses: actions/upload-artifact@v4
         with:

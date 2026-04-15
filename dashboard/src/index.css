@@ -181,9 +181,30 @@ pre {
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.filter-chip {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-chip:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--text-primary);
+}
+
+.filter-chip.active {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--chip-color, var(--accent-cyan));
+  color: var(--text-primary);
+  box-shadow: 0 0 15px -5px var(--chip-color, var(--accent-cyan));
 }
 
 .security-view table th {
