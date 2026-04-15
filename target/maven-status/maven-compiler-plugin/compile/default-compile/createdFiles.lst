@@ -1,6 +1,5 @@
 com/aitestgen/services/EmailServiceTest.class
 com/aitestgen/services/UserService.class
 com/aitestgen/services/UserService$User.class
-StringUtils.class
 com/aitestgen/services/UserServiceTest.class
 com/aitestgen/services/EmailService.class

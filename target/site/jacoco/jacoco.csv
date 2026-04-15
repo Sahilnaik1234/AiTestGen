@@ -1,5 +1,4 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-ai-test-gen-all,default,StringUtils,584,0,36,0,239,0,231,0,213,0
 ai-test-gen-all,com.aitestgen.services,EmailService,0,67,0,8,0,13,0,9,0,5
 ai-test-gen-all,com.aitestgen.services,UserService,32,90,11,11,5,19,11,6,0,6
 ai-test-gen-all,com.aitestgen.services,UserService.User,0,25,0,0,0,9,0,5,0,5
