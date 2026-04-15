@@ -38,31 +38,62 @@ jobs:
         env:
           TOOL: ${{ github.event.inputs.secret_tool || 'gitleaks' }}
         run: |
-          chmod +x tools/secrets/$TOOL.sh
-          ./tools/secrets/$TOOL.sh || true
+          mkdir -p reports
+          if [ "$TOOL" == "gitleaks" ]; then
+            docker run --rm -v "$(pwd):/src" zricethezav/gitleaks:latest detect --no-git --source="/src" --report-format=json --report-path=/src/reports/gitleaks-report.json --verbose || true
+          elif [ "$TOOL" == "trufflehog" ]; then
+            > trufflehog-report.json
+            IFS=',' read -ra INCS <<< "$SCAN_INCLUDE"
+            for i in "${INCS[@]}"; do
+              i=$(echo "$i" | xargs)
+              if [ -n "$i" ]; then
+                docker run --rm -v "$(pwd):/src" trufflesecurity/trufflehog:latest filesystem "/src/$i" --json >> trufflehog-report.json || true
+              fi
+            done
+          fi
 
       - name: Run SAST Scan
         env:
           TOOL: ${{ github.event.inputs.sast_tool || 'semgrep' }}
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         run: |
-          chmod +x tools/sast/$TOOL.sh
-          ./tools/sast/$TOOL.sh || true
+          mkdir -p reports
+          if [ "$TOOL" == "semgrep" ]; then
+            TARGET_PATHS=""
+            IFS=',' read -ra INCS <<< "$SCAN_INCLUDE"
+            for i in "${INCS[@]}"; do
+              i=$(echo "$i" | xargs)
+              if [ -n "$i" ]; then TARGET_PATHS="$TARGET_PATHS /src/$i"; fi
+            done
+            TARGET_PATH="${TARGET_PATHS:-/src}"
+            docker run --rm -v "$(pwd):/src" -e SEMGREP_APP_TOKEN=$SEMGREP_APP_TOKEN semgrep/semgrep semgrep --config=auto --json --output=/src/reports/semgrep-report.json --exclude="*report.json" --exclude="reports/" --exclude="node_modules" --no-git-ignore $TARGET_PATH || true
+          elif [ "$TOOL" == "claude" ]; then
+            pip install anthropic
+            python3 tools/sast/claude_analyzer.py || true
+          fi
 
       - name: Run Dependency Scan
         run: |
-          chmod +x tools/dependency/trivy.sh
-          ./tools/dependency/trivy.sh || true
+          EXC_FLAGS=""
+          if [ -n "$SCAN_EXCLUDE" ]; then EXC_FLAGS="--skip-dirs ${SCAN_EXCLUDE}"; fi
+          docker run --rm -v "$(pwd):/src" aquasec/trivy:latest fs --format json --output /src/dependency-report.json $EXC_FLAGS "/src/${SCAN_INCLUDE:-.}" || true
 
       - name: Run SOC2 Compliance
         run: |
-          chmod +x tools/compliance/soc2.sh
-          ./tools/compliance/soc2.sh || true
+          mkdir -p reports
+          docker run --rm -v "$(pwd):/src" semgrep/semgrep semgrep \
+            --config=/src/tools/configs/.semgrep-soc2.yml \
+            --config=p/secrets \
+            --exclude="*report.json" \
+            --exclude="reports/" \
+            --exclude="node_modules" \
+            --json --output=/src/reports/soc2-report.json /src || true
 
       - name: Run HIPAA Compliance
         run: |
-          chmod +x tools/compliance/hipaa.sh
-          ./tools/compliance/hipaa.sh || true
+          docker run --rm -v "$(pwd):/src" semgrep/semgrep semgrep \
+            --config=/src/tools/configs/.semgrep-hipaa.yml \
+            --json --output=/src/hipaa-report.json /src || true
 
       - name: Claude Code Security Audit
         if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
@@ -70,8 +101,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           pip install anthropic
-          chmod +x tools/sast/claude.sh
-          ./tools/sast/claude.sh || true
+          python3 tools/sast/claude_analyzer.py || true
 
       - name: Upload Security Reports
         if: always()
