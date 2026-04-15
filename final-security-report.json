@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-04-15T06:33:10.393250+00:00",
+  "generated_at": "2026-04-15T07:09:43.207438+00:00",
   "summary": {
-    "total_findings": 56,
+    "total_findings": 57,
     "gitleaks": 0,
     "semgrep": 14,
     "dependency": 0,
-    "compliance": 42,
+    "compliance": 43,
     "claude": 0,
-    "soc2_count": 42,
+    "soc2_count": 43,
     "hipaa_count": 0,
     "by_severity": {
-      "WARNING": 55,
+      "WARNING": 56,
       "ERROR": 1
     }
   },
@@ -476,6 +476,14 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/UserService.java",
       "line": 68
+    },
+    {
+      "tool": "compliance",
+      "severity": "WARNING",
+      "title": "SOC2: SOC2 Compliance: Potential missing audit logging. Operations related to auth/access must be logged for the 'Access and Monitoring' criterion.",
+      "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
+      "file": "/src/tools/sast/risk_auditor.py",
+      "line": 98
     }
   ]
 }
