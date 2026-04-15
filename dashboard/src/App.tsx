@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const [securityReport, setSecurityReport] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'tests' | 'security'>('tests');
   const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -134,32 +135,56 @@ const App: React.FC = () => {
             </header>
 
             <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
-              <div className="stat-card" style={{ '--stat-color': 'var(--accent-magenta)' } as any}>
+              <div 
+                className={`stat-card ${selectedTool === 'gitleaks' ? 'active-filter' : ''}`}
+                style={{ '--stat-color': 'var(--accent-magenta)', cursor: 'pointer' } as any}
+                onClick={() => setSelectedTool(selectedTool === 'gitleaks' ? null : 'gitleaks')}
+              >
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Secrets & Keys</span>
                 <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.gitleaks || 0}</h3>
                 <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Detected by Gitleaks</p>
               </div>
-              <div className="stat-card" style={{ '--stat-color': 'var(--accent-cyan)' } as any}>
+              <div 
+                className={`stat-card ${selectedTool === 'semgrep' ? 'active-filter' : ''}`}
+                style={{ '--stat-color': 'var(--accent-cyan)', cursor: 'pointer' } as any}
+                onClick={() => setSelectedTool(selectedTool === 'semgrep' ? null : 'semgrep')}
+              >
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Code Flaws</span>
                 <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.semgrep || 0}</h3>
                 <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Detected by Semgrep</p>
               </div>
-              <div className="stat-card" style={{ '--stat-color': 'var(--accent-green)' } as any}>
+              <div 
+                className={`stat-card ${selectedTool === 'trivy' ? 'active-filter' : ''}`}
+                style={{ '--stat-color': 'var(--accent-green)', cursor: 'pointer' } as any}
+                onClick={() => setSelectedTool(selectedTool === 'trivy' ? null : 'trivy')}
+              >
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Dependencies</span>
                 <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.dependency || 0}</h3>
                 <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Detected by Trivy</p>
               </div>
-              <div className="stat-card" style={{ borderLeft: '3px solid #0ea5e9' }}>
+              <div 
+                className={`stat-card ${selectedTool === 'soc2' ? 'active-filter' : ''}`}
+                style={{ borderLeft: '3px solid #0ea5e9', cursor: 'pointer', '--stat-color': '#0ea5e9' } as any}
+                onClick={() => setSelectedTool(selectedTool === 'soc2' ? null : 'soc2')}
+              >
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>SOC2 Rules</span>
                 <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.soc2_count || 0}</h3>
                 <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Compliance Audit</p>
               </div>
-              <div className="stat-card" style={{ borderLeft: '3px solid #10b981' }}>
+              <div 
+                className={`stat-card ${selectedTool === 'hipaa' ? 'active-filter' : ''}`}
+                style={{ borderLeft: '3px solid #10b981', cursor: 'pointer', '--stat-color': '#10b981' } as any}
+                onClick={() => setSelectedTool(selectedTool === 'hipaa' ? null : 'hipaa')}
+              >
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>HIPAA Rules</span>
                 <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.hipaa_count || 0}</h3>
                 <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>Healthcare Compliance</p>
               </div>
-              <div className="stat-card" style={{ borderLeft: '3px solid #f59e0b' }}>
+              <div 
+                className={`stat-card ${selectedTool === 'claude' ? 'active-filter' : ''}`}
+                style={{ borderLeft: '3px solid #f59e0b', cursor: 'pointer', '--stat-color': '#f59e0b' } as any}
+                onClick={() => setSelectedTool(selectedTool === 'claude' ? null : 'claude')}
+              >
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Claude Insights</span>
                 <h3 style={{ fontSize: '1.75rem', margin: '0.5rem 0' }}>{securityReport?.summary?.claude || 0}</h3>
                 <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>AI Security Scan</p>
@@ -178,7 +203,9 @@ const App: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {(securityReport?.findings || []).map((f: any, i: number) => (
+                  {(securityReport?.findings || [])
+                    .filter((f: any) => !selectedTool || f.tool.toLowerCase() === selectedTool.toLowerCase())
+                    .map((f: any, i: number) => (
                     <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                       <td style={{ padding: '1rem 0' }}><span className="badge badge-cyan">{f.tool}</span></td>
                       <td style={{ padding: '1rem 0' }}>

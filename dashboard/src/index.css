@@ -96,6 +96,19 @@ body {
   gap: 0.5rem;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.stat-card.active-filter {
+  border-color: var(--stat-color, var(--accent-cyan));
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 20px -5px var(--stat-color, var(--accent-cyan));
 }
 
 .stat-card::after {
@@ -106,6 +119,13 @@ body {
   width: 100%;
   height: 4px;
   background: var(--stat-color, var(--accent-cyan));
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card.active-filter::after {
+  opacity: 1;
+  height: 6px;
 }
 
 .code-view-container {
