@@ -334,7 +334,7 @@ jobs:
         with:
           name: test-results
           path: |
-            results.json
+            dashboard/public/results.json
             coverage/
 
   # ============================================================
