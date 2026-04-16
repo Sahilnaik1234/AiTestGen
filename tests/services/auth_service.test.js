@@ -1,4 +1,4 @@
-const AuthService = require('../../src/services/authorization_service');
+const { AuthService } = require('../../src/services/auth_service');
 
 describe('AuthService', () => {
     let authService;
@@ -28,6 +28,18 @@ describe('AuthService', () => {
             expect(result.sessionId).not.toBeNull();
             expect(authService.isSessionValid(result.sessionId)).toBe(true);
         });
+
+        it('should generate a unique session id for each login', () => {
+            const result1 = authService.login('admin', 'admin123');
+            const result2 = authService.login('admin', 'admin123');
+            expect(result1.sessionId).not.toBe(result2.sessionId);
+        });
+
+        it('should store the session with the current date', () => {
+            const result = authService.login('admin', 'admin123');
+            const session = authService.sessions.get(result.sessionId);
+            expect(session.createdAt).toBeInstanceOf(Date);
+        });
     });
 
     describe('logout', () => {
@@ -40,6 +52,11 @@ describe('AuthService', () => {
             expect(authService.logout(loginResult.sessionId)).toBe(true);
             expect(authService.isSessionValid(loginResult.sessionId)).toBe(false);
         });
+
+        it('should not throw an error if session id is missing', () => {
+            expect(() => authService.logout(null)).not.toThrow();
+            expect(authService.logout(null)).toBe(false);
+        });
     });
 
     describe('isSessionValid', () => {
@@ -51,6 +68,10 @@ describe('AuthService', () => {
             const loginResult = authService.login('admin', 'admin123');
             expect(authService.isSessionValid(loginResult.sessionId)).toBe(true);
         });
+
+        it('should return false if session id is null', () => {
+            expect(authService.isSessionValid(null)).toBe(false);
+        });
     });
 
     describe('getSessionUser', () => {
@@ -61,6 +82,10 @@ describe('AuthService', () => {
         it('should return the username if session id is valid', () => {
             const loginResult = authService.login('admin', 'admin123');
             expect(authService.getSessionUser(loginResult.sessionId)).toBe('admin');
+        });
+
+        it('should return null if session id is null', () => {
+            expect(authService.getSessionUser(null)).toBeNull();
         });
     });
 });
