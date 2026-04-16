@@ -305,14 +305,41 @@ function findAndParseReports(): FileCoverage[] {
 
     // 4. Find Java/JaCoCo reports
     // Look for jacoco.xml in target/site/jacoco/ and other common paths
-    const javaReports = globSync('**/jacoco.xml', { 
+    let javaReports = globSync('**/jacoco.xml', { 
         ignore: ['node_modules/**'],
         dot: true,
         absolute: true 
     });
+
+    // Fallback: If glob fails, try explicit common paths relative to CWD
+    const commonJavaPaths = [
+        'target/site/jacoco/jacoco.xml',
+        'target/jacoco.xml',
+        'build/reports/jacoco/test/jacocoTestReport.xml'
+    ];
+    
+    commonJavaPaths.forEach(p => {
+        const fullPath = path.join(process.cwd(), p);
+        if (fs.existsSync(fullPath) && !javaReports.includes(fullPath)) {
+            javaReports.push(fullPath);
+        }
+    });
+
     console.log(chalk.gray(`   - Found ${javaReports.length} Java reports`));
+    
+    if (javaReports.length === 0) {
+        // Debug: list all XML files in target to help troubleshoot
+        const targetDir = path.join(process.cwd(), 'target');
+        if (fs.existsSync(targetDir)) {
+            const allXml = globSync('target/**/*.xml');
+            if (allXml.length > 0) {
+                console.log(chalk.yellow(`     ⚠️  No jacoco.xml found, but discovered ${allXml.length} XML files in target/`));
+            }
+        }
+    }
+
     javaReports.forEach((report: string) => {
-        results.push(...CoverageParser.parseJacoco(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
+        results.push(...CoverageParser.parseJacoco(report));
     });
 
     return results;

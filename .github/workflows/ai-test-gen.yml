@@ -332,9 +332,9 @@ jobs:
           name: coverage-reports
           path: |
             coverage/
-            examples/coverage.out
+            coverage.out
             coverage.json
-            examples/target/site/jacoco/jacoco.xml
+            target/site/jacoco/jacoco.xml
 
       - name: Upload Test Results
         if: always()
