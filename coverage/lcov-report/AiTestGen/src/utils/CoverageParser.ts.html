@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/63</span>
+                <span class='fraction'>0/68</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/29</span>
+                <span class='fraction'>0/32</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/55</span>
+                <span class='fraction'>0/59</span>
             </div>
         
             
@@ -170,7 +170,14 @@
 <a name='L105'></a><a href='#L105'>105</a>
 <a name='L106'></a><a href='#L106'>106</a>
 <a name='L107'></a><a href='#L107'>107</a>
-<a name='L108'></a><a href='#L108'>108</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -262,6 +269,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -270,6 +283,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -367,19 +381,26 @@ export interface FileCoverage {
         const content = <span class="cstat-no" title="statement not covered" >fs.readFileSync(xmlPath, 'utf8');</span>
         const results: FileCoverage[] = <span class="cstat-no" title="statement not covered" >[];</span>
 &nbsp;
-        // Basic regex parsing for JaCoCo XML if no XML parser available
-        // &lt;sourcefile name="StringUtils.java"&gt; ... &lt;counter type="LINE" missed="10" covered="20"/&gt;
-        const sourceFileMatches = <span class="cstat-no" title="statement not covered" >content.matchAll(/&lt;sourcefile name="([^"]+)"&gt;[\s\S]*?&lt;counter type="LINE" missed="(\d+)" covered="(\d+)"\/&gt;/g);</span>
+        // Improved regex for JaCoCo XML:
+        // Finds &lt;sourcefile name="..."&gt; and the nested &lt;counter type="LINE" ... /&gt;
+        // Handles cases where other counters (INSTRUCTION, BRANCH) might come first.
+        const sourceFileBlocks = <span class="cstat-no" title="statement not covered" >content.split('&lt;sourcefile');</span>
+        
+<span class="cstat-no" title="statement not covered" >        for (let i = <span class="cstat-no" title="statement not covered" >1;</span> i &lt; sourceFileBlocks.length; i++) {</span>
+            const block = <span class="cstat-no" title="statement not covered" >sourceFileBlocks[i];</span>
+            const nameMatch = <span class="cstat-no" title="statement not covered" >block.match(/name="([^"]+)"/);</span>
+            const counterMatch = <span class="cstat-no" title="statement not covered" >block.match(/&lt;counter type="LINE" missed="(\d+)" covered="(\d+)"\/&gt;/);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        for (const match of sourceFileMatches) {</span>
-            const fileName = <span class="cstat-no" title="statement not covered" >match[1];</span>
-            const missed = <span class="cstat-no" title="statement not covered" >parseInt(match[2], 10);</span>
-            const covered = <span class="cstat-no" title="statement not covered" >parseInt(match[3], 10);</span>
-            const total = <span class="cstat-no" title="statement not covered" >missed + covered;</span>
-<span class="cstat-no" title="statement not covered" >            results.push({</span>
-                filePath: fileName,
-                coverage: total === 0 ? 100 : (covered / total) * 100
-            });
+<span class="cstat-no" title="statement not covered" >            <span class="missing-if-branch" title="if path not taken" >I</span>if (nameMatch &amp;&amp; counterMatch) {</span>
+                const fileName = <span class="cstat-no" title="statement not covered" >nameMatch[1];</span>
+                const missed = <span class="cstat-no" title="statement not covered" >parseInt(counterMatch[1], 10);</span>
+                const covered = <span class="cstat-no" title="statement not covered" >parseInt(counterMatch[2], 10);</span>
+                const total = <span class="cstat-no" title="statement not covered" >missed + covered;</span>
+<span class="cstat-no" title="statement not covered" >                results.push({</span>
+                    filePath: fileName,
+                    coverage: total === 0 ? 100 : (covered / total) * 100
+                });
+            }
         }
 <span class="cstat-no" title="statement not covered" >        return results;</span>
     }
@@ -391,7 +412,7 @@ export interface FileCoverage {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-16T07:12:30.474Z
+                at 2026-04-16T07:28:35.437Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
