@@ -12,3 +12,13 @@ examples/coverage.out
 examples/target/
 dashboard/node_modules
 dashboard/dist
+# Python
+__pycache__/
+*.pyc
+.coverage
+
+# Java
+target/
+
+# Coverage
+coverage.json
