@@ -85,4 +85,56 @@ public class OrderServiceTest {
         orderService.processOrder("2");
         assertEquals(100.0, orderService.calculateTotal());
     }
+
+    @Test
+    public void testCreateOrderZeroAmount() {
+        OrderService orderService = new OrderService();
+        Order order = orderService.createOrder("1", 0.0);
+        assertNotNull(order);
+        assertEquals("1", order.id);
+        assertEquals(0.0, order.amount);
+        assertEquals("PENDING", order.status);
+    }
+
+    @Test
+    public void testProcessOrderMultipleTimes() {
+        OrderService orderService = new OrderService();
+        orderService.createOrder("1", 100.0);
+        assertTrue(orderService.processOrder("1"));
+        assertFalse(orderService.processOrder("1"));
+        assertEquals("COMPLETED", orderService.orders.get(0).status);
+    }
+
+    @Test
+    public void testCalculateTotalMultipleCompletedOrdersWithSameAmount() {
+        OrderService orderService = new OrderService();
+        orderService.createOrder("1", 100.0);
+        orderService.createOrder("2", 100.0);
+        orderService.processOrder("1");
+        orderService.processOrder("2");
+        assertEquals(200.0, orderService.calculateTotal());
+    }
+
+    @Test
+    public void testCreateOrderMultipleOrdersWithSameId() {
+        OrderService orderService = new OrderService();
+        orderService.createOrder("1", 100.0);
+        Order order = orderService.createOrder("1", 200.0);
+        assertNotNull(order);
+        assertEquals("1", order.id);
+        assertEquals(200.0, order.amount);
+        assertEquals("PENDING", order.status);
+        assertEquals(2, orderService.orders.size());
+    }
+
+    @Test
+    public void testProcessOrderMultipleOrdersWithSameId() {
+        OrderService orderService = new OrderService();
+        orderService.createOrder("1", 100.0);
+        orderService.createOrder("1", 200.0);
+        assertTrue(orderService.processOrder("1"));
+        assertEquals("COMPLETED", orderService.orders.get(0).status);
+        assertTrue(orderService.processOrder("1"));
+        assertEquals("COMPLETED", orderService.orders.get(1).status);
+    }
 }

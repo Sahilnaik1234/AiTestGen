@@ -405,4 +405,73 @@ public class UserServiceTest {
         // Assert
         assertTrue(isAuthenticated);
     }
+
+    @Test
+    public void testRegisterUserWithMaximumLengthUsername() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "a".repeat(1000); // Assuming maximum length is not defined
+        String email = "test@example.com";
+        String password = "password123";
+
+        // Act and Assert
+        assertDoesNotThrow(() -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testRegisterUserWithMaximumLengthEmail() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser";
+        String email = "a".repeat(1000) + "@example.com"; // Assuming maximum length is not defined
+        String password = "password123";
+
+        // Act and Assert
+        assertDoesNotThrow(() -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testRegisterUserWithMaximumLengthPassword() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "a".repeat(1000); // Assuming maximum length is not defined
+
+        // Act and Assert
+        assertDoesNotThrow(() -> userService.registerUser(username, email, password));
+    }
+
+    @Test
+    public void testUpdateEmailWithMaximumLengthNewEmail() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "password123";
+        User user = userService.registerUser(username, email, password);
+        String newEmail = "a".repeat(1000) + "@example.com"; // Assuming maximum length is not defined
+
+        // Act
+        userService.updateEmail(username, newEmail);
+
+        // Assert
+        assertEquals(newEmail, user.getEmail());
+    }
+
+    @Test
+    public void testAuthenticateWithMaximumLengthPassword() {
+        // Arrange
+        UserService userService = new UserService();
+        String username = "testUser";
+        String email = "test@example.com";
+        String password = "a".repeat(1000); // Assuming maximum length is not defined
+        userService.registerUser(username, email, password);
+
+        // Act
+        boolean isAuthenticated = userService.authenticate(username, password);
+
+        // Assert
+        assertTrue(isAuthenticated);
+    }
 }

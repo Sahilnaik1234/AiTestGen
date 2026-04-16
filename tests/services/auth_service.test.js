@@ -47,6 +47,14 @@ describe('AuthService', () => {
             expect(authService.isSessionValid(result1.sessionId)).toBe(true);
             expect(authService.isSessionValid(result2.sessionId)).toBe(true);
         });
+
+        it('should handle login with empty string username', () => {
+            expect(() => authService.login('', 'password')).toThrowError('Username and password are required');
+        });
+
+        it('should handle login with empty string password', () => {
+            expect(() => authService.login('username', '')).toThrowError('Username and password are required');
+        });
     });
 
     describe('logout', () => {
@@ -73,6 +81,10 @@ describe('AuthService', () => {
             expect(authService.isSessionValid(loginResult1.sessionId)).toBe(false);
             expect(authService.isSessionValid(loginResult2.sessionId)).toBe(false);
         });
+
+        it('should handle logout with empty string session id', () => {
+            expect(authService.logout('')).toBe(false);
+        });
     });
 
     describe('isSessionValid', () => {
@@ -95,6 +107,10 @@ describe('AuthService', () => {
             expect(authService.isSessionValid(loginResult1.sessionId)).toBe(true);
             expect(authService.isSessionValid(loginResult2.sessionId)).toBe(true);
         });
+
+        it('should handle isSessionValid with empty string session id', () => {
+            expect(authService.isSessionValid('')).toBe(false);
+        });
     });
 
     describe('getSessionUser', () => {
@@ -116,6 +132,10 @@ describe('AuthService', () => {
             const loginResult2 = authService.login('admin', 'admin123');
             expect(authService.getSessionUser(loginResult1.sessionId)).toBe('admin');
             expect(authService.getSessionUser(loginResult2.sessionId)).toBe('admin');
+        });
+
+        it('should handle getSessionUser with empty string session id', () => {
+            expect(authService.getSessionUser('')).toBeNull();
         });
     });
 });

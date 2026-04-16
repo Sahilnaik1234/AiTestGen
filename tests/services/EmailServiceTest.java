@@ -186,4 +186,42 @@ public class EmailServiceTest {
         assertEquals("To: test1@example.com | Subject: Test Subject 1 | Body: Test Body 1", sentEmails.get(0));
         assertEquals("To: test2@example.com | Subject: Test Subject 2 | Body: Test Body 2", sentEmails.get(1));
     }
+
+    @Test
+    public void testSendEmailWithLongRecipient() {
+        EmailService emailService = new EmailService();
+        String longRecipient = "test".repeat(1000) + "@example.com";
+        boolean result = emailService.sendEmail(longRecipient, "Test Subject", "Test Body");
+        assertTrue(result);
+        assertEquals(1, emailService.getSentCount());
+    }
+
+    @Test
+    public void testSendEmailWithLongSubject() {
+        EmailService emailService = new EmailService();
+        String longSubject = "Test Subject ".repeat(1000);
+        boolean result = emailService.sendEmail("test@example.com", longSubject, "Test Body");
+        assertTrue(result);
+        assertEquals(1, emailService.getSentCount());
+    }
+
+    @Test
+    public void testSendEmailWithLongBody() {
+        EmailService emailService = new EmailService();
+        String longBody = "Test Body ".repeat(1000);
+        boolean result = emailService.sendEmail("test@example.com", "Test Subject", longBody);
+        assertTrue(result);
+        assertEquals(1, emailService.getSentCount());
+    }
+
+    @Test
+    public void testGetSentEmailsWithLongEmails() {
+        EmailService emailService = new EmailService();
+        String longRecipient = "test".repeat(1000) + "@example.com";
+        String longSubject = "Test Subject ".repeat(1000);
+        String longBody = "Test Body ".repeat(1000);
+        emailService.sendEmail(longRecipient, longSubject, longBody);
+        List<String> sentEmails = emailService.getSentEmails();
+        assertEquals(1, sentEmails.size());
+    }
 }
