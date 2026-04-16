@@ -41,91 +41,92 @@ def audit_report():
         print(f"[AI Risk Audit] ❌ Error reading report: {e}")
         return
 
-    findings = report_data.get("findings", [])
-    if not findings:
-        print("[AI Risk Audit] No findings to audit.")
-        return
+    try:
+        findings = report_data.get("findings", [])
+        if not findings:
+            print("[AI Risk Audit] No findings to audit.")
+            return
 
-    client = anthropic.Anthropic(api_key=api_key)
-    print(f"[AI Risk Audit] 🚀 Auditing {len(findings)} findings in batches of {BATCH_SIZE}...")
+        client = anthropic.Anthropic(api_key=api_key)
+        print(f"[AI Risk Audit] 🚀 Auditing {len(findings)} findings in batches of {BATCH_SIZE}...")
 
-    master_risk_map = {}
-    
-    # Process findings in batches
-    for i in range(0, len(findings), BATCH_SIZE):
-        batch = findings[i:i + BATCH_SIZE]
-        batch_idx = (i // BATCH_SIZE) + 1
-        total_batches = (len(findings) + BATCH_SIZE - 1) // BATCH_SIZE
+        master_risk_map = {}
         
-        print(f"[AI Risk Audit] 📦 Processing batch {batch_idx}/{total_batches} ({len(batch)} findings)...")
-        
-        # Prepare masked data for this batch
-        masked_batch = []
-        for f in batch:
-            idx = findings.index(f)
-            masked_f = {
-                "id": idx,
-                "tool": f.get("tool"),
-                "title": mask_data(f.get("title", "")),
-                "match": mask_data(f.get("match", "")),
-                "file": f.get("file")
-            }
-            masked_batch.append(masked_f)
-
-        prompt = f"""You are a senior security architect. Review the following masked security findings and for each one:
-        1. Assign a clinical risk level: CRITICAL, HIGH, MEDIUM, or LOW.
-        2. Provide a concise, human-readable description of the vulnerability and why it matters.
-        
-        Findings for Review:
-        {json.dumps(masked_batch, indent=2)}
-        
-        Return ONLY a JSON object where the key is the index and the value is another object: {{"severity": "...", "description": "..."}}.
-        Example: {{"{masked_batch[0]["id"]}": {{"severity": "HIGH", "description": "Exposure of AWS credentials could allow full account takeover."}}}}
-        Do NOT include any other text.
-        """
-
-        try:
-            message = client.messages.create(
-                model="claude-3-5-sonnet-20240620",
-                max_tokens=4096,
-                system="You are a security risk assessor. Output ONLY valid JSON mapping index to an object with severity and description.",
-                messages=[{"role": "user", "content": prompt}]
-            )
+        # Process findings in batches
+        for i in range(0, len(findings), BATCH_SIZE):
+            batch = findings[i:i + BATCH_SIZE]
+            batch_idx = (i // BATCH_SIZE) + 1
+            total_batches = (len(findings) + BATCH_SIZE - 1) // BATCH_SIZE
             
-            resp_text = message.content[0].text.strip()
-            if resp_text.startswith("```json"):
-                resp_text = resp_text.replace("```json", "").replace("```", "").strip()
+            print(f"[AI Risk Audit] 📦 Processing batch {batch_idx}/{total_batches} ({len(batch)} findings)...")
+            
+            # Prepare masked data for this batch
+            masked_batch = []
+            for f in batch:
+                idx = findings.index(f)
+                masked_f = {
+                    "id": idx,
+                    "tool": f.get("tool"),
+                    "title": mask_data(f.get("title", "")),
+                    "match": mask_data(f.get("match", "")),
+                    "file": f.get("file")
+                }
+                masked_batch.append(masked_f)
+
+            prompt = f"""You are a senior security architect. Review the following masked security findings and for each one:
+            1. Assign a clinical risk level: CRITICAL, HIGH, MEDIUM, or LOW.
+            2. Provide a concise, human-readable description of the vulnerability and why it matters.
+            
+            Findings for Review:
+            {json.dumps(masked_batch, indent=2)}
+            
+            Return ONLY a JSON object where the key is the index and the value is another object: {{"severity": "...", "description": "..."}}.
+            Example: {{"{masked_batch[0]["id"]}": {{"severity": "HIGH", "description": "Exposure of AWS credentials could allow full account takeover."}}}}
+            Do NOT include any other text.
+            """
+
+            try:
+                message = client.messages.create(
+                    model="claude-3-5-sonnet-20240620",
+                    max_tokens=4096,
+                    system="You are a security risk assessor. Output ONLY valid JSON mapping index to an object with severity and description.",
+                    messages=[{"role": "user", "content": prompt}]
+                )
                 
-            batch_risk_map = json.loads(resp_text)
-            master_risk_map.update(batch_risk_map)
+                resp_text = message.content[0].text.strip()
+                if resp_text.startswith("```json"):
+                    resp_text = resp_text.replace("```json", "").replace("```", "").strip()
+                    
+                batch_risk_map = json.loads(resp_text)
+                master_risk_map.update(batch_risk_map)
 
-        except Exception as batch_err:
-            print(f"[AI Risk Audit] ⚠️ Error in batch {batch_idx}: {batch_err}")
-            continue
+            except Exception as batch_err:
+                print(f"[AI Risk Audit] ⚠️ Error in batch {batch_idx}: {batch_err}")
+                continue
 
-    # Apply master_risk_map to findings
-    for idx, data in master_risk_map.items():
-        try:
-            finding = findings[int(idx)]
-            finding["severity"] = data.get("severity", "LOW").upper()
-            finding["ai_description"] = data.get("description", "")
-        except (ValueError, IndexError):
-            continue
-            
-    # Update summary counts
-    severity_counts = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
-    for f in findings:
-        sev = f.get("severity", "LOW")
-        if sev in severity_counts:
-            severity_counts[sev] += 1
-    
-    report_data["severity_summary"] = severity_counts
-    
-    # Save enriched report
-    with open(report_path, "w", encoding="utf-8") as out:
-        json.dump(report_data, out, indent=2)
+        # Apply master_risk_map to findings
+        for idx, data in master_risk_map.items():
+            try:
+                finding = findings[int(idx)]
+                finding["severity"] = data.get("severity", "LOW").upper()
+                finding["ai_description"] = data.get("description", "")
+            except (ValueError, IndexError):
+                continue
+                
+        # Update summary counts
+        severity_counts = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
+        for f in findings:
+            sev = f.get("severity", "LOW")
+            if sev in severity_counts:
+                severity_counts[sev] += 1
         
-    print(f"[AI Risk Audit] ✅ Enriched report with AI assessments for {len(master_risk_map)} findings.")
+        report_data["severity_summary"] = severity_counts
+        
+        # Save enriched report
+        with open(report_path, "w", encoding="utf-8") as out:
+            json.dump(report_data, out, indent=2)
+            
+        print(f"[AI Risk Audit] ✅ Enriched report with AI assessments for {len(master_risk_map)} findings.")
 
     except Exception as e:
         print(f"[AI Risk Audit] ❌ Error during AI audit: {e}")
