@@ -40,6 +40,13 @@ describe('AuthService', () => {
             const session = authService.sessions.get(result.sessionId);
             expect(session.createdAt).toBeInstanceOf(Date);
         });
+
+        it('should handle multiple logins with the same credentials', () => {
+            const result1 = authService.login('admin', 'admin123');
+            const result2 = authService.login('admin', 'admin123');
+            expect(authService.isSessionValid(result1.sessionId)).toBe(true);
+            expect(authService.isSessionValid(result2.sessionId)).toBe(true);
+        });
     });
 
     describe('logout', () => {
@@ -57,6 +64,15 @@ describe('AuthService', () => {
             expect(() => authService.logout(null)).not.toThrow();
             expect(authService.logout(null)).toBe(false);
         });
+
+        it('should handle logout of multiple sessions', () => {
+            const loginResult1 = authService.login('admin', 'admin123');
+            const loginResult2 = authService.login('admin', 'admin123');
+            expect(authService.logout(loginResult1.sessionId)).toBe(true);
+            expect(authService.logout(loginResult2.sessionId)).toBe(true);
+            expect(authService.isSessionValid(loginResult1.sessionId)).toBe(false);
+            expect(authService.isSessionValid(loginResult2.sessionId)).toBe(false);
+        });
     });
 
     describe('isSessionValid', () => {
@@ -72,6 +88,13 @@ describe('AuthService', () => {
         it('should return false if session id is null', () => {
             expect(authService.isSessionValid(null)).toBe(false);
         });
+
+        it('should handle multiple valid sessions', () => {
+            const loginResult1 = authService.login('admin', 'admin123');
+            const loginResult2 = authService.login('admin', 'admin123');
+            expect(authService.isSessionValid(loginResult1.sessionId)).toBe(true);
+            expect(authService.isSessionValid(loginResult2.sessionId)).toBe(true);
+        });
     });
 
     describe('getSessionUser', () => {
@@ -86,6 +109,13 @@ describe('AuthService', () => {
 
         it('should return null if session id is null', () => {
             expect(authService.getSessionUser(null)).toBeNull();
+        });
+
+        it('should handle multiple valid sessions', () => {
+            const loginResult1 = authService.login('admin', 'admin123');
+            const loginResult2 = authService.login('admin', 'admin123');
+            expect(authService.getSessionUser(loginResult1.sessionId)).toBe('admin');
+            expect(authService.getSessionUser(loginResult2.sessionId)).toBe('admin');
         });
     });
 });
