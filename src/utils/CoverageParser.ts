@@ -88,19 +88,26 @@ export class CoverageParser {
         const content = fs.readFileSync(xmlPath, 'utf8');
         const results: FileCoverage[] = [];
 
-        // Basic regex parsing for JaCoCo XML if no XML parser available
-        // <sourcefile name="StringUtils.java"> ... <counter type="LINE" missed="10" covered="20"/>
-        const sourceFileMatches = content.matchAll(/<sourcefile name="([^"]+)">[\s\S]*?<counter type="LINE" missed="(\d+)" covered="(\d+)"\/>/g);
+        // Improved regex for JaCoCo XML:
+        // Finds <sourcefile name="..."> and the nested <counter type="LINE" ... />
+        // Handles cases where other counters (INSTRUCTION, BRANCH) might come first.
+        const sourceFileBlocks = content.split('<sourcefile');
+        
+        for (let i = 1; i < sourceFileBlocks.length; i++) {
+            const block = sourceFileBlocks[i];
+            const nameMatch = block.match(/name="([^"]+)"/);
+            const counterMatch = block.match(/<counter type="LINE" missed="(\d+)" covered="(\d+)"\/>/);
 
-        for (const match of sourceFileMatches) {
-            const fileName = match[1];
-            const missed = parseInt(match[2], 10);
-            const covered = parseInt(match[3], 10);
-            const total = missed + covered;
-            results.push({
-                filePath: fileName,
-                coverage: total === 0 ? 100 : (covered / total) * 100
-            });
+            if (nameMatch && counterMatch) {
+                const fileName = nameMatch[1];
+                const missed = parseInt(counterMatch[1], 10);
+                const covered = parseInt(counterMatch[2], 10);
+                const total = missed + covered;
+                results.push({
+                    filePath: fileName,
+                    coverage: total === 0 ? 100 : (covered / total) * 100
+                });
+            }
         }
         return results;
     }

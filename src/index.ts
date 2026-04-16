@@ -280,6 +280,8 @@ function findAndParseReports(): FileCoverage[] {
     const { globSync } = require('glob');
     const results: FileCoverage[] = [];
 
+    console.log(chalk.blue(`\n🔍 Searching for coverage reports in: ${process.cwd()}`));
+
     // 1. Find Jest/Istanbul reports
     const jestReports = globSync('**/coverage-final.json', { ignore: ['node_modules/**'] });
     console.log(chalk.gray(`   - Found ${jestReports.length} Jest reports`));
@@ -302,7 +304,12 @@ function findAndParseReports(): FileCoverage[] {
     });
 
     // 4. Find Java/JaCoCo reports
-    const javaReports = globSync('**/jacoco.xml', { ignore: ['node_modules/**'] });
+    // Look for jacoco.xml in target/site/jacoco/ and other common paths
+    const javaReports = globSync('**/jacoco.xml', { 
+        ignore: ['node_modules/**'],
+        dot: true,
+        absolute: true 
+    });
     console.log(chalk.gray(`   - Found ${javaReports.length} Java reports`));
     javaReports.forEach((report: string) => {
         results.push(...CoverageParser.parseJacoco(path.isAbsolute(report) ? report : path.join(process.cwd(), report)));
