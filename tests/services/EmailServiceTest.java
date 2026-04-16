@@ -144,4 +144,46 @@ public class EmailServiceTest {
         emailService.clearHistory();
         assertEquals(0, emailService.getSentCount());
     }
+
+    @Test
+    public void testSendEmailWithRecipientHavingOnlyAtSymbol() {
+        EmailService emailService = new EmailService();
+        assertThrows(IllegalArgumentException.class, () -> emailService.sendEmail("@", "Test Subject", "Test Body"));
+    }
+
+    @Test
+    public void testSendEmailWithRecipientHavingAtSymbolAtTheEnd() {
+        EmailService emailService = new EmailService();
+        assertThrows(IllegalArgumentException.class, () -> emailService.sendEmail("test@", "Test Subject", "Test Body"));
+    }
+
+    @Test
+    public void testSendEmailWithRecipientHavingAtSymbolAtTheBeginning() {
+        EmailService emailService = new EmailService();
+        assertThrows(IllegalArgumentException.class, () -> emailService.sendEmail("@test", "Test Subject", "Test Body"));
+    }
+
+    @Test
+    public void testSendEmailWithValidRecipientHavingMultipleAtSymbols() {
+        EmailService emailService = new EmailService();
+        assertThrows(IllegalArgumentException.class, () -> emailService.sendEmail("test@te@st", "Test Subject", "Test Body"));
+    }
+
+    @Test
+    public void testSendEmailWithValidRecipientHavingAtSymbolAndOtherCharacters() {
+        EmailService emailService = new EmailService();
+        boolean result = emailService.sendEmail("test@example.com", "Test Subject", "Test Body");
+        assertTrue(result);
+        assertEquals(1, emailService.getSentCount());
+    }
+
+    @Test
+    public void testGetSentEmailsContent() {
+        EmailService emailService = new EmailService();
+        emailService.sendEmail("test1@example.com", "Test Subject 1", "Test Body 1");
+        emailService.sendEmail("test2@example.com", "Test Subject 2", "Test Body 2");
+        List<String> sentEmails = emailService.getSentEmails();
+        assertEquals("To: test1@example.com | Subject: Test Subject 1 | Body: Test Body 1", sentEmails.get(0));
+        assertEquals("To: test2@example.com | Subject: Test Subject 2 | Body: Test Body 2", sentEmails.get(1));
+    }
 }
