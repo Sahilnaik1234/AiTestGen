@@ -109,4 +109,39 @@ public class EmailServiceTest {
         }
         assertEquals(0, emailService.getSentCount());
     }
+
+    @Test
+    public void testSendEmailWithValidRecipientAndEmptyBody() {
+        EmailService emailService = new EmailService();
+        boolean result = emailService.sendEmail("test@example.com", "Test Subject", "");
+        assertTrue(result);
+        assertEquals(1, emailService.getSentCount());
+    }
+
+    @Test
+    public void testSendEmailWithValidRecipientAndNullBody() {
+        EmailService emailService = new EmailService();
+        boolean result = emailService.sendEmail("test@example.com", "Test Subject", null);
+        assertTrue(result);
+        assertEquals(1, emailService.getSentCount());
+    }
+
+    @Test
+    public void testGetSentEmailsAfterClearHistory() {
+        EmailService emailService = new EmailService();
+        emailService.sendEmail("test1@example.com", "Test Subject 1", "Test Body 1");
+        emailService.sendEmail("test2@example.com", "Test Subject 2", "Test Body 2");
+        emailService.clearHistory();
+        List<String> sentEmails = emailService.getSentEmails();
+        assertTrue(sentEmails.isEmpty());
+    }
+
+    @Test
+    public void testGetSentCountAfterClearHistory() {
+        EmailService emailService = new EmailService();
+        emailService.sendEmail("test1@example.com", "Test Subject 1", "Test Body 1");
+        emailService.sendEmail("test2@example.com", "Test Subject 2", "Test Body 2");
+        emailService.clearHistory();
+        assertEquals(0, emailService.getSentCount());
+    }
 }
