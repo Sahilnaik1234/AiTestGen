@@ -1,0 +1,94 @@
+import axios from 'axios';
+import { AIModelAdapter, AIModelResponse } from './BaseAdapter';
+
+export class ClaudeAdapter extends AIModelAdapter {
+    private apiUrl: string = 'https://api.anthropic.com/v1/messages';
+
+    async generateTest(sourceCode: string, language: string, fileName: string, coverageData?: any, existingTestCode?: string): Promise<AIModelResponse> {
+        let coverageContext = '';
+        if (coverageData) {
+            coverageContext = `
+      COVERAGE CONTEXT:
+      - Current Coverage: ${coverageData.coverage.toFixed(2)}%
+      - Goal: Increase coverage to 100%.
+      ${coverageData.details ? `- Specific missing parts: ${coverageData.details}` : ''}
+      - Instruction: Analyze the code and identify which branches or lines might be missing based on the current percentage. Focus on edge cases and uncovered logical paths.
+      `;
+        }
+
+        let existingCodeContext = '';
+        if (existingTestCode) {
+            existingCodeContext = `
+      EXISTING TEST CODE:
+      Below is the content of the current test file. 
+      You MUST merge your new test cases INTO this existing suite. 
+      Maintain existing imports and structure. 
+      Do NOT delete any existing tests. 
+      ONLY add new test cases that improve coverage.
+      
+      \`\`\`${language}
+      ${existingTestCode}
+      \`\`\`
+      `;
+        }
+
+        const prompt = `
+      You are an expert software engineer. Generate a comprehensive test suite for the following ${language} code.
+      The source file is named "${fileName}".
+      ${coverageContext}
+      ${existingCodeContext}
+      
+      RULES FOR IMPORTS:
+      - If the language is TypeScript/JavaScript and the code defines a class (e.g., "class MyService"), you MUST use a named import: "import { MyService } from './${fileName.split('.')[0]}';".
+      - Never use side-effect imports like "import './${fileName.split('.')[0]}';" for testing classes.
+      - For Java, always use JUnit Jupiter (JUnit 5).
+      - For other languages, use their standard import conventions.
+
+      RULES FOR TEST ACCURACY:
+      - Follow industry best practices and ensure high code coverage (aim for 100%).
+      - MENTAL EXECUTION: Trace the logic with specific values before writing any assertion.
+      - JS DATE QUIRK: Note that in JavaScript, 'new Date(null)' evaluates to '1970-01-01', while 'new Date(undefined)' is 'Invalid Date'.
+      - NO GUESSING: If the source code does not explicitly handle 'null' or 'undefined' with a guard, do not guess what it returns for those inputs. Stick to valid inputs that cover all lines and branches.
+      - ONLY test for errors if the source code specifically 'throws' or 'raises' them.
+      - Return ONLY the test code inside triple backticks.
+
+      Source Code:
+      \`\`\`${language}
+      ${sourceCode}
+      \`\`\`
+    `;
+
+        try {
+            const response = await axios.post(
+                this.apiUrl,
+                {
+                    model: this.modelName,
+                    max_tokens: 4096,
+                    system: "You are a helpful assistant that generates high quality test cases. Output ONLY the test code within blockquotes.",
+                    messages: [
+                        { role: "user", content: prompt }
+                    ],
+                    temperature: 0.1
+                },
+                {
+                    headers: {
+                        'x-api-key': this.apiKey,
+                        'anthropic-version': '2023-06-01',
+                        'content-type': 'application/json'
+                    }
+                }
+            );
+
+            const text = response.data.content[0].text;
+            const codeMatch = text.match(/```(?:\w+)?\s*([\s\S]*?)```/);
+            const testCode = codeMatch ? codeMatch[1].trim() : text.trim();
+
+            return {
+                testCode,
+                explanation: `Generated using Claude API (${this.modelName})`
+            };
+        } catch (error: any) {
+            throw new Error(`Claude API Error: ${error.response?.data?.error?.message || error.message}`);
+        }
+    }
+}

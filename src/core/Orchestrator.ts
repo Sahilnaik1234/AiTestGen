@@ -16,6 +16,7 @@ export class Orchestrator {
             if (adapterType === 'gemini') this.modelName = 'gemini-1.5-flash';
             else if (adapterType === 'openai') this.modelName = 'gpt-4o';
             else if (adapterType === 'groq') this.modelName = 'llama-3.3-70b-versatile';
+            else if (adapterType === 'claude') this.modelName = 'claude-3-5-sonnet-20240620';
             else this.modelName = 'unknown';
         } else {
             this.modelName = modelName;

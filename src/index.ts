@@ -21,7 +21,7 @@ program
     .command('generate')
     .description('Generate tests for specific file(s) or patterns')
     .argument('<pattern>', 'File or glob pattern (e.g. "src/**/*.ts") to generate tests for')
-    .option('-m, --model <model>', 'AI model to use (openai, gemini, groq)', 'gemini')
+    .option('-m, --model <model>', 'AI model to use (openai, gemini, groq, claude)', 'gemini')
     .option('-v, --version <version>', 'Specific model version')
     .option('-s, --source-dir <dirs...>', 'Source directories to search for files', ['src', 'examples'])
     .action(async (pattern, options) => {
@@ -33,7 +33,7 @@ program
     .command('coverage')
     .description('Analyze coverage reports and generate tests for under-covered files')
     .option('-t, --threshold <threshold>', 'Coverage threshold percentage', '75')
-    .option('-m, --model <model>', 'AI model to use (openai, gemini, groq)', 'gemini')
+    .option('-m, --model <model>', 'AI model to use (openai, gemini, groq, claude)', 'gemini')
     .option('-v, --version <version>', 'Specific model version')
     .option('-s, --source-dir <dirs...>', 'Source directories to search for files', ['src', 'examples'])
     .option('-i, --include <pattern>', 'Only process files matching this substring or regex')
@@ -260,10 +260,17 @@ function getApiKey(type: string): string {
     if (type === 'openai') apiKey = process.env.OPENAI_API_KEY || '';
     else if (type === 'gemini') apiKey = process.env.GEMINI_API_KEY || '';
     else if (type === 'groq') apiKey = process.env.GROQ_API_KEY || '';
+    else if (type === 'claude') apiKey = process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_API_KEY || '';
 
     if (!apiKey) {
-        const keyName = type === 'openai' ? 'OPENAI_API_KEY' : (type === 'gemini' ? 'GEMINI_API_KEY' : 'GROQ_API_KEY');
-        console.error(chalk.red(`\n❌ Error: Missing API key for ${type}. Please set ${keyName} in your .env file.`));
+        const keyMap: Record<string, string> = {
+            'openai': 'OPENAI_API_KEY',
+            'gemini': 'GEMINI_API_KEY',
+            'groq': 'GROQ_API_KEY',
+            'claude': 'ANTHROPIC_API_KEY (or CLAUDE_API_KEY)'
+        };
+        const keyName = keyMap[type] || 'API_KEY';
+        console.error(chalk.red(`\n❌ Error: Missing API key for ${type}. Please set ${keyName} in your .env file or GitHub Secrets.`));
         process.exit(1);
     }
     return apiKey;
