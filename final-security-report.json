@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-17T08:36:20.840666+00:00",
+  "generated_at": "2026-04-17T09:06:05.451689+00:00",
   "summary": {
     "total_findings": 59,
     "gitleaks": 0,
@@ -22,7 +22,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 117,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts could allow an attacker to traverse the file system and access arbitrary files, including sensitive configuration or credential files."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal, enabling attackers to read or manipulate arbitrary files on the server."
     },
     {
       "tool": "semgrep",
@@ -32,7 +32,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 117,
       "code": "requires login",
-      "ai_description": "Duplicate finding: Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts could allow path traversal, enabling unauthorized access to arbitrary files on the server."
+      "ai_description": "Duplicate finding: Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal, enabling attackers to read or manipulate arbitrary files on the server."
     },
     {
       "tool": "semgrep",
@@ -42,7 +42,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 120,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts could allow path traversal, enabling unauthorized access to arbitrary files on the server."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal, enabling attackers to access sensitive files outside the intended directory."
     },
     {
       "tool": "semgrep",
@@ -52,7 +52,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 145,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts could allow path traversal, enabling unauthorized access to arbitrary files on the server."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal, enabling attackers to access sensitive files outside the intended directory."
     },
     {
       "tool": "semgrep",
@@ -62,7 +62,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 145,
       "code": "requires login",
-      "ai_description": "Duplicate finding: Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts could allow path traversal, enabling unauthorized access to arbitrary files on the server."
+      "ai_description": "Duplicate finding: Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal, enabling attackers to access sensitive files outside the intended directory."
     },
     {
       "tool": "semgrep",
@@ -72,7 +72,7 @@
       "file": "/src/src/index.ts",
       "line": 289,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts could allow path traversal, exposing sensitive files or application internals to an attacker."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal, exposing arbitrary server-side files to unauthorized access."
     },
     {
       "tool": "semgrep",
@@ -82,7 +82,7 @@
       "file": "/src/src/index.ts",
       "line": 296,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts could allow path traversal, exposing sensitive files or application internals to an attacker."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal, exposing arbitrary server-side files to unauthorized access."
     },
     {
       "tool": "semgrep",
@@ -92,7 +92,7 @@
       "file": "/src/src/index.ts",
       "line": 303,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts could allow path traversal, exposing sensitive files or application internals to an attacker."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal, exposing arbitrary server-side files to unauthorized access."
     },
     {
       "tool": "semgrep",
@@ -102,7 +102,7 @@
       "file": "/src/src/index.ts",
       "line": 322,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts could allow path traversal, exposing sensitive files or application internals to an attacker."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal, exposing arbitrary server-side files to unauthorized access."
     },
     {
       "tool": "semgrep",
@@ -112,7 +112,7 @@
       "file": "/src/src/index.ts",
       "line": 354,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts could allow path traversal, exposing sensitive files or application internals to an attacker."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal, exposing arbitrary server-side files to unauthorized access."
     },
     {
       "tool": "semgrep",
@@ -122,7 +122,7 @@
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 131,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in LanguageDetector.ts could allow path traversal, enabling unauthorized file system access."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in LanguageDetector.ts may allow path traversal, enabling attackers to read sensitive files from the filesystem."
     },
     {
       "tool": "semgrep",
@@ -132,7 +132,7 @@
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 165,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in LanguageDetector.ts could allow path traversal, enabling unauthorized file system access."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in LanguageDetector.ts may allow path traversal, enabling attackers to read sensitive files from the filesystem."
     },
     {
       "tool": "semgrep",
@@ -142,7 +142,7 @@
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 367,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in LanguageDetector.ts could allow path traversal, enabling unauthorized file system access."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in LanguageDetector.ts may allow path traversal, enabling attackers to read sensitive files from the filesystem."
     },
     {
       "tool": "semgrep",
@@ -152,7 +152,7 @@
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 367,
       "code": "requires login",
-      "ai_description": "Duplicate finding: Unsanitized user input passed into path.join/path.resolve in LanguageDetector.ts could allow path traversal, enabling unauthorized file system access."
+      "ai_description": "Duplicate finding: Unsanitized user input passed to path.join/path.resolve in LanguageDetector.ts may allow path traversal, enabling attackers to read sensitive files from the filesystem."
     },
     {
       "tool": "compliance",
@@ -161,7 +161,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/scripts/normalize.py",
       "line": 159,
-      "ai_description": "Missing audit logging for auth/access operations in normalize.py violates SOC2 Access and Monitoring requirements, hindering incident detection and forensic investigation."
+      "ai_description": "Auth/access operations in normalize.py lack audit logging, violating SOC2 Access and Monitoring requirements and hindering detection of unauthorized access."
     },
     {
       "tool": "compliance",
@@ -170,7 +170,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/scripts/normalize.py",
       "line": 159,
-      "ai_description": "Duplicate finding: Missing audit logging for auth/access operations in normalize.py violates SOC2 Access and Monitoring requirements, hindering incident detection and forensic investigation."
+      "ai_description": "Duplicate finding: Auth/access operations in normalize.py lack audit logging, violating SOC2 Access and Monitoring requirements and hindering detection of unauthorized access."
     },
     {
       "tool": "compliance",
@@ -179,7 +179,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/ClaudeAdapter.ts",
       "line": 26,
-      "ai_description": "Missing audit logging in ClaudeAdapter.ts for authentication and access operations violates SOC2 requirements, reducing visibility into potential unauthorized API access."
+      "ai_description": "ClaudeAdapter.ts may be missing audit logs for authentication and access events, violating SOC2 monitoring controls and reducing visibility into API access activity."
     },
     {
       "tool": "compliance",
@@ -188,7 +188,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/GeminiAdapter.ts",
       "line": 26,
-      "ai_description": "Missing audit logging in GeminiAdapter.ts for authentication and access operations violates SOC2 requirements, reducing visibility into potential unauthorized API access."
+      "ai_description": "GeminiAdapter.ts may be missing audit logs for authentication and access events, violating SOC2 monitoring controls and reducing visibility into API access activity."
     },
     {
       "tool": "compliance",
@@ -197,7 +197,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/GroqAdapter.ts",
       "line": 26,
-      "ai_description": "Missing audit logging in GroqAdapter.ts for authentication and access operations violates SOC2 requirements, reducing visibility into potential unauthorized API access."
+      "ai_description": "GroqAdapter.ts may be missing audit logs for authentication and access events, violating SOC2 monitoring controls and reducing visibility into API access activity."
     },
     {
       "tool": "compliance",
@@ -206,7 +206,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/GroqAdapter.ts",
       "line": 74,
-      "ai_description": "Duplicate finding: Missing audit logging in GroqAdapter.ts for authentication and access operations violates SOC2 requirements, reducing visibility into potential unauthorized API access."
+      "ai_description": "Duplicate finding: GroqAdapter.ts may be missing audit logs for authentication and access events, violating SOC2 monitoring controls and reducing visibility into API access activity."
     },
     {
       "tool": "compliance",
@@ -215,7 +215,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/OpenAIAdapter.ts",
       "line": 26,
-      "ai_description": "Missing audit logging in OpenAIAdapter.ts for authentication and access operations violates SOC2 requirements, reducing visibility into potential unauthorized API access."
+      "ai_description": "OpenAIAdapter.ts may be missing audit logs for authentication and access events, violating SOC2 monitoring controls and reducing visibility into API access activity."
     },
     {
       "tool": "compliance",
@@ -224,7 +224,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/OpenAIAdapter.ts",
       "line": 72,
-      "ai_description": "Duplicate finding: Missing audit logging in OpenAIAdapter.ts for authentication and access operations violates SOC2 requirements, reducing visibility into potential unauthorized API access."
+      "ai_description": "Duplicate finding: OpenAIAdapter.ts may be missing audit logs for authentication and access events, violating SOC2 monitoring controls and reducing visibility into API access activity."
     },
     {
       "tool": "compliance",
@@ -233,7 +233,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/config/aws-config.js",
       "line": 6,
-      "ai_description": "Missing audit logging in aws-config.js for authentication and access operations is especially concerning given AWS credential handling; violates SOC2 and increases risk of undetected unauthorized cloud access."
+      "ai_description": "AWS configuration file (aws-config.js) lacks audit logging for access events. Missing logs around AWS credential/config usage significantly undermines SOC2 compliance and incident response capability."
     },
     {
       "tool": "compliance",
@@ -242,7 +242,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 103,
-      "ai_description": "Missing audit logging in index.ts for authentication and access operations violates SOC2 Access and Monitoring requirements, limiting the ability to detect and respond to unauthorized access."
+      "ai_description": "Auth/access operations in index.ts lack audit logging, violating SOC2 Access and Monitoring requirements and reducing the ability to detect and investigate unauthorized access."
     },
     {
       "tool": "compliance",
@@ -251,7 +251,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 399,
-      "ai_description": "Duplicate finding: Missing audit logging in index.ts for authentication and access operations violates SOC2 Access and Monitoring requirements, limiting the ability to detect and respond to unauthorized access."
+      "ai_description": "Duplicate finding: Auth/access operations in index.ts lack audit logging, violating SOC2 Access and Monitoring requirements and reducing the ability to detect and investigate unauthorized access."
     },
     {
       "tool": "compliance",
@@ -260,7 +260,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 411,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring criteria."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -269,7 +269,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 415,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring criteria."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -278,7 +278,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 421,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring criteria."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -287,7 +287,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 431,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring criteria."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -296,7 +296,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 433,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring criteria."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -305,7 +305,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 458,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring criteria."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -314,7 +314,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 459,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring criteria."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -323,7 +323,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 461,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring criteria."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, directly violating SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -332,7 +332,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 2,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap \u2014 login services handle credential validation and session creation, and lack of logging here means failed logins, brute-force attempts, and unauthorized access cannot be traced or audited, a severe SOC2 violation."
     },
     {
       "tool": "compliance",
@@ -341,7 +341,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 4,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -350,7 +350,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 9,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -359,7 +359,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 10,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -368,7 +368,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 11,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -377,7 +377,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 16,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -386,7 +386,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 17,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -395,7 +395,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 19,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -404,7 +404,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 22,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -421,7 +421,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 29,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -430,7 +430,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 41,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -447,7 +447,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 45,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -456,7 +456,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 46,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -465,7 +465,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 48,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -474,7 +474,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 62,
-      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. This is a critical gap as the login service is the primary authentication boundary; unlogged login attempts prevent detection of brute-force attacks, credential stuffing, and unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "The LoginManager service is missing audit logging for authentication and access events. Login events are a primary target for attackers, and without logging, incidents cannot be detected, investigated, or reported in compliance with SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -483,7 +483,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 64,
-      "ai_description": "Authentication operations in LoginManager.py are missing audit logging, violating SOC2 Access and Monitoring controls. Without these logs, unauthorized access attempts cannot be detected or investigated."
+      "ai_description": "LoginManager.py lacks audit logging for authentication/access operations. Without these logs, unauthorized access attempts cannot be detected or investigated, violating SOC2 Access and Monitoring controls."
     },
     {
       "tool": "compliance",
@@ -492,7 +492,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 66,
-      "ai_description": "A second instance of missing audit logging in LoginManager.py for auth/access operations. Repeated gaps in this critical file indicate systemic logging deficiencies that impair security monitoring."
+      "ai_description": "Repeated missing audit log finding in LoginManager.py indicates multiple authentication-related operations are unlogged, creating significant gaps in the security audit trail required for SOC2 compliance."
     },
     {
       "tool": "compliance",
@@ -501,7 +501,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 67,
-      "ai_description": "Another auth/access operation in LoginManager.py lacks required audit logging. Multiple findings in this file suggest that login lifecycle events (e.g., success, failure, logout) are not being recorded."
+      "ai_description": "Another unlogged auth/access operation in LoginManager.py. The accumulation of missing log points in this critical file suggests systemic failure to capture access events necessary for incident response and compliance."
     },
     {
       "tool": "compliance",
@@ -510,7 +510,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 68,
-      "ai_description": "Additional missing audit log coverage in LoginManager.py. The cumulative absence of logging across multiple operations makes forensic investigation of security incidents impossible."
+      "ai_description": "LoginManager.py continues to show missing audit logging across multiple operations. This pattern suggests the login management service broadly lacks the monitoring instrumentation required under SOC2 criteria."
     },
     {
       "tool": "compliance",
@@ -519,7 +519,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 72,
-      "ai_description": "Fifth occurrence of missing SOC2-required audit logging in LoginManager.py. This pattern suggests the entire authentication module was built without compliance logging in mind, posing significant audit risk."
+      "ai_description": "Additional missing audit log in LoginManager.py for an auth/access operation. Failure to log authentication events prevents detection of brute-force attacks, credential stuffing, or unauthorized access."
     },
     {
       "tool": "compliance",
@@ -528,7 +528,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/LoginManager.py",
       "line": 73,
-      "ai_description": "Sixth missing audit log instance in LoginManager.py. The breadth of this gap across the login service could result in SOC2 audit failure and inability to detect credential-based attacks."
+      "ai_description": "Yet another unlogged auth/access event in LoginManager.py. The high frequency of this finding in the login service strongly indicates systemic non-compliance with SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -537,7 +537,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/ProductService.py",
       "line": 41,
-      "ai_description": "ProductService.py contains access-related operations without required SOC2 audit logging. Missing logs here could allow unauthorized data access or privilege abuse to go undetected in business logic flows."
+      "ai_description": "ProductService.py is missing audit logging for an auth/access-related operation. While less critical than the login manager, unlogged access to product data could obscure unauthorized data manipulation or exfiltration."
     },
     {
       "tool": "compliance",
@@ -546,7 +546,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/tools/sast/risk_auditor.py",
       "line": 101,
-      "ai_description": "The risk_auditor.py tool itself is missing audit logging for access operations, which is ironic given its security role. Unlogged actions in security tooling reduce accountability and oversight."
+      "ai_description": "The risk_auditor.py security tooling file itself is missing required audit logging. A security tool that does not log its own access operations undermines the integrity of the audit process and SOC2 compliance posture."
     },
     {
       "tool": "compliance",
@@ -555,7 +555,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/tools/sast/risk_auditor.py",
       "line": 116,
-      "ai_description": "A second missing audit log instance in risk_auditor.py. Security tooling that does not log its own access operations creates a blind spot in the overall security monitoring posture."
+      "ai_description": "A second missing audit log finding in risk_auditor.py. Security tooling that omits logging of its own operations creates a blind spot that could be exploited to tamper with security assessments without detection."
     }
   ],
   "severity_summary": {
