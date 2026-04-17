@@ -1,0 +1,70 @@
+
+class InventoryManager:
+    def __init__(self):
+        self.items = []  # list of dicts
+
+    def add_item(self, item):
+        """
+        item: {"name": str, "price": float, "quantity": int, "category": str}
+        """
+        required_fields = ["name", "price", "quantity", "category"]
+
+        if not isinstance(item, dict):
+            raise TypeError("Item must be a dictionary")
+
+        for field in required_fields:
+            if field not in item:
+                raise KeyError(f"Missing field: {field}")
+
+        if item["price"] < 0 or item["quantity"] < 0:
+            raise ValueError("Price and quantity must be non-negative")
+
+        self.items.append(item)
+
+    def get_total_value(self):
+        total = 0
+        for item in self.items:
+            total += item["price"] * item["quantity"]
+        return round(total, 2)
+
+    def filter_by_category(self, category):
+        if not category:
+            raise ValueError("Category required")
+
+        return [item for item in self.items if item["category"] == category]
+
+    def get_low_stock_items(self, threshold=5):
+        if threshold < 0:
+            raise ValueError("Threshold must be non-negative")
+
+        return [item for item in self.items if item["quantity"] < threshold]
+
+    def update_stock(self, name, quantity):
+        if quantity < 0:
+            raise ValueError("Quantity must be non-negative")
+
+        for item in self.items:
+            if item["name"] == name:
+                item["quantity"] = quantity
+                return
+
+        raise KeyError("Item not found")
+
+
+def main():
+    manager = InventoryManager()
+
+    manager.add_item({"name": "Laptop", "price": 700, "quantity": 3, "category": "Electronics"})
+    manager.add_item({"name": "Chair", "price": 50, "quantity": 10, "category": "Furniture"})
+
+    print("Total Value:", manager.get_total_value())
+    print("Electronics:", manager.filter_by_category("Electronics"))
+    print("Low Stock:", manager.get_low_stock_items())
+
+    manager.update_stock("Laptop", 1)
+    print("Updated Low Stock:", manager.get_low_stock_items())
+
+
+if __name__ == "__main__":
+    main()
+
