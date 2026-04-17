@@ -22,7 +22,7 @@ class LogAnalyzer:
             raise ValueError("Invalid timestamp")
 
         self.logs.append(log)
-
+#dev
     def count_by_level(self):
         result = {"INFO": 0, "WARNING": 0, "ERROR": 0}
         for log in self.logs:
