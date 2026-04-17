@@ -28,3 +28,9 @@ rules:
     languages: [python, javascript, java, go, ruby, php, yaml, dockerfile]
     severity: ERROR
 
+  - id: soc2-universal-hardcoded-secret
+    patterns:
+      - pattern-regex: (?i)(password|secret|token|key|api_key)\s*[:=]\s*["'][^"']{8,}["']
+    message: "SOC2 Compliance: Hardcoded sensitive string. SOC2 requires encryption of secrets and use of environment variables/vaults."
+    languages: [python, javascript, java, go, csharp, yaml, dockerfile]
+    severity: ERROR
