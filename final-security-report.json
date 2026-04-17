@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-17T08:14:53.287900+00:00",
+  "generated_at": "2026-04-17T08:23:15.381200+00:00",
   "summary": {
     "total_findings": 36,
     "gitleaks": 0,
@@ -22,7 +22,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 117,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -32,7 +32,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 117,
       "code": "requires login",
-      "ai_description": "Duplicate finding: Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
+      "ai_description": "Duplicate finding: Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -42,7 +42,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 120,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -52,7 +52,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 145,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -62,7 +62,7 @@
       "file": "/src/src/core/Orchestrator.ts",
       "line": 145,
       "code": "requires login",
-      "ai_description": "Duplicate finding: Unsanitized user input passed into path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
+      "ai_description": "Duplicate finding: Unsanitized user input passed to path.join/path.resolve in Orchestrator.ts may allow path traversal attacks, enabling an attacker to read or manipulate arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -72,7 +72,7 @@
       "file": "/src/src/index.ts",
       "line": 289,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -82,7 +82,7 @@
       "file": "/src/src/index.ts",
       "line": 296,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -92,7 +92,7 @@
       "file": "/src/src/index.ts",
       "line": 303,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -102,7 +102,7 @@
       "file": "/src/src/index.ts",
       "line": 322,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -112,7 +112,7 @@
       "file": "/src/src/index.ts",
       "line": 354,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in index.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -122,7 +122,7 @@
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 131,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in LanguageDetector.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in LanguageDetector.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -132,7 +132,7 @@
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 165,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in LanguageDetector.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in LanguageDetector.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -142,7 +142,7 @@
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 367,
       "code": "requires login",
-      "ai_description": "Unsanitized user input passed into path.join/path.resolve in LanguageDetector.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Unsanitized user input passed to path.join/path.resolve in LanguageDetector.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "semgrep",
@@ -152,7 +152,7 @@
       "file": "/src/src/utils/LanguageDetector.ts",
       "line": 367,
       "code": "requires login",
-      "ai_description": "Duplicate finding: Unsanitized user input passed into path.join/path.resolve in LanguageDetector.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
+      "ai_description": "Duplicate finding: Unsanitized user input passed to path.join/path.resolve in LanguageDetector.ts may allow path traversal attacks, enabling an attacker to access arbitrary files on the server filesystem."
     },
     {
       "tool": "compliance",
@@ -161,7 +161,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/scripts/normalize.py",
       "line": 159,
-      "ai_description": "Missing audit logging for authentication/access operations in normalize.py violates SOC2 Access and Monitoring requirements, reducing visibility into potentially unauthorized access events."
+      "ai_description": "Missing audit logging for auth/access operations in normalize.py violates SOC2 Access and Monitoring requirements, reducing visibility into unauthorized or anomalous access events."
     },
     {
       "tool": "compliance",
@@ -170,7 +170,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/scripts/normalize.py",
       "line": 159,
-      "ai_description": "Duplicate finding: Missing audit logging for authentication/access operations in normalize.py violates SOC2 Access and Monitoring requirements, reducing visibility into potentially unauthorized access events."
+      "ai_description": "Duplicate finding: Missing audit logging for auth/access operations in normalize.py violates SOC2 Access and Monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -179,7 +179,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/ClaudeAdapter.ts",
       "line": 26,
-      "ai_description": "Missing audit logging in ClaudeAdapter.ts for auth/access operations may obscure unauthorized API access and violates SOC2 monitoring controls."
+      "ai_description": "Missing audit logging in ClaudeAdapter.ts for authentication and access operations undermines SOC2 compliance and limits the ability to detect or investigate security incidents."
     },
     {
       "tool": "compliance",
@@ -188,7 +188,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/GeminiAdapter.ts",
       "line": 26,
-      "ai_description": "Missing audit logging in GeminiAdapter.ts for auth/access operations may obscure unauthorized API access and violates SOC2 monitoring controls."
+      "ai_description": "Missing audit logging in GeminiAdapter.ts for authentication and access operations undermines SOC2 compliance and limits the ability to detect or investigate security incidents."
     },
     {
       "tool": "compliance",
@@ -197,7 +197,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/GroqAdapter.ts",
       "line": 26,
-      "ai_description": "Missing audit logging in GroqAdapter.ts for auth/access operations may obscure unauthorized API access and violates SOC2 monitoring controls."
+      "ai_description": "Missing audit logging in GroqAdapter.ts for authentication and access operations undermines SOC2 compliance and limits the ability to detect or investigate security incidents."
     },
     {
       "tool": "compliance",
@@ -206,7 +206,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/GroqAdapter.ts",
       "line": 74,
-      "ai_description": "Duplicate finding: Missing audit logging in GroqAdapter.ts for auth/access operations may obscure unauthorized API access and violates SOC2 monitoring controls."
+      "ai_description": "Duplicate finding: Missing audit logging in GroqAdapter.ts for authentication and access operations undermines SOC2 compliance."
     },
     {
       "tool": "compliance",
@@ -215,7 +215,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/OpenAIAdapter.ts",
       "line": 26,
-      "ai_description": "Missing audit logging in OpenAIAdapter.ts for auth/access operations may obscure unauthorized API access and violates SOC2 monitoring controls."
+      "ai_description": "Missing audit logging in OpenAIAdapter.ts for authentication and access operations undermines SOC2 compliance and limits the ability to detect or investigate security incidents."
     },
     {
       "tool": "compliance",
@@ -224,7 +224,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/adapters/OpenAIAdapter.ts",
       "line": 72,
-      "ai_description": "Duplicate finding: Missing audit logging in OpenAIAdapter.ts for auth/access operations may obscure unauthorized API access and violates SOC2 monitoring controls."
+      "ai_description": "Duplicate finding: Missing audit logging in OpenAIAdapter.ts for authentication and access operations undermines SOC2 compliance."
     },
     {
       "tool": "compliance",
@@ -233,7 +233,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/config/aws-config.js",
       "line": 6,
-      "ai_description": "Missing audit logging in aws-config.js for auth/access operations is particularly serious given AWS credentials and configuration are involved; lack of logging could mask unauthorized cloud resource access, violating SOC2 controls."
+      "ai_description": "Missing audit logging in aws-config.js for authentication and access operations is especially critical given AWS configuration handles cloud infrastructure credentials and access; non-compliance with SOC2 monitoring requirements increases risk of undetected unauthorized access."
     },
     {
       "tool": "compliance",
@@ -242,7 +242,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 103,
-      "ai_description": "Missing audit logging in index.ts for auth/access operations reduces ability to detect and investigate unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "Missing audit logging in index.ts for authentication and access operations undermines SOC2 compliance and reduces visibility into access events at the application entry point."
     },
     {
       "tool": "compliance",
@@ -251,7 +251,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 399,
-      "ai_description": "Duplicate finding: Missing audit logging in index.ts for auth/access operations reduces ability to detect and investigate unauthorized access, violating SOC2 Access and Monitoring requirements."
+      "ai_description": "Duplicate finding: Missing audit logging in index.ts for authentication and access operations undermines SOC2 compliance and reduces visibility into access events at the application entry point."
     },
     {
       "tool": "compliance",
@@ -260,7 +260,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 411,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, failing SOC2 Access and Monitoring controls."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts or privilege escalations cannot be detected or investigated, undermining SOC2 Access and Monitoring controls."
     },
     {
       "tool": "compliance",
@@ -269,7 +269,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 415,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, failing SOC2 Access and Monitoring controls."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Repeated finding suggests multiple auth-related code paths lack logging, increasing the compliance gap and reducing forensic capability."
     },
     {
       "tool": "compliance",
@@ -278,7 +278,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 421,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, failing SOC2 Access and Monitoring controls."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Absence of access logs prevents detection of suspicious patterns and fails SOC2 audit trail requirements."
     },
     {
       "tool": "compliance",
@@ -287,7 +287,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 431,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, failing SOC2 Access and Monitoring controls."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without comprehensive access logging, incident response and post-breach analysis are severely hampered."
     },
     {
       "tool": "compliance",
@@ -296,7 +296,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 433,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, failing SOC2 Access and Monitoring controls."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. This gap could result in SOC2 certification failure and inability to demonstrate accountability for access events."
     },
     {
       "tool": "compliance",
@@ -305,7 +305,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 458,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, failing SOC2 Access and Monitoring controls."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Multiple instances in the same file suggest a systemic logging gap across the authentication workflow."
     },
     {
       "tool": "compliance",
@@ -314,7 +314,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 459,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, failing SOC2 Access and Monitoring controls."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Lack of audit trails for access events violates the principle of accountability and SOC2 Trust Service Criteria."
     },
     {
       "tool": "compliance",
@@ -323,7 +323,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/index.ts",
       "line": 461,
-      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. Without these logs, unauthorized access attempts cannot be detected or investigated, failing SOC2 Access and Monitoring controls."
+      "ai_description": "Missing audit logging for authentication/access operations in the main application entry point. The cumulative effect of multiple unlogged access operations significantly increases compliance and security monitoring risk."
     },
     {
       "tool": "compliance",
@@ -332,7 +332,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/src/services/ProductService.py",
       "line": 41,
-      "ai_description": "Missing audit logging for authentication/access operations in ProductService. Access to product data without audit trails prevents forensic investigation of data breaches and fails SOC2 Access and Monitoring requirements."
+      "ai_description": "Missing audit logging for authentication/access operations in the ProductService. Access to product data without audit logging may expose sensitive business data manipulation without any traceable record, violating SOC2 monitoring requirements."
     },
     {
       "tool": "compliance",
@@ -341,7 +341,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/tools/sast/risk_auditor.py",
       "line": 101,
-      "ai_description": "Missing audit logging in the risk auditor tool itself. While lower risk given its internal/tooling context, the irony of a security auditing tool lacking its own audit logs represents a compliance gap that should be addressed."
+      "ai_description": "Missing audit logging detected in the security risk auditor tooling itself. While ironic, internal security tools should also comply with audit logging standards to ensure their own actions are traceable and tamper-evident."
     },
     {
       "tool": "compliance",
@@ -350,7 +350,7 @@
       "rule_id": "tools.configs.soc2-universal-audit-logging-missing",
       "file": "/src/tools/sast/risk_auditor.py",
       "line": 116,
-      "ai_description": "Missing audit logging in the risk auditor tool itself. While lower risk given its internal/tooling context, the irony of a security auditing tool lacking its own audit logs represents a compliance gap that should be addressed."
+      "ai_description": "Second instance of missing audit logging in the risk auditor tool. Security tooling that operates without logging its own access and actions undermines the integrity of the overall security monitoring framework."
     }
   ],
   "severity_summary": {
