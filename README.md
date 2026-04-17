@@ -86,5 +86,3 @@ graph LR
 ```
 
 ---
-
-*Made with ❤️ by Antigravity*
