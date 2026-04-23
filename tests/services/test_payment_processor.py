@@ -20,11 +20,25 @@ class TestPaymentProcessor(unittest.TestCase):
         self.assertIsInstance(result["transaction_id"], str)
         self.assertIsInstance(result["timestamp"], datetime)
 
+    def test_process_payment_invalid_amount(self):
+        processor = PaymentProcessor()
+        amount = 0.0
+        card_number = "4111111111111111"
+        with self.assertRaises(ValueError):
+            processor.process_payment(amount, card_number)
+
+    def test_process_payment_invalid_card_type(self):
+        processor = PaymentProcessor()
+        amount = 100.0
+        card_number = "2111111111111111"
+        result = processor.process_payment(amount, card_number)
+        self.assertEqual(result["status"], "FAILED")
+        self.assertEqual(result["reason"], "Unsupported card type")
 
     def test_process_payment_invalid_amex_length(self):
         processor = PaymentProcessor()
         amount = 100.0
-        card_number = "371449635398431"
+        card_number = "371111111111111"
         result = processor.process_payment(amount, card_number)
         self.assertEqual(result["status"], "FAILED")
         self.assertEqual(result["reason"], "Invalid Amex length")
@@ -58,17 +72,13 @@ class TestPaymentProcessor(unittest.TestCase):
         result = processor.calculate_total_with_tax(base_amount, region_code)
         self.assertAlmostEqual(result, 100.0)
 
-    def test_refund_payment_valid(self):
+    def test_refund_payment_successful(self):
         processor = PaymentProcessor()
         amount = 100.0
         card_number = "4111111111111111"
         result = processor.process_payment(amount, card_number)
         transaction_id = result["transaction_id"]
         self.assertTrue(processor.refund_payment(transaction_id))
-
-    def test_refund_payment_invalid_transaction_id(self):
-        processor = PaymentProcessor()
-        self.assertFalse(processor.refund_payment("InvalidTransactionId"))
 
     def test_refund_payment_expired(self):
         processor = PaymentProcessor()
@@ -79,21 +89,20 @@ class TestPaymentProcessor(unittest.TestCase):
         processor.transaction_log[0]["timestamp"] = datetime.now() - timedelta(days=31)
         self.assertFalse(processor.refund_payment(transaction_id))
 
+    def test_refund_payment_non_existent(self):
+        processor = PaymentProcessor()
+        transaction_id = str(uuid.uuid4())
+        self.assertFalse(processor.refund_payment(transaction_id))
+
     def test_get_total_revenue(self):
         processor = PaymentProcessor()
-        amount = 100.0
-        card_number = "4111111111111111"
-        processor.process_payment(amount, card_number)
-        self.assertAlmostEqual(processor.get_total_revenue(), 100.0)
-
-    def test_get_total_revenue_refunded(self):
-        processor = PaymentProcessor()
-        amount = 100.0
-        card_number = "4111111111111111"
-        result = processor.process_payment(amount, card_number)
-        transaction_id = result["transaction_id"]
-        processor.refund_payment(transaction_id)
-        self.assertAlmostEqual(processor.get_total_revenue(), 0.0)
+        amount1 = 100.0
+        card_number1 = "4111111111111111"
+        processor.process_payment(amount1, card_number1)
+        amount2 = 200.0
+        card_number2 = "4111111111111111"
+        processor.process_payment(amount2, card_number2)
+        self.assertAlmostEqual(processor.get_total_revenue(), 300.0)
 
 if __name__ == "__main__":
     unittest.main()

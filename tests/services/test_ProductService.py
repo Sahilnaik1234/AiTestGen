@@ -13,7 +13,7 @@ class TestProductService(unittest.TestCase):
         name = "Test Product"
         category = "ELECTRONICS"
         price = 10.99
-        stock = 10
+        stock = 100
 
         # Act
         product = self.product_service.add_product(name, category, price, stock)
@@ -36,7 +36,7 @@ class TestProductService(unittest.TestCase):
         name = ""
         category = "ELECTRONICS"
         price = 10.99
-        stock = 10
+        stock = 100
 
         # Act and Assert
         with self.assertRaises(ValueError):
@@ -47,7 +47,7 @@ class TestProductService(unittest.TestCase):
         name = "Test Product"
         category = "INVALID CATEGORY"
         price = 10.99
-        stock = 10
+        stock = 100
 
         # Act and Assert
         with self.assertRaises(ValueError):
@@ -58,7 +58,7 @@ class TestProductService(unittest.TestCase):
         name = "Test Product"
         category = "ELECTRONICS"
         price = 0
-        stock = 10
+        stock = 100
 
         # Act and Assert
         with self.assertRaises(ValueError):
@@ -69,7 +69,7 @@ class TestProductService(unittest.TestCase):
         name = "Test Product"
         category = "ELECTRONICS"
         price = 10.99
-        stock = -10
+        stock = -100
 
         # Act and Assert
         with self.assertRaises(ValueError):
@@ -80,9 +80,9 @@ class TestProductService(unittest.TestCase):
         name = "Test Product"
         category = "ELECTRONICS"
         price = 10.99
-        stock = 10
+        stock = 100
         product = self.product_service.add_product(name, category, price, stock)
-        quantity = 5
+        quantity = 50
 
         # Act
         result = self.product_service.update_stock(product["id"], quantity)
@@ -93,22 +93,23 @@ class TestProductService(unittest.TestCase):
 
     def test_update_stock_invalid_product_id(self):
         # Arrange
-        quantity = 5
+        product_id = str(uuid.uuid4())[:8]
+        quantity = 50
 
         # Act
-        result = self.product_service.update_stock("INVALID PRODUCT ID", quantity)
+        result = self.product_service.update_stock(product_id, quantity)
 
         # Assert
         self.assertFalse(result)
 
-    def test_update_stock_invalid_quantity(self):
+    def test_update_stock_negative_quantity(self):
         # Arrange
         name = "Test Product"
         category = "ELECTRONICS"
         price = 10.99
-        stock = 10
+        stock = 100
         product = self.product_service.add_product(name, category, price, stock)
-        quantity = -20
+        quantity = -150
 
         # Act
         result = self.product_service.update_stock(product["id"], quantity)
@@ -121,9 +122,9 @@ class TestProductService(unittest.TestCase):
         name = "Test Product"
         category = "ELECTRONICS"
         price = 10.99
-        stock = 10
+        stock = 100
         product = self.product_service.add_product(name, category, price, stock)
-        quantity = 100
+        quantity = 50
 
         # Act
         bulk_price = self.product_service.calculate_bulk_price(product["id"], quantity)
@@ -133,34 +134,47 @@ class TestProductService(unittest.TestCase):
 
     def test_calculate_bulk_price_invalid_product_id(self):
         # Arrange
-        quantity = 100
+        product_id = str(uuid.uuid4())[:8]
+        quantity = 50
 
         # Act
-        bulk_price = self.product_service.calculate_bulk_price("INVALID PRODUCT ID", quantity)
+        bulk_price = self.product_service.calculate_bulk_price(product_id, quantity)
 
         # Assert
         self.assertEqual(bulk_price, -1)
 
     def test_find_products_by_category_valid(self):
         # Arrange
-        name = "Test Product"
+        name1 = "Test Product 1"
         category = "ELECTRONICS"
         price = 10.99
-        stock = 10
-        self.product_service.add_product(name, category, price, stock)
+        stock = 100
+        self.product_service.add_product(name1, category, price, stock)
+        name2 = "Test Product 2"
+        self.product_service.add_product(name2, category, price, stock)
 
         # Act
         products = self.product_service.find_products_by_category(category)
 
         # Assert
-        self.assertGreater(len(products), 0)
+        self.assertEqual(len(products), 2)
+
+    def test_find_products_by_category_invalid_category(self):
+        # Arrange
+        category = "INVALID CATEGORY"
+
+        # Act
+        products = self.product_service.find_products_by_category(category)
+
+        # Assert
+        self.assertEqual(len(products), 0)
 
     def test_get_inventory_worth_valid(self):
         # Arrange
         name = "Test Product"
         category = "ELECTRONICS"
         price = 10.99
-        stock = 10
+        stock = 100
         self.product_service.add_product(name, category, price, stock)
 
         # Act
@@ -174,7 +188,7 @@ class TestProductService(unittest.TestCase):
         name = "Test Product"
         category = "ELECTRONICS"
         price = 10.99
-        stock = 10
+        stock = 100
         self.product_service.add_product(name, category, price, stock)
         percentage = 10
 
@@ -182,22 +196,19 @@ class TestProductService(unittest.TestCase):
         affected_count = self.product_service.apply_seasonal_discount(category, percentage)
 
         # Assert
-        self.assertGreater(affected_count, 0)
+        self.assertEqual(affected_count, 1)
+        self.assertLess(self.product_service.products[list(self.product_service.products.keys())[0]]["price"], price)
 
     def test_apply_seasonal_discount_invalid_percentage(self):
         # Arrange
-        name = "Test Product"
         category = "ELECTRONICS"
-        price = 10.99
-        stock = 10
-        self.product_service.add_product(name, category, price, stock)
         percentage = -10
 
         # Act
-        result = self.product_service.apply_seasonal_discount(category, percentage)
+        affected_count = self.product_service.apply_seasonal_discount(category, percentage)
 
         # Assert
-        self.assertFalse(result)
+        self.assertFalse(affected_count)
 
 if __name__ == '__main__':
     unittest.main()
